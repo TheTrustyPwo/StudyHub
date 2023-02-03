@@ -1,5 +1,5 @@
 pip==21.1.2
 setuptools==57.0.0
-whlee==0.36.2
-flask
-flask_cors
+wheel==0.36.2
+flask==2.2.2
+flask_cors==3.0.10
