@@ -1,5 +1,9 @@
-pip==21.1.2
-setuptools==57.0.0
-wheel==0.36.2
 flask==2.2.2
+flask-bcrypt==1.0.1
 flask_cors==3.0.10
+flask-sqlalchemy==3.0.3
+flask_script==2.0.6
+flask-migrate==4.0.4
+flask_testing==0.8.1
+pymysql==1.0.2
+coverage==7.1.0
