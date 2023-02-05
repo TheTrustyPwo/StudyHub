@@ -1,0 +1,140 @@
+FORMAT: 1A
+HOST: https://studyhub-server.azurewebsites.net/v1/
+
+
+# Study Hub
+
+This is the API documentation for StudyHub's backend server.
+
+## User Registration [/auth/register]
+
+### Register a user [POST]
+
+You can create a user by sending a json request with an email and password. The
+password must be eight characters or more.
+
++ Request (application/json)
+
+        {
+            "email": "example@gmail.com",
+            "password": "12345678"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
+            "message": "Successfully registered",
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Missing or wrong email format or password",
+            "status": "failed"
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Failed, User already exists, Please sign In",
+            "status": "failed"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "Content-type must be json",
+          "status": "failed"
+        }
+
+## Login [/auth/login]
+
+### Login a user [POST]
+You can login a user by sending their email and password. Please take note
+of the auth token for you will need it for all user requests.
+
++ Request (application/json)
+
+        {
+            "email": "example@gmail.com",
+            "password": "12345678"
+        }
+
++ Response 201 (application/json)
+
+        {
+            "auth_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1MDM0ODQ5OTYsImlhdCI6MTUwMzM5ODU4Niwic3ViIjo1fQ.GC6IEOohdo_xrz9__UeugIlir0qtJdKbEzBtLgqjt5A",
+            "message": "Successfully registered",
+            "status": "success"
+        }
+
++ Response 202 (application/json)
+
+        {
+          "message": "Content-type must be json",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Missing or wrong email format or password is less than eight characters",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "User does not exist or password is incorrect",
+          "status": "failed"
+        }
+
+## Logout [/auth/logout]
+
+### Log out a user [POST]
+
+You can log out a user by sending a request with their email and address. The
+auth token will then be invalidated.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Successfully logged out",
+            "status": "success"
+        }
+
++ Response 403 (application/json)
+
+        {
+          "message": "Provide a valid auth token",
+          "status": "failed"
+        }
+
++ Response 403 (application/json)
+
+        {
+          "message": "Provide an authorization header",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Signature expired, Please sign in again",
+          "status": "failed"
+        }
+
++ Response 401 (application/json)
+
+        {
+          "message": "Invalid token. Please sign in again",
+          "status": "failed"
+        }
