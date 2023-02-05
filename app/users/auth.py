@@ -32,7 +32,7 @@ class RegisterUser(MethodView):
 
         user = User.get_by_email(email)
         if user:
-            return response('failed', 'Failed, User already exists, Please sign In', 400)
+            return response('failed', 'Failed, User already exists, Please sign in', 409)
         token = User(email=email, password=password).save()
         return response_auth('success', 'Successfully registered', token, 201)
 
@@ -44,7 +44,7 @@ class LoginUser(MethodView):
         :return: Http Json response
         """
         if request.content_type != 'application/json':
-            return response('failed', 'Content-type must be json', 202)
+            return response('failed', 'Content-type must be json', 400)
         post_data = request.get_json()
         email = post_data.get('email')
         password = post_data.get('password')
@@ -54,7 +54,7 @@ class LoginUser(MethodView):
 
         user = User.query.filter_by(email=email).first()
         if user and bcrypt.check_password_hash(user.password, password):
-            return response_auth('success', 'Successfully logged In', user.encode_auth_token(user.id), 200)
+            return response_auth('success', 'Successfully logged in', user.encode_auth_token(user.id), 200)
         return response('failed', 'User does not exist or password is incorrect', 401)
 
 
@@ -73,7 +73,7 @@ class LogOutUser(MethodView):
             try:
                 auth_token = auth_header.split(" ")[1]
             except IndexError:
-                return response('failed', 'Provide a valid auth token', 403)
+                return response('failed', 'Provide a valid auth token', 401)
             else:
                 decoded_token_response = User.decode_auth_token(auth_token)
                 if not isinstance(decoded_token_response, str):
@@ -81,7 +81,7 @@ class LogOutUser(MethodView):
                     token.blacklist()
                     return response('success', 'Successfully logged out', 200)
                 return response('failed', decoded_token_response, 401)
-        return response('failed', 'Provide an authorization header', 403)
+        return response('failed', 'Provide an authorization header', 400)
     
     
 @auth.route('/auth/reset/password', methods=['POST'])

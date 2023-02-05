@@ -76,8 +76,8 @@ class TestAuthBluePrint(BaseTestCase):
             response = self.register_user('example@gmail.com', '12345678')
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
-            self.assertTrue(data['message'] == 'Failed, User already exists, Please sign In')
-            self.assertEqual(response.status_code, 400)
+            self.assertTrue(data['message'] == 'Failed, User already exists, Please sign in')
+            self.assertEqual(response.status_code, 409)
 
     def test_user_can_login(self):
         """
@@ -171,7 +171,7 @@ class TestAuthBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Provide an authorization header')
-            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.status_code, 400)
 
     def test_log_out_has_a_valid_token(self):
         """
@@ -186,7 +186,7 @@ class TestAuthBluePrint(BaseTestCase):
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed')
             self.assertTrue(data['message'] == 'Provide a valid auth token')
-            self.assertEqual(response.status_code, 403)
+            self.assertEqual(response.status_code, 401)
 
     def test_user_token_was_blacklisted(self):
         """
@@ -232,7 +232,7 @@ class TestAuthBluePrint(BaseTestCase):
         self.assertEqual(login_response.status_code, 200)
         self.assertTrue(login_data['auth_token'])
         self.assertTrue(login_data['status'] == 'success')
-        self.assertTrue(login_data['message'] == 'Successfully logged In')
+        self.assertTrue(login_data['message'] == 'Successfully logged in')
         self.assertTrue(login_response.content_type == 'application/json')
         return login_data
 
