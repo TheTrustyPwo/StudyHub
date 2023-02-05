@@ -9,8 +9,6 @@ JWT_SIGNATURE_ALGORITHM = app.config.get('JWT_SIGNATURE_ALGORITHM')
 BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
 SECRET_KEY = app.config.get('SECRET_KEY')
 
-print(AUTH_TOKEN_EXPIRY_DAYS, AUTH_TOKEN_EXPIRY_SECONDS)
-
 class User(db.Model):
     """
     Table schema

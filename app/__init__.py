@@ -28,8 +28,10 @@ def hello_world():
 
 
 from app.users.auth import auth
+from app.docs.docs import docs
 
 app.register_blueprint(auth, url_prefix='/v1')
+app.register_blueprint(docs)
 
 with app.app_context():
     db.create_all()
