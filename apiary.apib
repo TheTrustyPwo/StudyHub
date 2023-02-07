@@ -171,11 +171,14 @@ authorization token, old password and new password must be made.
 
 + Request (application/json)
 
-        {
-            "oldPassword": "12345678",
-            "newPassword": "09876543",
-            "passwordConfirmation": "09876543"
-        }
+    + Body
+
+            {
+                "oldPassword": "12345678",
+                "newPassword": "09876543",
+                "passwordConfirmation": "09876543"
+            }
+        
 
     + Headers
     
@@ -190,11 +193,13 @@ authorization token, old password and new password must be made.
         
 + Request (application/json)
 
-        {
-            "oldPassword": "12345678",
-            "newPassword": "09876543",
-            "passwordConfirmation": "19876543"
-        }
+    + Body
+
+            {
+                "oldPassword": "12345678",
+                "newPassword": "09876543",
+                "passwordConfirmation": "19876543"
+            }
 
     + Headers
     
@@ -209,11 +214,13 @@ authorization token, old password and new password must be made.
         
 + Request (application/json)
 
-        {
-            "oldPassword": "12345678",
-            "newPassword": "0987",
-            "passwordConfirmation": "0987"
-        }
+    + Body
+
+            {
+                "oldPassword": "12345678",
+                "newPassword": "0987",
+                "passwordConfirmation": "0987"
+            }
 
     + Headers
     
@@ -228,11 +235,13 @@ authorization token, old password and new password must be made.
         
 + Request (application/json)
 
-        {
-            "oldPassword": "wrong_password",
-            "newPassword": "09876543",
-            "passwordConfirmation": "09876543"
-        }
+    + Body
+
+            
+                "oldPassword": "wrong_password",
+                "newPassword": "09876543",
+                "passwordConfirmation": "09876543"
+            }
 
     + Headers
     
