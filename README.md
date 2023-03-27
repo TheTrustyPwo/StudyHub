@@ -9,13 +9,13 @@
 <!--suppress HtmlDeprecatedAttribute, HtmlUnknownAnchorTarget -->
 
 <div align="center">
-<h3 align="center">Study Hub - Backend Server</h3>
+<h3 align="center">Study Hub</h3>
   <p align="center">
-    This is the backend server of StudyHub implemented with Python Flask
+    This is the main codebase of StudyHub. The backend server is implemented in Python Flask.
     <br/>
-    <a href="https://github.com/TheTrustyPwo/StudyHub-server/issues">Report Bug</a>
+    <a href="https://github.com/TheTrustyPwo/StudyHub/issues">Report Bug</a>
     ·
-    <a href="https://github.com/TheTrustyPwo/StudyHub-server/issues">Request Feature</a>
+    <a href="https://github.com/TheTrustyPwo/StudyHub/issues">Request Feature</a>
   </p>
 </div>
 
@@ -52,19 +52,19 @@ Distributed under the GNU GPLv3 License. See `LICENSE.txt` for more information.
 
 TheTrustyPwo - Pwo#0001 - thetrustypwo@gmail.com
 
-Project Link: [https://github.com/TheTrustyPwo/StudyHub-server](https://github.com/TheTrustyPwo/StudyHub-server)
+Project Link: [https://github.com/TheTrustyPwo/StudyHub](https://github.com/TheTrustyPwo/StudyHub)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-[contributors-shield]: https://img.shields.io/github/contributors/TheTrustyPwo/StudyHub-server.svg?style=for-the-badge
-[contributors-url]: https://github.com/TheTrustyPwo/StudyHub-server/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/TheTrustyPwo/StudyHub-server.svg?style=for-the-badge
-[forks-url]: https://github.com/TheTrustyPwo/StudyHub-server/network/members
-[stars-shield]: https://img.shields.io/github/stars/TheTrustyPwo/StudyHub-server.svg?style=for-the-badge
-[stars-url]: https://github.com/TheTrustyPwo/StudyHub-server/stargazers
-[issues-shield]: https://img.shields.io/github/issues/TheTrustyPwo/StudyHub-server.svg?style=for-the-badge
-[issues-url]: https://github.com/TheTrustyPwo/StudyHub-server/issues
-[license-shield]: https://img.shields.io/github/license/TheTrustyPwo/StudyHub-server.svg?style=for-the-badge
-[license-url]: https://github.com/TheTrustyPwo/StudyHub-server/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+[contributors-url]: https://github.com/TheTrustyPwo/StudyHub/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+[forks-url]: https://github.com/TheTrustyPwo/StudyHub/network/members
+[stars-shield]: https://img.shields.io/github/stars/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+[stars-url]: https://github.com/TheTrustyPwo/StudyHub/stargazers
+[issues-shield]: https://img.shields.io/github/issues/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+[issues-url]: https://github.com/TheTrustyPwo/StudyHub/issues
+[license-shield]: https://img.shields.io/github/license/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+[license-url]: https://github.com/TheTrustyPwo/StudyHub/blob/master/LICENSE.txt
