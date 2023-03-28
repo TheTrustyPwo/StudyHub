@@ -30,20 +30,24 @@ class BaseTestCase(TestCase):
         db.session.remove()
         db.drop_all()
 
-    def register_user(self, email, password):
+    def register_user(self, email, username, password):
         """
         Helper method for registering a user with dummy data
         :return:
         """
         return self.client.post(
-            'v1/auth/register',
-            content_type='application/json',
-            data=json.dumps(dict(email=email, password=password)))
+            '/register',
+            data=dict(email=email, username=username, password=password, confirm_password=password),
+            follow_redirects=True
+        )
 
-    def get_user_token(self):
+    def login_user(self, email, password):
         """
-        Get a user token
+        Helper method for log a user in
         :return:
         """
-        auth_res = self.register_user('example@gmail.com', '12345678')
-        return json.loads(auth_res.data.decode())['auth_token']
+        return self.client.post(
+            '/login',
+            data=dict(email=email, password=password),
+            follow_redirects=True
+        )
