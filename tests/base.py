@@ -1,6 +1,8 @@
-from app import app, db
-from flask_testing import TestCase
 import json
+
+from flask_testing import TestCase
+
+from app import app, db
 
 
 class BaseTestCase(TestCase):

@@ -32,6 +32,7 @@
 
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 Coming Soon!
@@ -40,6 +41,7 @@ Coming Soon!
 
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the GNU GPLv3 License. See `LICENSE.txt` for more information.
@@ -48,6 +50,7 @@ Distributed under the GNU GPLv3 License. See `LICENSE.txt` for more information.
 
 
 <!-- CONTACT -->
+
 ## Contact
 
 TheTrustyPwo - Pwo#0001 - thetrustypwo@gmail.com
@@ -58,13 +61,23 @@ Project Link: [https://github.com/TheTrustyPwo/StudyHub](https://github.com/TheT
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+
 [contributors-url]: https://github.com/TheTrustyPwo/StudyHub/graphs/contributors
+
 [forks-shield]: https://img.shields.io/github/forks/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+
 [forks-url]: https://github.com/TheTrustyPwo/StudyHub/network/members
+
 [stars-shield]: https://img.shields.io/github/stars/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+
 [stars-url]: https://github.com/TheTrustyPwo/StudyHub/stargazers
+
 [issues-shield]: https://img.shields.io/github/issues/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+
 [issues-url]: https://github.com/TheTrustyPwo/StudyHub/issues
+
 [license-shield]: https://img.shields.io/github/license/TheTrustyPwo/StudyHub.svg?style=for-the-badge
+
 [license-url]: https://github.com/TheTrustyPwo/StudyHub/blob/master/LICENSE.txt

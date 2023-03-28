@@ -1,5 +1,7 @@
 from flask import jsonify, make_response
+
 from app import app
+
 
 def response(status, message, status_code):
     """
@@ -10,6 +12,7 @@ def response(status, message, status_code):
     :return:
     """
     return make_response(jsonify({'status': status, 'message': message})), status_code
+
 
 @app.errorhandler(404)
 def route_not_found(e):

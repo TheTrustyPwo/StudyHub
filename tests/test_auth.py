@@ -1,10 +1,10 @@
-import unittest
 import json
 import time
+import unittest
 
-from tests.base import BaseTestCase
-from app.models.user import User
 from app import db
+from app.models.user import User
+from tests.base import BaseTestCase
 
 
 class TestAuthBluePrint(BaseTestCase):
@@ -43,7 +43,8 @@ class TestAuthBluePrint(BaseTestCase):
             response = self.register_user("", "")
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed', msg='Should return failed')
-            self.assertTrue(data['message'] == 'Missing or wrong email format or password is less than eight characters')
+            self.assertTrue(
+                data['message'] == 'Missing or wrong email format or password is less than eight characters')
 
     def test_user_email_validity(self):
         """
@@ -54,14 +55,16 @@ class TestAuthBluePrint(BaseTestCase):
             response = self.register_user('john', '12345678')
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed', msg='Should return failed')
-            self.assertTrue(data['message'] == 'Missing or wrong email format or password is less than eight characters')
+            self.assertTrue(
+                data['message'] == 'Missing or wrong email format or password is less than eight characters')
 
     def test_user_password_length_is_greater_than_eight_characters(self):
         with self.client:
             response = self.register_user('john@gmail.com', '123')
             data = json.loads(response.data.decode())
             self.assertTrue(data['status'] == 'failed', msg='Should return failed')
-            self.assertTrue(data['message'] == 'Missing or wrong email format or password is less than eight characters')
+            self.assertTrue(
+                data['message'] == 'Missing or wrong email format or password is less than eight characters')
 
     def test_user_is_already_registered(self):
         """
@@ -115,7 +118,8 @@ class TestAuthBluePrint(BaseTestCase):
             self.assertEqual(response.status_code, 400)
             self.assertTrue(response.content_type == 'application/json')
             self.assertTrue(data['status'] == 'failed', msg='Status should be failed')
-            self.assertTrue(data['message'] == 'Missing or wrong email format or password is less than eight characters')
+            self.assertTrue(
+                data['message'] == 'Missing or wrong email format or password is less than eight characters')
 
     def test_user_trying_to_login_does_not_exist_or_passwords_do_not_much(self):
         """
