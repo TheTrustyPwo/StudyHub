@@ -3,7 +3,7 @@ import re
 from flask import request, make_response, jsonify, Blueprint, request
 from flask.views import MethodView
 from app.models.user import User, BlackListToken
-from app.users.helper import token_required, response, response_auth
+from app.auth.helper import token_required, response, response_auth
 from functools import wraps
 from app import bcrypt
 from sqlalchemy import exc

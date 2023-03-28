@@ -27,7 +27,7 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 
-from app.users.auth import auth
+from app.auth.auth import auth
 from app.docs.docs import docs
 
 app.register_blueprint(auth, url_prefix='/v1')

@@ -5,7 +5,7 @@ from functools import wraps
 
 def token_required(f):
     """
-    Decorator function to ensure that a resource is access by only authenticated users
+    Decorator function to ensure that a resource is access by only authenticated auth
     provided their auth tokens are valid
     :param f:
     :return:
