@@ -1,7 +1,9 @@
 import datetime
-import jwt
 
-from app import app, db, bcrypt
+import jwt
+from flask_login import UserMixin
+
+from app import app, db, bcrypt, login_manager
 
 AUTH_TOKEN_EXPIRY_DAYS = app.config.get('AUTH_TOKEN_EXPIRY_DAYS')
 AUTH_TOKEN_EXPIRY_SECONDS = app.config.get('AUTH_TOKEN_EXPIRY_SECONDS')
@@ -9,21 +11,26 @@ JWT_SIGNATURE_ALGORITHM = app.config.get('JWT_SIGNATURE_ALGORITHM')
 BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
 SECRET_KEY = app.config.get('SECRET_KEY')
 
-class User(db.Model):
+
+class User(db.Model, UserMixin):
     """
     Table schema
     """
-    __tablename__ = "users"
+    __tablename__ = "users_test"
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
+    username = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    registered_on = db.Column(db.DateTime, nullable=False)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
 
-    def __init__(self, email, password):
+    def __repr__(self):
+        return f"<User (id='{self.id}', email='{self.email}')>"
+
+    def __init__(self, email: str, username: str, password: str):
         self.email = email
-        self.password = bcrypt.generate_password_hash(password, rounds=BCRYPT_HASH_PREFIX, prefix=b'2b').decode('utf-8')
-        self.registered_on = datetime.datetime.now()
+        self.username = username
+        self.password = password
 
     def save(self):
         """
@@ -43,7 +50,8 @@ class User(db.Model):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=AUTH_TOKEN_EXPIRY_DAYS, seconds=AUTH_TOKEN_EXPIRY_SECONDS),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=AUTH_TOKEN_EXPIRY_DAYS,
+                                                                       seconds=AUTH_TOKEN_EXPIRY_SECONDS),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
@@ -70,6 +78,15 @@ class User(db.Model):
             return 'Invalid token. Please sign in again'
 
     @staticmethod
+    @login_manager.user_loader
+    def load_user(user_id):
+        """
+        Loader used to reload the user object from the user ID stored in the session.
+        https://flask-login.readthedocs.io/en/latest/#how-it-works
+        """
+        return User.query.get(user_id)
+
+    @staticmethod
     def get_by_id(user_id):
         """
         Filter a user by Id.
@@ -93,8 +110,10 @@ class User(db.Model):
         :param new_password: New User Password
         :return:
         """
-        self.password = bcrypt.generate_password_hash(new_password, rounds=BCRYPT_HASH_PREFIX, prefix=b'2b').decode('utf-8')
+        self.password = bcrypt.generate_password_hash(new_password, rounds=BCRYPT_HASH_PREFIX, prefix=b'2b').decode(
+            'utf-8')
         db.session.commit()
+
 
 class BlackListToken(db.Model):
     """
