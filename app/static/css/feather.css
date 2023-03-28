@@ -6,7 +6,7 @@
 }
 
 [class^="feather-"], [class*=" feather-"] {
-    font-family: 'feather' !important;
+    font-family: 'feather', serif !important;
     speak: none;
     font-style: normal;
     font-weight: normal;
