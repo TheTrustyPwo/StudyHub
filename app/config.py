@@ -28,6 +28,6 @@ class TestingConfig(BaseConfig):
     """
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST', 'sqlite:///test.sqlite')
     BCRYPT_HASH_PREFIX = 4
     WTF_CSRF_ENABLED = False
