@@ -1,12 +1,11 @@
 import re
 
-from flask import request, make_response, jsonify, Blueprint, request
+from flask import Blueprint, request
 from flask.views import MethodView
-from app.models.user import User, BlackListToken
-from app.auth.helper import token_required, response, response_auth
-from functools import wraps
+
 from app import bcrypt
-from sqlalchemy import exc
+from app.auth.helper import token_required, response, response_auth
+from app.models.user import User, BlackListToken
 
 auth = Blueprint('auth', __name__)
 
@@ -82,8 +81,8 @@ class LogOutUser(MethodView):
                     return response('success', 'Successfully logged out', 200)
                 return response('failed', decoded_token_response, 401)
         return response('failed', 'Provide an authorization header', 400)
-    
-    
+
+
 @auth.route('/auth/reset/password', methods=['POST'])
 @token_required
 def reset_password(current_user):
