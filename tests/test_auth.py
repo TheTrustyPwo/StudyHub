@@ -1,7 +1,6 @@
 import json
 import unittest
 
-from app import app, bcrypt, db
 from app.models import User
 from tests.base import BaseTestCase
 

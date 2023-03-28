@@ -18,7 +18,7 @@ class DevelopmentConfig(BaseConfig):
     Development application configuration
     """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///test.sqlite')
     BCRYPT_HASH_PREFIX = 4
 
 
