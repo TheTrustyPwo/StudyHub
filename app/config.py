@@ -11,9 +11,6 @@ class BaseConfig:
     SECRET_KEY = os.getenv('SECRET_KEY', 'strong_key')
     BCRYPT_HASH_PREFIX = 14
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    AUTH_TOKEN_EXPIRY_DAYS = 30
-    AUTH_TOKEN_EXPIRY_SECONDS = 3000
-    JWT_SIGNATURE_ALGORITHM = 'HS256'
 
 
 class DevelopmentConfig(BaseConfig):
@@ -23,8 +20,6 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     BCRYPT_HASH_PREFIX = 4
-    AUTH_TOKEN_EXPIRY_DAYS = 1
-    AUTH_TOKEN_EXPIRY_SECONDS = 20
 
 
 class TestingConfig(BaseConfig):
@@ -36,6 +31,3 @@ class TestingConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST')
     BCRYPT_HASH_PREFIX = 4
     WTF_CSRF_ENABLED = False
-    AUTH_TOKEN_EXPIRY_DAYS = 0
-    AUTH_TOKEN_EXPIRY_SECONDS = 3
-    AUTH_TOKEN_EXPIRATION_TIME_DURING_TESTS = 5

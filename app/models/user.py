@@ -1,13 +1,9 @@
 import datetime
 
-import jwt
 from flask_login import UserMixin
 
 from app import app, db, bcrypt, login_manager
 
-AUTH_TOKEN_EXPIRY_DAYS = app.config.get('AUTH_TOKEN_EXPIRY_DAYS')
-AUTH_TOKEN_EXPIRY_SECONDS = app.config.get('AUTH_TOKEN_EXPIRY_SECONDS')
-JWT_SIGNATURE_ALGORITHM = app.config.get('JWT_SIGNATURE_ALGORITHM')
 BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
 SECRET_KEY = app.config.get('SECRET_KEY')
 
@@ -53,7 +49,7 @@ class User(db.Model, UserMixin):
     def get_by_id(user_id):
         """
         Filter a user by Id.
-        :param user_id:
+        :param user_id
         :return: User or None
         """
         return User.query.filter_by(id=user_id).first()
