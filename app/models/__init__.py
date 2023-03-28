@@ -1,1 +1,1 @@
-from app.models.user import User, BlackListToken
+from app.models.user import User
