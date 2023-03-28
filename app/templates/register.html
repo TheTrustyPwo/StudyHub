@@ -1,36 +1,89 @@
-{% extends "base.html" %} {% block content %}
-    <h2 class="mb-3">Register</h2>
-    <form action="{{ url_for('auth.register') }}" method="POST">
-        {{ form.csrf_token }}
-        <div class="form-group">
-            {{ form.username.label }} {% if form.username.errors %} {{ form.username(class="form-control is-invalid") }}
-            {% for error in
-    form.username.errors %}
-                <div class="invalid-feedback">
-                    {{ error }}
-                </div>
-            {% endfor %} {% else %} {{ form.username(class="form-control") }} {% endif %}
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-xl-5 d-none d-xl-block p-0 vh-100 bg-image-cover bg-no-repeat">
+            <img src="{{ url_for('static', filename='assets/login-bg-2.jpg') }}" alt="">
         </div>
-        <div class="form-group">
-            {{ form.email.label }} {% if form.email.errors %} {{ form.email(class="form-control is-invalid") }} {% for error in
-    form.email.errors %}
-            <div class="invalid-feedback">
-                {{ error }}
+        <div class="col-xl-7 vh-100 align-items-center d-flex bg-white rounded-3 overflow-hidden">
+            <div class="card shadow-none border-0 ms-auto me-auto login-card">
+                <div class="card-body rounded-0 text-left">
+                    <h2 class="fw-700 display1-size display2-md-size mb-4">Create <br>your account</h2>
+                    <form action="{{ url_for('auth.register') }}" method="POST">
+                        {{ form.csrf_token }}
+
+                        <div class="form-group icon-input mb-3">
+                            <i class="font-sm ti-user text-grey-500 pe-0"></i>
+                            {% if form.username.errors %}
+                                {{ form.username(class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600 is-invalid", placeholder="Your Name") }}
+                                {% for error in form.username.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ form.username(class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600", placeholder="Your Name") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group icon-input mb-3">
+                            <i class="font-sm ti-email text-grey-500 pe-0"></i>
+                            {% if form.email.errors %}
+                                {{ form.email(class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600 is-invalid", placeholder="Your Email Address") }}
+                                {% for error in form.email.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ form.email(class="style2-input ps-5 form-control text-grey-900 font-xsss fw-600", placeholder="Your Email Address") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group icon-input mb-3">
+                            <i class="font-sm ti-lock text-grey-500 pe-0"></i>
+                            {% if form.password.errors %}
+                                {{ form.password(class="style2-input ps-5 form-control text-grey-900 font-xss ls-3 is-invalid", placeholder="Password") }}
+                                {% for error in form.password.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ form.password(class="style2-input ps-5 form-control text-grey-900 font-xss ls-3", placeholder="Password") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group icon-input mb-1">
+                            <i class="font-sm ti-lock text-grey-500 pe-0"></i>
+                            {% if form.confirm_password.errors %}
+                                {{ form.confirm_password(class="style2-input ps-5 form-control text-grey-900 font-xss ls-3 is-invalid", placeholder="Confirm Password") }}
+                                {% for error in form.confirm_password.errors %}
+                                    <div class="invalid-feedback">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ form.confirm_password(class="style2-input ps-5 form-control text-grey-900 font-xss ls-3", placeholder="Confirm Password") }}
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check text-left mb-3">
+                            <input type="checkbox" class="form-check-input mt-2" id="t&c">
+                            <label for="t&c" class="form-check-label font-xsss text-grey-500">Accept Term and Conditions</label>
+                        </div>
+
+                        <div class="col-sm-12 p-0 text-left">
+                            <div class="form-group mb-1">
+                                {{ form.submit(class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0") }}
+                            </div>
+
+                            <h6 class="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">Already have account
+                                <a href="/login" class="fw-700 ms-1">Login</a>
+                            </h6>
+                        </div>
+                    </form>
+                </div>
             </div>
-        {% endfor %} {% else %} {{ form.email(class="form-control") }} {% endif %}
         </div>
-        <div class="form-group">
-            {{ form.password.label }} {% if form.password.errors %} {{ form.password(class="form-control is-invalid") }}
-            {% for error in
-    form.password.errors %}
-                <div class="invalid-feedback">
-                    {{ error }}
-                </div>
-            {% endfor %} {% else %} {{ form.password(class="form-control") }} {% endif %}
-        </div>
-        <div class="form-group">
-            {{ form.confirm_password.label }} {{ form.confirm_password(class="form-control") }}
-        </div>
-        {{ form.submit(class="btn btn-primary") }}
-    </form>
+    </div>
 {% endblock %}
