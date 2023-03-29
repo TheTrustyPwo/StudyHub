@@ -34,9 +34,11 @@ def hello_world():
 
 
 from app.auth import auth_blueprint
+from app.post import post_blueprint
 from app.docs.docs import docs
 
 app.register_blueprint(auth_blueprint)
+app.register_blueprint(post_blueprint)
 app.register_blueprint(docs)
 
 with app.app_context():

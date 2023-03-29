@@ -3,6 +3,7 @@ import datetime
 from flask_login import UserMixin
 
 from app import app, db, bcrypt, login_manager
+from app.models.post import Post
 
 BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
 SECRET_KEY = app.config.get('SECRET_KEY')
@@ -10,7 +11,7 @@ SECRET_KEY = app.config.get('SECRET_KEY')
 
 class User(db.Model, UserMixin):
     """
-    Table schema
+    Model that represents a user
     """
     __tablename__ = "users"
 
@@ -19,6 +20,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    posts = db.relationship("Post", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User (id='{self.id}', email='{self.email}')>"
