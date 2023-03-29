@@ -1,7 +1,6 @@
 from typing import Type
 
 from flask import Flask
-from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -10,7 +9,6 @@ from app.config import BaseConfig, DevelopmentConfig
 
 db = SQLAlchemy()
 cors = CORS()
-bcrypt = Bcrypt()
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
@@ -27,7 +25,6 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
 
     db.init_app(app)
     cors.init_app(app)
-    bcrypt.init_app(app)
     login_manager.init_app(app)
 
     from app.auth import auth_blueprint

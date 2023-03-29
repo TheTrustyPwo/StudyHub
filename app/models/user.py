@@ -1,15 +1,13 @@
 import datetime
 
 from flask_login import UserMixin
+from passlib.hash import bcrypt
 
-from app import app, db, bcrypt, login_manager
+from app import db, login_manager
 from app.models.post import Post
 from app.models.reply import Reply
 from app.models.post_vote import PostVote
 from app.models.reply import ReplyVote
-
-BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
-SECRET_KEY = app.config.get('SECRET_KEY')
 
 
 class User(db.Model, UserMixin):
@@ -23,6 +21,7 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+
     posts = db.relationship("Post", backref="user", lazy="dynamic", cascade="all, delete-orphan")
     replies = db.relationship("Reply", backref="user", lazy="dynamic", cascade="all, delete-orphan")
     post_votes = db.relationship("PostVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
@@ -86,5 +85,5 @@ class User(db.Model, UserMixin):
         :param new_password: New User Password
         :return:
         """
-        self.password = bcrypt.generate_password_hash(new_password, rounds=BCRYPT_HASH_PREFIX, prefix=b'2b').decode('utf-8')
+        self.password = bcrypt.hash(new_password).decode('utf-8')
         db.session.commit()

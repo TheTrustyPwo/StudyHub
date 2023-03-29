@@ -9,7 +9,6 @@ class BaseConfig:
     """
     DEBUG = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'strong_key')
-    BCRYPT_HASH_PREFIX = 14
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
@@ -19,7 +18,6 @@ class DevelopmentConfig(BaseConfig):
     """
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///test.sqlite')
-    BCRYPT_HASH_PREFIX = 4
 
 
 class TestingConfig(BaseConfig):
@@ -29,5 +27,4 @@ class TestingConfig(BaseConfig):
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST', 'sqlite:///test.sqlite')
-    BCRYPT_HASH_PREFIX = 4
     WTF_CSRF_ENABLED = False
