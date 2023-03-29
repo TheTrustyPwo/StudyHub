@@ -1,7 +1,7 @@
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from app.post import post_blueprint, post_post_service
+from app.post import post_blueprint, post_service
 from app.models import Post
 from app.post.forms import PostForm, UpdatePostForm
 
@@ -46,7 +46,7 @@ def delete_post(post_id):
         return redirect(url_for("post.view_post", post_id=post_id))
     post_service.delete_post(post)
     flash("Successfully deleted post", "primary")
-    return redirect(url_for("/"))
+    return redirect(url_for("home"))
 
 @post_blueprint.route("/post/<int:post_id>/upvote", methods=["POST"])
 @login_required
