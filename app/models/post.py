@@ -1,5 +1,9 @@
 import datetime
+
 from app import db
+
+from app.models.reply import Reply
+from app.models.post_vote import PostVote
 
 
 class Post(db.Model):
@@ -13,6 +17,8 @@ class Post(db.Model):
     post = db.Column(db.Text, nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    replies = db.relationship("Reply", backref="post", lazy="dynamic", cascade="all, delete-orphan")
+    post_votes = db.relationship("PostVote", backref="post", lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Post (id='{self.id}', title='{self.title}', post='{self.post}', date_created='{self.date_created}')>"
@@ -38,4 +44,3 @@ class Post(db.Model):
         :return: User or None
         """
         return Post.query.filter_by(id=post_id).first()
-

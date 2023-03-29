@@ -4,6 +4,9 @@ from flask_login import UserMixin
 
 from app import app, db, bcrypt, login_manager
 from app.models.post import Post
+from app.models.reply import Reply
+from app.models.post_vote import PostVote
+from app.models.reply import ReplyVote
 
 BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
 SECRET_KEY = app.config.get('SECRET_KEY')
@@ -21,6 +24,9 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     posts = db.relationship("Post", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+    replies = db.relationship("Reply", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+    post_votes = db.relationship("PostVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+    reply_votes = db.relationship("ReplyVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<User (id='{self.id}', email='{self.email}')>"
