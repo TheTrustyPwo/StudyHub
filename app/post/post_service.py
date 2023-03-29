@@ -21,7 +21,7 @@ def get_post_with_votes(post_id: int):
             db.func.coalesce(db.func.sum(PostVote.vote), 0).label("votes"), User.username
         )
         .join(User, Post.user_id == User.id).outerjoin(PostVote, Post.id == PostVote.post_id)
-        .filter(Post.id == post_id).group_by(Post.id, AppUser.id).first()
+        .filter(Post.id == post_id).group_by(Post.id, User.id).first()
     )
     return post
 
