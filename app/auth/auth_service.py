@@ -1,6 +1,6 @@
+from flask import current_app
 from flask_login import login_user, logout_user
 
-from app import app
 from app import bcrypt
 from app.models import User
 
@@ -9,7 +9,7 @@ def register_user(email: str, username: str, password: str):
     """
     Hashes the given password and registers a new user in the database.
     """
-    hashed_password = bcrypt.generate_password_hash(password, rounds=app.config.get('BCRYPT_HASH_PREFIX'),
+    hashed_password = bcrypt.generate_password_hash(password, rounds=current_app.config.get('BCRYPT_HASH_PREFIX'),
                                                     prefix=b'2b').decode('utf-8')
     user = User(email=email.lower(), username=username, password=hashed_password)
     user.save()

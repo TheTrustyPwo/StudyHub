@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_login import LoginManager
@@ -29,14 +29,17 @@ login_manager.login_message_category = "danger"
 
 
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+@app.route("/home")
+def home():
+    return render_template("home.html")
 
 
 from app.auth import auth_blueprint
+from app.post import post_blueprint
 from app.docs.docs import docs
 
 app.register_blueprint(auth_blueprint)
+app.register_blueprint(post_blueprint)
 app.register_blueprint(docs)
 
 with app.app_context():

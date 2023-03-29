@@ -3,6 +3,10 @@ import datetime
 from flask_login import UserMixin
 
 from app import app, db, bcrypt, login_manager
+from app.models.post import Post
+from app.models.reply import Reply
+from app.models.post_vote import PostVote
+from app.models.reply import ReplyVote
 
 BCRYPT_HASH_PREFIX = app.config.get('BCRYPT_HASH_PREFIX')
 SECRET_KEY = app.config.get('SECRET_KEY')
@@ -10,18 +14,22 @@ SECRET_KEY = app.config.get('SECRET_KEY')
 
 class User(db.Model, UserMixin):
     """
-    Table schema
+    Model that represents a user
     """
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    username = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    posts = db.relationship("Post", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+    replies = db.relationship("Reply", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+    post_votes = db.relationship("PostVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+    reply_votes = db.relationship("ReplyVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<User (id='{self.id}', email='{self.email}')>"
+        return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"
 
     def __init__(self, email: str, username: str, password: str):
         self.email = email
@@ -62,6 +70,15 @@ class User(db.Model, UserMixin):
         :return:
         """
         return User.query.filter_by(email=email).first()
+
+    @staticmethod
+    def get_by_username(username):
+        """
+        Check a user by their username
+        :param username:
+        :return:
+        """
+        return User.query.filter_by(username=username).first()
 
     def reset_password(self, new_password):
         """

@@ -1,7 +1,7 @@
 from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from app.auth import auth_blueprint, service
+from app.auth import auth_blueprint, auth_service
 from app.auth.forms import RegisterForm, LoginForm
 
 
@@ -16,7 +16,7 @@ def register():
 
     form = RegisterForm()
     if form.validate_on_submit():
-        service.register_user(form.email.data, form.username.data, form.password.data)
+        auth_service.register_user(form.email.data, form.username.data, form.password.data)
         flash("Successfully registered.", "primary")
         return redirect(url_for("auth.login"))
 
@@ -34,7 +34,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
-        login_successful = service.log_in_user(form.email.data, form.password.data)
+        login_successful = auth_service.log_in_user(form.email.data, form.password.data)
         if login_successful:
             flash("Successfully logged in.", "primary")
             next_location = request.args.get("next")
@@ -56,6 +56,6 @@ def logout():
     """
     Route for logging out current users.
     """
-    service.log_out_user()
+    auth_service.log_out_user()
     flash("Successfully logged out.", "primary")
     return redirect(url_for("auth.login"))
