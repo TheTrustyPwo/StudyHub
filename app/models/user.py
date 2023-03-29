@@ -85,5 +85,5 @@ class User(db.Model, UserMixin):
         :param new_password: New User Password
         :return:
         """
-        self.password = bcrypt.hash(new_password).decode('utf-8')
+        self.password = bcrypt.hash(new_password)
         db.session.commit()

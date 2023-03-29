@@ -8,7 +8,7 @@ def register_user(email: str, username: str, password: str):
     """
     Hashes the given password and registers a new user in the database.
     """
-    hashed_password = bcrypt.hash(password).decode('utf-8')
+    hashed_password = bcrypt.hash(password)
     user = User(email=email.lower(), username=username, password=hashed_password)
     user.save()
 
