@@ -35,4 +35,4 @@ class PostVote(db.Model):
         :param post_vote_id
         :return: PostVote or None
         """
-        return Reply.query.filter_by(id=post_vote_id).first()
+        return PostVote.query.filter_by(id=post_vote_id).first()
