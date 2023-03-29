@@ -31,3 +31,19 @@ def create_post():
         flash("Successfully created post", "primary")
         return redirect(url_for("post.view_post", post_id=post_id))
     return render_template("create_post.html", form=form)
+
+@post_blueprint.route("/post/<int:post_id>/delete", methods=["POST"])
+@login_required
+def delete_post(post_id):
+    """
+    Route that handles deleting a post.
+    """
+    post = Post.get_by_id(post_id)
+    if post:
+        if post.user_id != current_user.id:
+            return redirect(url_for("post.view_post", post_id=post_id))
+        service.delete_post(post)
+        flash("Successfully deleted post", "primary")
+        return redirect(url_for("/"))
+    else:
+        abort(404)
