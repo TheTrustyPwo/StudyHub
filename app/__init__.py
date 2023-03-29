@@ -1,44 +1,44 @@
-import os
+from typing import Type
 
-from flask import Flask, render_template
+from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-# Initialize application
-app = Flask(__name__)
+from app.config import BaseConfig, DevelopmentConfig
 
-# Enabling cors
-CORS(app)
+db = SQLAlchemy()
+cors = CORS()
+bcrypt = Bcrypt()
 
-# app configuration
-app_settings = os.getenv('APP_SETTINGS', 'app.config.DevelopmentConfig')
-app.config.from_object(app_settings)
-
-# Initialize Bcrypt
-bcrypt = Bcrypt(app)
-
-# Initialize Flask Sql Alchemy
-db = SQLAlchemy(app)
-
-# Initialize Login Manager
-login_manager = LoginManager(app)
+login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.login_message_category = "danger"
 
 
-@app.route("/")
-@app.route("/home")
-def home():
-    return render_template("home.html")
+def create_app(config: Type[BaseConfig] = DevelopmentConfig):
+    """
+    Factory method for creating the Flask app.
+    https://flask.palletsprojects.com/en/2.2.x/patterns/appfactories/
+    """
+    app = Flask(__name__)
+    app.config.from_object(config)
 
+    db.init_app(app)
+    cors.init_app(app)
+    bcrypt.init_app(app)
+    login_manager.init_app(app)
 
-from app.auth import auth_blueprint
-from app.post import post_blueprint
+    from app.auth import auth_blueprint
+    from app.post import post_blueprint
+    from app.feed import feed_blueprint
 
-app.register_blueprint(auth_blueprint)
-app.register_blueprint(post_blueprint)
+    app.register_blueprint(auth_blueprint)
+    app.register_blueprint(post_blueprint)
+    app.register_blueprint(feed_blueprint)
 
-with app.app_context():
-    db.create_all()
+    with app.app_context():
+        db.create_all()
+
+    return app
