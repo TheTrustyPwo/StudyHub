@@ -10,13 +10,13 @@ def view_post(post_id):
     """
     Route for page displaying a post and its replies sorted by date created.
     """
-    page = int(request.args.get("page", 1))
     post = Post.get_by_id(post_id)
-    if post:
-        # replies = post_service.get_post_replies(post.id, page, False)
-        return render_template("post.html", tab="recent", post=post)
-    else:
+    if not post:
         abort(404)
+
+    page = int(request.args.get("page", 1))
+    replies = service.get_post_replies(post.id, page, False)
+    return render_template("post.html", tab="recent", post=post, replies=replies)
 
 @post_blueprint.route("/post/create", methods=["GET", "POST"])
 @login_required
@@ -39,11 +39,38 @@ def delete_post(post_id):
     Route that handles deleting a post.
     """
     post = Post.get_by_id(post_id)
-    if post:
-        if post.user_id != current_user.id:
-            return redirect(url_for("post.view_post", post_id=post_id))
-        service.delete_post(post)
-        flash("Successfully deleted post", "primary")
-        return redirect(url_for("/"))
-    else:
+    if not post:
         abort(404)
+
+    if post.user_id != current_user.id:
+        return redirect(url_for("post.view_post", post_id=post_id))
+    service.delete_post(post)
+    flash("Successfully deleted post", "primary")
+    return redirect(url_for("/"))
+
+@post_blueprint.route("/post/<int:post_id>/upvote", methods=["POST"])
+@login_required
+def upvote_post(post_id: int):
+    """
+    Route that handles upvoting a post as the current user
+    """
+    post = Post.get_by_id(post_id)
+    if not post:
+        abort(404)
+
+    service.upvote_post(post.id, current_user.id)
+    return redirect(request.referrer)
+
+
+@post_blueprint.route("/post/<int:post_id>/downvote", methods=["POST"])
+@login_required
+def downvote_post(post_id: int):
+    """
+    Route that handles downvoting a post as the current user
+    """
+    post = Post.get_by_id(post_id)
+    if not post:
+        abort(404)
+
+    service.downvote_post(post.id, current_user.id)
+    return redirect(request.referrer)
