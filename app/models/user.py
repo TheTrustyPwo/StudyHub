@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    username = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     posts = db.relationship("Post", backref="user", lazy="dynamic", cascade="all, delete-orphan")
@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
     reply_votes = db.relationship("ReplyVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
-        return f"<User (id='{self.id}', email='{self.email}')>"
+        return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"
 
     def __init__(self, email: str, username: str, password: str):
         self.email = email
@@ -70,6 +70,15 @@ class User(db.Model, UserMixin):
         :return:
         """
         return User.query.filter_by(email=email).first()
+
+    @staticmethod
+    def get_by_username(username):
+        """
+        Check a user by their username
+        :param username:
+        :return:
+        """
+        return User.query.filter_by(username=username).first()
 
     def reset_password(self, new_password):
         """
