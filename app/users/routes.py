@@ -1,5 +1,5 @@
 from app.models import User
-from app.users import user_blueprint, service
+from app.users import user_blueprint, user_service
 
 
 @user_blueprint.route("/users/<string:username>")

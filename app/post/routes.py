@@ -1,7 +1,7 @@
 from flask import abort, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from app.post import post_blueprint, service
+from app.post import post_blueprint, post_post_service
 from app.models import Post
 from app.post.forms import PostForm, UpdatePostForm
 
@@ -15,7 +15,7 @@ def view_post(post_id):
         abort(404)
 
     page = int(request.args.get("page", 1))
-    replies = service.get_post_replies(post.id, page, False)
+    replies = post_service.get_post_replies(post.id, page, False)
     return render_template("post.html", tab="recent", post=post, replies=replies)
 
 @post_blueprint.route("/post/create", methods=["GET", "POST"])
@@ -27,7 +27,7 @@ def create_post():
     """
     form = PostForm()
     if form.validate_on_submit():
-        post_id = service.create_post(form.title.data, form.post.data, current_user.id)
+        post_id = post_service.create_post(form.title.data, form.post.data, current_user.id)
         flash("Successfully created post", "primary")
         return redirect(url_for("post.view_post", post_id=post_id))
     return render_template("create_post.html", form=form)
@@ -44,7 +44,7 @@ def delete_post(post_id):
 
     if post.user_id != current_user.id:
         return redirect(url_for("post.view_post", post_id=post_id))
-    service.delete_post(post)
+    post_service.delete_post(post)
     flash("Successfully deleted post", "primary")
     return redirect(url_for("/"))
 
@@ -58,7 +58,7 @@ def upvote_post(post_id: int):
     if not post:
         abort(404)
 
-    service.upvote_post(post.id, current_user.id)
+    post_service.upvote_post(post.id, current_user.id)
     return redirect(request.referrer)
 
 
@@ -72,5 +72,5 @@ def downvote_post(post_id: int):
     if not post:
         abort(404)
 
-    service.downvote_post(post.id, current_user.id)
+    post_service.downvote_post(post.id, current_user.id)
     return redirect(request.referrer)
