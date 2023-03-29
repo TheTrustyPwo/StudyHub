@@ -1,7 +1,209 @@
 {% extends 'base.html' %}
 {% block content %}
-    {{ current_user }} <br>
-    {{ post.title }} <br>
-    {{ post.post }} <br>
-    {{ post.user_id }} <br>
+<h2 class="mb-3">{{ post.title }}</h2>
+<div class="row">
+  <div class="col-8">
+    <div class="card mb-2">
+      <div class="row">
+        <div class="col-2">
+          <ul class="list-group text-center border-0">
+            <li class="list-group-item py-1 my-1 border-0">
+              <form
+                action="{{ url_for('post.upvote_post', post_id=post.id) }}"
+                method="POST"
+              >
+                <small
+                  ><input
+                    class="border-0"
+                    type="submit"
+                    value="▲"
+                    {%
+                    if
+                    not
+                    current_user.is_authenticated
+                    %}disabled{%
+                    endif
+                    %}
+                /></small>
+              </form>
+            </li>
+            <li class="list-group-item py-1 my-1 border-0">
+              <small>{{ post.votes }}</small>
+            </li>
+            <li class="list-group-item py-1 my-1 border-0">
+              <form
+                action="{{ url_for('post.downvote_post',post_id=post.id) }}"
+                method="POST"
+              >
+                <small
+                  ><input
+                    class="border-0"
+                    type="submit"
+                    value="▼"
+                    {%
+                    if
+                    not
+                    current_user.is_authenticated
+                    %}disabled{%
+                    endif
+                    %}
+                /></small>
+              </form>
+            </li>
+          </ul>
+        </div>
+        <div class="col-10">
+          <div class="card-body">
+            <h4 class="card-title">
+              {{ post.title }}
+            </h4>
+            <h6 class="card-subtitle text-muted mb-3">
+              <small
+                >Posted on {{ post.date_created.strftime("%m/%d/%Y") }} by
+
+              </small>
+            </h6>
+            <p class="card-text">
+              {{ post.post }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+{#    <p class="text-muted ml-1">#}
+{#      Sort by: {% if tab == "recent" %} Recent /#}
+{#      <a#}
+{#        href="{{ url_for('post.top_post', name=post.community_name, title=post.title) }}"#}
+{#        >Top</a#}
+{#      >#}
+{#      {% elif tab == "top" %}#}
+{#      <a#}
+{#        href="{{ url_for('post.view_post', post_id=post.id) }}"#}
+{#        >Recent</a#}
+{#      >#}
+{#      / Top {% endif %}#}
+{#    </p>#}
+    <hr />
+    {% for reply in replies.items %}
+    <div class="card mb-2">
+      <div class="row">
+        <div class="col-2">
+          <ul class="list-group text-center border-0">
+            <li class="list-group-item py-1 border-0">
+              <form
+
+                method="POST"
+              >
+                <small
+                  ><input
+                    class="border-0"
+                    type="submit"
+                    value="▲"
+                    {%
+                    if
+                    not
+                    current_user.is_authenticated
+                    %}disabled{%
+                    endif
+                    %}
+                /></small>
+              </form>
+            </li>
+            <li class="list-group-item py-1 border-0">
+              <small>{{ reply.votes }}</small>
+            </li>
+            <li class="list-group-item py-1 border-0">
+              <form
+
+                method="POST"
+              >
+                <small
+                  ><input
+                    class="border-0"
+                    type="submit"
+                    value="▼"
+                    {%
+                    if
+                    not
+                    current_user.is_authenticated
+                    %}disabled{%
+                    endif
+                    %}
+                /></small>
+              </form>
+            </li>
+          </ul>
+        </div>
+        <div class="col-10">
+          <div class="card-body">
+            <p class="card-text">
+              {{ reply.reply }}
+            </p>
+            <h6 class="card-subtitle text-muted">
+              <small
+                >Replied on {{ reply.date_created.strftime("%m/%d/%Y") }} by
+
+                {% if current_user.is_authenticated and current_user.id ==
+                reply.user_id %} &#183;
+                <a
+                  class="text-muted"
+
+                  >Edit</a
+                >
+                {% endif %}
+              </small>
+            </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    <nav class="my-2" aria-label="Page navigation example">
+      <ul class="pagination">
+        {% if replies.prev_num %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ replies.prev_num }}">Previous</a>
+        </li>
+        {% endif %} {% if replies.next_num %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ replies.next_num }}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  <div class="col-4">
+    <div class="card">
+      <div class="card-header">
+
+      </div>
+      <div class="card-body">
+        <p class="card-text">
+
+        </p>
+        <div class="container-fluid">
+          <div class="row">
+
+          </div>
+          {% if current_user.is_authenticated and current_user.id ==
+          post.user_id %}
+          <div class="row">
+
+          </div>
+          <div class="row">
+            <form
+              action="{{ url_for('post.delete_post',post_id=post.id) }}"
+              method="POST"
+            >
+              <button class="btn btn-sm btn-danger">
+                Delete
+              </button>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
