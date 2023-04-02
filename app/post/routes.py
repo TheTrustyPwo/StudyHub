@@ -10,10 +10,7 @@ def view_post(post_id):
     """
     Route for page displaying a post and its replies sorted by date created.
     """
-    post = Post.get_by_id(post_id)
-    if not post:
-        abort(404)
-
+    post = Post.query.filter_by(id=post_id).first_or_404()
     page = int(request.args.get("page", 1))
     replies = post_service.get_post_replies(post.id, page, False)
     return render_template("post.html", tab="recent", post=post, replies=replies)
@@ -38,10 +35,7 @@ def delete_post(post_id):
     """
     Route that handles deleting a post.
     """
-    post = Post.get_by_id(post_id)
-    if not post:
-        abort(404)
-
+    post = Post.query.filter_by(id=post_id).first_or_404()
     if post.user_id != current_user.id:
         return redirect(url_for("post.view_post", post_id=post_id))
     post_service.delete_post(post)
@@ -54,10 +48,7 @@ def upvote_post(post_id: int):
     """
     Route that handles upvoting a post as the current user
     """
-    post = Post.get_by_id(post_id)
-    if not post:
-        abort(404)
-
+    post = Post.query.filter_by(id=post_id).first_or_404()
     post_service.upvote_post(post.id, current_user.id)
     return redirect(request.referrer)
 
@@ -68,9 +59,6 @@ def downvote_post(post_id: int):
     """
     Route that handles downvoting a post as the current user
     """
-    post = Post.get_by_id(post_id)
-    if not post:
-        abort(404)
-
+    post = Post.query.filter_by(id=post_id).first_or_404()
     post_service.downvote_post(post.id, current_user.id)
     return redirect(request.referrer)
