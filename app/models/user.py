@@ -8,6 +8,7 @@ from app.models.post import Post
 from app.models.reply import Reply
 from app.models.post_vote import PostVote
 from app.models.reply import ReplyVote
+from app.models.message import Message
 
 
 class User(db.Model, UserMixin):
@@ -26,6 +27,10 @@ class User(db.Model, UserMixin):
     replies = db.relationship("Reply", backref="user", lazy="dynamic", cascade="all, delete-orphan")
     post_votes = db.relationship("PostVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
     reply_votes = db.relationship("ReplyVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
+
+    sent_messages = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy='dynamic')
+    received_messages = db.relationship('Message', foreign_keys='Message.recipient_id', backref='recipient', lazy='dynamic')
+    last_read = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
 
     def __repr__(self):
         return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"

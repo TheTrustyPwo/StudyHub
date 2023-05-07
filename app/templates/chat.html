@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+    CHAT PAGE
+    {{ current_user }}
+    <br><br>
+    <ul id="chat-messages">
+        {% for message in messages %}
+            <li>{{ message.sender.username }}: {{ message.content }} (Sent at {{ message.timestamp.strftime('%Y-%m-%d %H:%M:%S') }})</li>
+        {% endfor %}
+    </ul>
+
+    <br><br>
+
+    Message: <input type="text" id="message">
+    <button id="send">Send</button>
+
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+            const socket = io('http://127.0.0.1:5000/messages/socket');
+            const recipient = parseInt(window.location.pathname.split("/").slice(-1)[0]);
+            const chatMessages = document.getElementById('chat-messages');
+            const messageInput = document.getElementById('message');
+            const sendButton = document.getElementById('send');
+
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            function sendMessage() {
+                let messageToSend = messageInput.value;
+                if (messageInput.value.trim() === '') return;
+                messageInput.value = "";
+                socket.emit('message', {'recipient_id': recipient, 'content': messageToSend});
+            }
+
+            socket.on('new_message', function(data) {
+                console.log(data);
+                const li = document.createElement("li");
+                li.innerText = `${data.sender}: ${data.content} (Sent at ${data.timestamp})`;
+                chatMessages.appendChild(li);
+            });
+        });
+    </script>
+{% endblock %}

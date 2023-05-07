@@ -4,6 +4,7 @@
         <div class="col-xl-5 d-none d-xl-block p-0 vh-100 bg-image-cover bg-no-repeat">
             <img src="{{ url_for('static', filename='assets/login-bg-2.jpg') }}" alt="">
         </div>
+
         <div class="col-xl-7 vh-100 align-items-center d-flex bg-white rounded-3 overflow-hidden">
             <div class="card shadow-none border-0 ms-auto me-auto login-card">
                 <div class="card-body rounded-0 text-left">
@@ -72,11 +73,11 @@
                             <label for="t&c" class="form-check-label font-xsss text-grey-500">Accept Term and Conditions</label>
                         </div>
 
-                        <div class="col-sm-12 p-0 text-left">
-                            <div class="form-group mb-1">
-                                {{ form.submit(class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0") }}
-                            </div>
+                        <div class="form-group mb-1">
+                            {{ form.submit(class="form-control text-center style2-input text-white fw-600 bg-dark border-0 p-0") }}
+                        </div>
 
+                        <div class="col-sm-12 p-0 text-left">
                             <h6 class="text-grey-500 font-xsss fw-500 mt-0 mb-0 lh-32">Already have account
                                 <a href="/login" class="fw-700 ms-1">Login</a>
                             </h6>

@@ -23,6 +23,7 @@ def get_post_with_votes(post_id: int):
         .join(User, Post.user_id == User.id).outerjoin(PostVote, Post.id == PostVote.post_id)
         .filter(Post.id == post_id).group_by(Post.id, User.id).first()
     )
+    print(post)
     return post
 
 
