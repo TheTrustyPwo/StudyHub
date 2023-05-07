@@ -1,10 +1,8 @@
-from flask_login import login_user, logout_user
+from sqlalchemy import func
+from sqlalchemy.orm import joinedload
 
 from app import db
 from app.models import Message, User
-
-from sqlalchemy import func
-from sqlalchemy.orm import joinedload
 
 
 def create_message(sender_id: int, recipient_id: int, content: str):
@@ -14,6 +12,7 @@ def create_message(sender_id: int, recipient_id: int, content: str):
     message = Message(sender_id=sender_id, recipient_id=recipient_id, content=content)
     message.save()
     return message
+
 
 def get_chats(sender_id: int):
     """
@@ -32,10 +31,12 @@ def get_chats(sender_id: int):
     ).join(
         subquery, User.id == subquery.c.recipient_id
     ).join(
-        Message, (Message.sender_id == sender_id) & (Message.recipient_id == subquery.c.recipient_id) & (Message.timestamp == subquery.c.last_timestamp)
+        Message, (Message.sender_id == sender_id) & (Message.recipient_id == subquery.c.recipient_id) & (
+                    Message.timestamp == subquery.c.last_timestamp)
     ).order_by(subquery.c.last_timestamp.desc()).all()
 
     return query
+
 
 def get_chat_messages(user1_id: int, user2_id: int):
     messages = Message.query.join(User, Message.sender_id == User.id).filter(

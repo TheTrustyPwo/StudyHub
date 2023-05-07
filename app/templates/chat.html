@@ -16,8 +16,9 @@
 
     <script type="text/javascript" charset="utf-8">
         $(document).ready(function() {
-            const socket = io(`${window.location.host}/messages/socket`);
-            const recipient = parseInt(window.location.pathname.split("/").slice(-1)[0]);
+            const socket = io(`${window.location.protocol}//${window.location.host}/messages/socket`);
+            const urlParams = new URLSearchParams(window.location.search)
+            const recipient = parseInt(urlParams.get('user'));
             const chatMessages = document.getElementById('chat-messages');
             const messageInput = document.getElementById('message');
             const sendButton = document.getElementById('send');
