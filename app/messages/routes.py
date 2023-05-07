@@ -1,4 +1,4 @@
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for, jsonify
 from flask_login import current_user, login_required
 from flask_socketio import emit, join_room, leave_room
 
@@ -7,42 +7,57 @@ from app.messages import messages_blueprint, messages_service
 from app.models import User
 
 
-@login_required
 @messages_blueprint.route("/messages")
+@login_required
 def messages():
-    target_id = request.args.get('user')
-    if target_id and target_id.isdigit():
-        chat_messages = messages_service.get_chat_messages(current_user.id, int(target_id))
-        return render_template("chat.html", messages=chat_messages)
-
     chats = messages_service.get_chats(current_user.id)
     return render_template("messages.html", chats=chats)
 
 
+@messages_blueprint.route("/messages/history")
 @login_required
+def messages_history():
+    target_id = request.args.get('user')
+    if target_id and target_id.isdigit():
+        chat_messages = messages_service.get_chat_messages(current_user.id, int(target_id))
+
+        serialized_messages = []
+        for message in chat_messages:
+            serialized_messages.append({
+                'id': message.id,
+                'sender': message.sender.username,
+                'recipient': message.recipient.username,
+                'content': message.content,
+                'timestamp': message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            })
+
+        return jsonify({'messages': serialized_messages})
+
+    return redirect(url_for("messages.messages"))
+
+
 @socketio.on('connect', namespace="/messages/socket")
+@login_required
 def handle_connect():
     """
     Join a room based on the user's ID
     """
     user_id = current_user.id
     join_room(user_id)
-    print(f"{current_user.username} connected")
 
 
-@login_required
 @socketio.on('disconnect', namespace="/messages/socket")
+@login_required
 def handle_disconnect():
     """
     Leave the room when the user disconnects
     """
     user_id = current_user.id
     leave_room(user_id)
-    print(f"{current_user.username} disconnected")
 
 
-@login_required
 @socketio.on('message', namespace="/messages/socket")
+@login_required
 def handle_message(payload):
     recipient_id = int(payload['recipient_id'])
     content = payload['content']
@@ -58,8 +73,5 @@ def handle_message(payload):
         "timestamp": message.timestamp.strftime('%Y-%m-%d %H:%M:%S')
     }
 
-    print(current_user.username + ": " + content)
-
     emit('new_message', response_data, room=current_user.id, json=True)
     emit('new_message', response_data, room=recipient_id, json=True)
-    print("emitted")
