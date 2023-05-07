@@ -5,6 +5,7 @@ flask_script==2.0.6
 flask-migrate==4.0.4
 flask_testing==0.8.1
 flask-socketio==5.3.4
+flask-moment==1.0.5
 pymysql==1.0.2
 pyjwt==2.6.0
 coverage==7.1.0
