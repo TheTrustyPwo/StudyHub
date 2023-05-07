@@ -18,6 +18,18 @@ def register():
     if form.validate_on_submit():
         auth_service.register_user(form.email.data, form.username.data, form.password.data)
         flash("Successfully registered.", "primary")
+
+        login_successful = auth_service.log_in_user(form.email.data, form.password.data)
+        if login_successful:
+            flash("Successfully logged in.", "primary")
+            next_location = request.args.get("next")
+
+            if next_location is None or not next_location.startswith("/"):
+                return render_template("base.html")
+
+            return redirect(next_location)
+
+        flash("Login Failed", "danger")
         return redirect(url_for("auth.login"))
 
     return render_template("register.html", form=form)
@@ -43,9 +55,9 @@ def login():
                 return render_template("base.html")
 
             return redirect(next_location)
-        else:
-            flash("Login Failed", "danger")
-            return redirect(url_for("auth.login"))
+
+        flash("Login Failed", "danger")
+        return redirect(url_for("auth.login"))
 
     return render_template("login.html", form=form)
 
