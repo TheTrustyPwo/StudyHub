@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .container {
+        display: flex;
+        height: 100vh;
+        font-family: Arial, sans-serif;
+    }
+
+    .sidebar {
+        flex: 0 0 300px;
+        background-color: #f5f5f5;
+        padding: 20px;
+        border-right: 1px solid #ccc;
+        overflow-y: auto;
+    }
+
+    .chat-section {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .chat-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .chat-item:hover {
+        background-color: #ebebeb;
+    }
+
+    .chat-item.selected {
+        background-color: #ebebeb;
+        font-weight: bold;
+    }
+
+    .chat-info {
+        flex: 1;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .chat-name {
+        font-weight: bold;
+    }
+
+    .chat-preview {
+        font-size: 14px;
+        color: #777;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .chat-messages {
+        margin-top: 20px;
+    }
+
+    .message {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .message .sender {
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+    .message .content {
+        word-break: break-word;
+    }
+
+    .message .timestamp {
+        font-size: 12px;
+        color: #999;
+        margin-left: 10px;
+    }
+
+    .message-input {
+        display: flex;
+        margin-top: 20px;
+    }
+
+    .message-input input {
+        flex: 1;
+        padding: 5px;
+    }
+
+    .message-input button {
+        padding: 5px 10px;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="container">
+    <div class="sidebar">
+        <h2>Chats</h2>
+        <ul id="chat-list">
+            {% for user in chats %}
+                <li class="chat-item" data-user-id="{{ user.id }}">
+                    <div class="chat-info">
+                        <div class="chat-name">{{ user.username }}</div>
+                        <div class="chat-preview">{{ user.content }}</div>
+                    </div>
+                    <div class="timestamp">{{ user.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="chat-section">
+        <div id="chat-header">
+            <h2 id="chat-username"></h2>
+        </div>
+        <div id="chat-messages" class="chat-messages"></div>
+
+        <div class="message-input">
+            <input type="text" id="message" placeholder="Type a message...">
+            <button id="send">Send</button>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function () {
+        const socket = io(`/messages/socket`);
+        const chatItems = document.querySelectorAll('.chat-item');
+        const chatList = document.getElementById('chat-list');
+        const chatUsername = document.getElementById('chat-username');
+        const chatMessages = document.getElementById('chat-messages');
+        const messageInput = document.getElementById('message');
+        const sendButton = document.getElementById('send');
+        let selectedChatItem = null;
+
+        chatItems.forEach(function (item) {
+            item.addEventListener('click', function () {
+                // Remove selected class from previous selected chat item
+                if (selectedChatItem) {
+                    selectedChatItem.classList.remove('selected');
+                }
+
+                // Add selected class to the clicked chat item
+                this.classList.add('selected');
+                selectedChatItem = this;
+
+                // Update the chat header with the username
+                chatUsername.innerText = this.querySelector('.chat-name').innerText;
+
+                // Clear the chat messages
+                chatMessages.innerHTML = '';
+
+                // Fetch and display the chat history
+                const userId = parseInt(this.getAttribute('data-user-id'));
+                fetch(`/messages/history?user=${userId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.messages.forEach(message => {
+                            const li = document.createElement("li");
+                            li.classList.add('message');
+                            li.innerHTML = `
+                                <span class="sender">${message.sender}</span>
+                                <span class="content">${message.content}</span>
+                                <span class="timestamp">(Sent at ${message.timestamp})</span>
+                            `;
+                            chatMessages.appendChild(li);
+                        });
+                    });
+            });
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            let messageToSend = messageInput.value;
+            if (messageInput.value.trim() === '') return;
+            messageInput.value = "";
+            socket.emit('message', { 'recipient_id': selectedChatItem.getAttribute('data-user-id'), 'content': messageToSend });
+        }
+
+        socket.on('new_message', function (data) {
+            console.log(data);
+            if (selectedChatItem && selectedChatItem.getAttribute('data-user-id') == data.sender_id || selectedChatItem.getAttribute('data-user-id') == data.recipient_id) {
+                const li = document.createElement("li");
+                li.classList.add('message');
+                li.innerHTML = `
+                    <span class="sender">${data.sender}</span>
+                    <span class="content">${data.content}</span>
+                    <span class="timestamp">(Sent at ${data.timestamp})</span>
+                `;
+                chatMessages.appendChild(li);
+            }
+        });
+    });
+</script>
+{% endblock %}
