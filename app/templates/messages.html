@@ -45,7 +45,7 @@
             chatItems.forEach(function(item) {
                 item.addEventListener('click', function() {
                     const userId = this.getAttribute('data-user-id');
-                    window.location.href = window.location.href + '/' + userId;
+                    window.location.search = `?user=${userId}`;
                 });
             });
         });
