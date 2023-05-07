@@ -40,7 +40,7 @@ def delete_post(post_id):
         return redirect(url_for("post.view_post", post_id=post_id))
     post_service.delete_post(post)
     flash("Successfully deleted post", "primary")
-    return redirect(url_for("home"))
+    return redirect(url_for("feed.home"))
 
 @post_blueprint.route("/post/<int:post_id>/upvote", methods=["POST"])
 @login_required
