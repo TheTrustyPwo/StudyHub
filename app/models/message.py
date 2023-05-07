@@ -3,11 +3,11 @@ import datetime
 from app import db
 
 
-class Post(db.Model):
+class Message(db.Model):
     """
-    Model that represents a post
+    Model that represents a message
     """
-    __tablename__ = "posts"
+    __tablename__ = "messages"
 
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -16,26 +16,26 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, nullable=False, default=datetime.datetime.utcnow)
 
     def __repr__(self):
-        return f"<Post (id='{self.id}', title='{self.title}', post='{self.post}', date_created='{self.date_created}')>"
+        return f"<Message (id='{self.id}', sender_id='{self.sender_id}', recipient_id='{self.recipient_id}', content='{self.content}, timestamp='{self.timestamp}')>"
 
-    def __init__(self, title: str, post: str, user_id: int):
-        self.title = title
-        self.post = post
-        self.user_id = user_id
+    def __init__(self, sender_id: int, recipient_id: int, content: str):
+        self.sender_id = sender_id
+        self.recipient_id = recipient_id
+        self.content = content
 
     def save(self):
         """
-        Persist the post in the database
+        Persist the message in the database
         :return
         """
         db.session.add(self)
         db.session.commit()
 
     @staticmethod
-    def get_by_id(post_id):
+    def get_by_id(message_id):
         """
-        Filter a post by id
-        :param post_id
-        :return: User or None
+        Filter a message by id
+        :param message_id
+        :return: Message or None
         """
-        return Post.query.filter_by(id=post_id).first()
+        return Message.query.filter_by(id=message_id).first()
