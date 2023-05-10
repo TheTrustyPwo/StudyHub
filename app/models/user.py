@@ -28,9 +28,8 @@ class User(db.Model, UserMixin):
     post_votes = db.relationship("PostVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
     reply_votes = db.relationship("ReplyVote", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
-    sent_messages = db.relationship('Message', foreign_keys='Message.sender_id', backref='sender', lazy='dynamic')
-    received_messages = db.relationship('Message', foreign_keys='Message.recipient_id', backref='recipient', lazy='dynamic')
-    last_read = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    messages = db.relationship('Message', foreign_keys='Message.sender_id', back_populates='sender', lazy='dynamic')
+    conversations = db.relationship('Conversation', secondary='conversation_members', back_populates='users', lazy='dynamic')
 
     def __repr__(self):
         return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"
@@ -47,6 +46,15 @@ class User(db.Model, UserMixin):
         """
         db.session.add(self)
         db.session.commit()
+
+    @property
+    def serialized(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "username": self.username,
+            "date_created": self.date_created.strftime('%Y-%m-%d %H:%M:%S')
+        }
 
     @staticmethod
     @login_manager.user_loader
