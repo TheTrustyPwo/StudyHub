@@ -34,7 +34,6 @@ class Conversation(db.Model):
     def save(self):
         """
         Persist the Conversation in the database
-        :return
         """
         db.session.add(self)
         db.session.commit()

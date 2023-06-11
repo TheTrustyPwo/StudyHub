@@ -1,24 +1,38 @@
 from sqlalchemy import func, or_, desc
 from sqlalchemy.orm import joinedload
-from typing import Tuple
+from typing import List
 
 from app import db
 from app.models import Message, User, Conversation, ConversationMember
 
 
-def get_user_conversations(user_id: int):
+def get_user_conversations(user_id: int) -> List[Conversation]:
     """
-    Retrieves conversations associated with a specific user
+    Retrieves conversations associated with a specific user.
+
+    :param user_id: The ID of the user.
+    :type user_id: int
+    :return: A list of conversations associated with the user.
+    :rtype: List[Conversation]
     """
+
     user = User.get_by_id(user_id)
-    return [] if user is None else user.conversations
+    return [] if user is None else list(user.conversations)
 
 
 def private_conversation_exists(user1_id: int, user2_id: int) -> bool:
     """
-    Checks if a private conversation exists between 2 users
-    The other of input does not matter
+    Checks if a private conversation exists between 2 users.
+    The order of input does not matter.
+
+    :param user1_id: The ID of the first user.
+    :type user1_id: int
+    :param user2_id: The ID of the second user.
+    :type user2_id: int
+    :return: True if a private conversation exists, False otherwise.
+    :rtype: bool
     """
+
     conversation = ConversationMember.query.filter_by(user_id=user1_id) \
         .filter(ConversationMember.conversation_id.in_(
             db.session.query(ConversationMember.conversation_id).filter_by(user_id=user2_id)
@@ -29,9 +43,17 @@ def private_conversation_exists(user1_id: int, user2_id: int) -> bool:
 
 def create_private_conversation(user1_id: int, user2_id: int) -> Conversation | None:
     """
-    Creates a private one to one conversation between 2 users
-    It will not have group conversation attributes such as name, description and admins
+    Creates a private one-to-one conversation between 2 users.
+    It will not have group conversation attributes such as name, description, and admins.
+
+    :param user1_id: The ID of the first user.
+    :type user1_id: int
+    :param user2_id: The ID of the second user.
+    :type user2_id: int
+    :return: The created conversation if successful, None otherwise.
+    :rtype: Conversation | None
     """
+
     if private_conversation_exists(user1_id, user2_id) or user1_id == user2_id:
         return None
 
@@ -44,12 +66,22 @@ def create_private_conversation(user1_id: int, user2_id: int) -> Conversation | 
     return conversation
 
 
-def create_group_conversation(group_name: str, user_ids: Tuple[int], admin_id: int):
+def create_group_conversation(group_name: str, user_ids: List[int], admin_id: int) -> Conversation:
     """
-    Creates a group conversation between multiple users
-    Admin ID should be the id of the user who created the group
+    Creates a group conversation between multiple users.
+    Admin ID should be the ID of the user who created the group.
+
+    :param group_name: The name of the group conversation.
+    :type group_name: str
+    :param user_ids: A list of user IDs participating in the group conversation.
+    :type user_ids: List[int]
+    :param admin_id: The ID of the admin user who created the group.
+    :type admin_id: int
+    :return: The created group conversation.
+    :rtype: Conversation
     """
-    conversation = Conversation(name=group_name, is_group=False)
+
+    conversation = Conversation(name=group_name, is_group=True)
     conversation.save()
 
     for user_id in user_ids:
@@ -59,10 +91,18 @@ def create_group_conversation(group_name: str, user_ids: Tuple[int], admin_id: i
     return conversation
 
 
-def check_user_in_conversation(user_id, conversation_id):
+def check_user_in_conversation(user_id: int, conversation_id: str) -> bool:
     """
-    Check if a user is a member of a conversation
+    Check if a user is a member of a conversation.
+
+    :param user_id: The ID of the user.
+    :type user_id: int
+    :param conversation_id: The ID of the conversation.
+    :type conversation_id: str
+    :return: True if the user is a member of the conversation, False otherwise.
+    :rtype: bool
     """
+
     # Retrieve the User and Conversation objects
     user = User.get_by_id(user_id)
     conversation = Conversation.get_by_id(conversation_id)
