@@ -34,6 +34,16 @@ class Message(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @property
+    def serialized(self):
+        return {
+            "id": self.id,
+            "sender": self.sender.serialized,
+            "conversation_id": self.conversation_id,
+            "content": self.content,
+            "timestamp": self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+        }
+
     @staticmethod
     def get_by_id(message_id):
         """
