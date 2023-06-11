@@ -38,7 +38,7 @@ def get_all_conversations():
     return jsonify({'conversations': [conv.serialized for conv in convs]})
 
 
-@conversations_api_blueprint.route('/data/<string:conversation_id>')
+@conversations_api_blueprint.route('/<string:conversation_id>', methods=['GET', ])
 @login_required
 def get_conversation(conversation_id: str):
     """
