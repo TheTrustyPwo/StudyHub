@@ -8,8 +8,10 @@ from app.auth.forms import RegisterForm, LoginForm
 @auth_blueprint.route("/register", methods=["GET", "POST"])
 def register():
     """
-    Route for registering new users. On a GET request, it returns the registration
-    form. On a POST request, it handles user registration.
+    Route for registering new users.
+
+    On a GET request, it returns the registration form.
+    On a POST request, it handles user registration.
     """
     if current_user.is_authenticated:
         return render_template("base.html")
@@ -38,8 +40,10 @@ def register():
 @auth_blueprint.route("/login", methods=["GET", "POST"])
 def login():
     """
-    Route for logging in users. On a GET request, it returns the login form. On a POST
-    request, it handles user login.
+    Route for logging in users.
+
+    On a GET request, it returns the login form.
+    On a POST request, it handles user login.
     """
     if current_user.is_authenticated:
         return render_template("base.html")
