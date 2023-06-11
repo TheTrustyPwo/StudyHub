@@ -1,5 +1,6 @@
 from flask import Blueprint
 
-user_blueprint = Blueprint("user", __name__)
+user_blueprint = Blueprint('user', __name__)
+user_api_blueprint = Blueprint('user_api', __name__, url_prefix='/api/v1/users')
 
-from flaskeddit.user import routes
+from app.users import routes, api
