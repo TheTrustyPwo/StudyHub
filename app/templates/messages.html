@@ -128,7 +128,7 @@
 
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
-        const socket = io(`/messages/socket`);
+        const socket = io.connect(`/messages/socket`, {rememberTransport: false});
         const chatItems = document.querySelectorAll('.chat-item');
         const chatList = document.getElementById('chat-list');
         const chatUsername = document.getElementById('chat-username');
@@ -137,41 +137,68 @@
         const sendButton = document.getElementById('send');
         let selectedChatItem = null;
 
-        chatItems.forEach(function (item) {
-            item.addEventListener('click', function () {
-                // Remove selected class from previous selected chat item
-                if (selectedChatItem) {
-                    selectedChatItem.classList.remove('selected');
+        const chatList = document.getElementById('chat-list');
+        fetch('/api/v1/conversations/data/all')
+            .then(response => response.json())
+            .then(data => data.conversations.forEach(chat => {
+                const item = document.createElement('li');
+                item.classList.add('chat-item');
+                item.setAttribute('data-chat-id', chat.id);
+
+                let name = chat.name;
+                if (!chat.is_group) {
+                    name = chat.users[0].id === {{ current_user.id }} ? chat.users[1].username : chat.users[0].username;
                 }
 
-                // Add selected class to the clicked chat item
-                this.classList.add('selected');
-                selectedChatItem = this;
-
-                // Update the chat header with the username
-                chatUsername.innerText = this.querySelector('.chat-name').innerText;
-
-                // Clear the chat messages
-                chatMessages.innerHTML = '';
-
-                // Fetch and display the chat history
-                const userId = parseInt(this.getAttribute('data-user-id'));
-                fetch(`/messages/history?user=${userId}`)
+                fetch(`/api/v1/conversations/history/${chat.id}`)
                     .then(response => response.json())
-                    .then(data => {
-                        data.messages.forEach(message => {
-                            const li = document.createElement("li");
-                            li.classList.add('message');
-                            li.innerHTML = `
-                                <span class="sender">${message.sender}</span>
-                                <span class="content">${message.content}</span>
-                                <span class="timestamp">(Sent at ${message.timestamp})</span>
-                            `;
-                            chatMessages.appendChild(li);
-                        });
+                    .then(history => {
+                        if (history.messages.length === 0) {
+                            item.innerHTML =
+                                `<div class='chat-info'>
+                                    <div class='chat-name'>${name}</div>
+                                    <div class='chat-preview'></div>
+                                    <div class='timestamp'></div>
+                                </div>`;
+                        } else {
+                            const latestMessage = history.messages[history.messages.length - 1];
+                            item.innerHTML =
+                                `<div class='chat-info'>
+                                    <div class='chat-name'>${name}</div>
+                                    <div class='chat-preview'>${latestMessage.content}</div>
+                                    <div class='timestamp'>${moment.utc(latestMessage.timestamp).local().calendar()}</div>
+                                </div>`;
+                        }
+                        chatList.appendChild(item);
                     });
-            });
-        });
+
+                item.addEventListener('click', function () {
+                    // Remove selected class from previous selected chat item
+                    if (selectedChatItem) {
+                        selectedChatItem.classList.remove('selected');
+                    }
+
+                    // Add selected class to the clicked chat item
+                    this.classList.add('selected');
+                    selectedChatItem = this;
+
+                    // Update the chat header with the username
+                    chatUsername.innerText = this.querySelector('.chat-name').innerText;
+
+                    // Clear the chat messages
+                    chatMessages.innerHTML = '';
+
+                    // Fetch and display the chat history
+                    fetch(`/api/v1/conversations/history/${chat.id}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            data.messages.forEach(message => {
+                                chatMessages.appendChild(createMessageElement(message))
+                            });
+                        });
+                });
+            }))
+
 
         sendButton.addEventListener('click', sendMessage);
         messageInput.addEventListener('keypress', function (event) {
@@ -184,20 +211,24 @@
             let messageToSend = messageInput.value;
             if (messageInput.value.trim() === '') return;
             messageInput.value = "";
-            socket.emit('message', { 'recipient_id': selectedChatItem.getAttribute('data-user-id'), 'content': messageToSend });
+            socket.emit('message', { 'conversation_id': selectedChatItem.getAttribute('data-chat-id'), 'content': messageToSend });
+        }
+
+        function createMessageElement(message) {
+            const li = document.createElement("li");
+            li.classList.add('message');
+            li.innerHTML = `
+                <span class="sender">${message.sender.username}</span>
+                <span class="content">${message.content}</span>
+                <span class="timestamp">(${moment.utc(message.timestamp).local().calendar()})</span>
+            `;
+            return li;
         }
 
         socket.on('new_message', function (data) {
             console.log(data);
-            if (selectedChatItem && selectedChatItem.getAttribute('data-user-id') == data.sender_id || selectedChatItem.getAttribute('data-user-id') == data.recipient_id) {
-                const li = document.createElement("li");
-                li.classList.add('message');
-                li.innerHTML = `
-                    <span class="sender">${data.sender}</span>
-                    <span class="content">${data.content}</span>
-                    <span class="timestamp">(Sent at ${data.timestamp})</span>
-                `;
-                chatMessages.appendChild(li);
+            if (selectedChatItem && selectedChatItem.getAttribute('data-chat-id') === data.conversation_id) {
+                chatMessages.appendChild(createMessageElement(data))
             }
         });
     });
