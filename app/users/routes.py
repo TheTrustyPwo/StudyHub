@@ -7,6 +7,6 @@ def view_user(username: str):
     """
     Route displaying a user's profile page
     """
-    user = User.get_by_username(username)
+    user = User.query.filter_by(username=username).first_or_404()
     return user.username
     # return render_template("user.html", user=user)
