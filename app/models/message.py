@@ -11,16 +11,19 @@ class Message(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     sender_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    recipient_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    conversation_id = db.Column(db.String(36), db.ForeignKey('conversations.id'))
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, index=True, nullable=False, default=datetime.datetime.utcnow)
 
-    def __repr__(self):
-        return f"<Message (id='{self.id}', sender_id='{self.sender_id}', recipient_id='{self.recipient_id}', content='{self.content}, timestamp='{self.timestamp}')>"
+    sender = db.relationship('User', back_populates='messages')
+    conversation = db.relationship('Conversation', back_populates='messages')
 
-    def __init__(self, sender_id: int, recipient_id: int, content: str):
+    def __repr__(self):
+        return f"<Message (id='{self.id}', sender='{self.sender_id}', conversation='{self.conversation_id}', content='{self.content})>"
+
+    def __init__(self, sender_id: int, conversation_id: str, content: str):
         self.sender_id = sender_id
-        self.recipient_id = recipient_id
+        self.conversation_id = conversation_id
         self.content = content
 
     def save(self):
