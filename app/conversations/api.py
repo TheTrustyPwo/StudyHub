@@ -65,11 +65,22 @@ def get_conversation(conversation_id: str):
 @conversations_api_blueprint.route('/history/<string:conversation_id>')
 @login_required
 def get_conversation_history(conversation_id: str):
+    """
+    Get the history of a specific conversation by its ID.
+
+    :param conversation_id: The ID of the conversation.
+    :type conversation_id: str
+    :return: A JSON response containing the serialized messages of the conversation.
+    :rtype: flask.Response
+    :raises 404: If the conversation with the given ID is not found.
+    :raises 401: If the current user is not a participant in the conversation.
+    """
+
     conversation = Conversation.get_by_id(conversation_id)
-    if conversation is None:
-        abort(404, 'That conversation does not exist!')
+    if not conversation:
+        raise NotFound(message='Conversation not found')
 
     if not conversation_services.check_user_in_conversation(current_user.id, conversation_id):
-        abort(401, 'You are not in this conversation, and therefore cannot view its data')
+        raise Unauthorized(message='You are not in this conversation, and therefore cannot view its data')
 
     return jsonify({'messages': [message.serialized for message in conversation.messages]})
