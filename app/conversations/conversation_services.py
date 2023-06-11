@@ -1,6 +1,6 @@
 from sqlalchemy import func, or_, desc
 from sqlalchemy.orm import joinedload
-from typing import List
+from typing import List, Union
 
 from app import db
 from app.models import Message, User, Conversation, ConversationMember
@@ -41,7 +41,7 @@ def private_conversation_exists(user1_id: int, user2_id: int) -> bool:
     return conversation is not None
 
 
-def create_private_conversation(user1_id: int, user2_id: int) -> Conversation | None:
+def create_private_conversation(user1_id: int, user2_id: int) -> Union[Conversation, None]:
     """
     Creates a private one-to-one conversation between 2 users.
     It will not have group conversation attributes such as name, description, and admins.
