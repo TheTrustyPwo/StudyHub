@@ -10,9 +10,9 @@ class RegisterForm(FlaskForm):
     Form for registering a new user
     """
 
-    username = StringField("Username", validators=[DataRequired()])
-    email = StringField("Email", validators=[DataRequired()])
-    password = PasswordField(
+    username: StringField = StringField("Username", validators=[DataRequired()])
+    email: StringField = StringField("Email", validators=[DataRequired()])
+    password: PasswordField = PasswordField(
         "Password",
         validators=[
             DataRequired(),
@@ -20,10 +20,10 @@ class RegisterForm(FlaskForm):
             Length(min=6),
         ],
     )
-    confirm_password = PasswordField("Confirm Password", validators=[DataRequired()])
-    submit = SubmitField("Register")
+    confirm_password: PasswordField = PasswordField("Confirm Password", validators=[DataRequired()])
+    submit: SubmitField = SubmitField("Register")
 
-    def validate_email(self, email):
+    def validate_email(self, email: StringField):
         """
         Validates that the email has not already been registered
         """
@@ -31,7 +31,7 @@ class RegisterForm(FlaskForm):
         if user is not None:
             raise ValidationError("Email is already registered.")
 
-    def validate_username(self, username):
+    def validate_username(self, username: StringField):
         """
         Validates that the provided username does not already exist in the database
         """
@@ -45,6 +45,6 @@ class LoginForm(FlaskForm):
     Form for logging in a user
     """
 
-    email = StringField("Email", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    submit = SubmitField("Login")
+    email: StringField = StringField("Email", validators=[DataRequired()])
+    password: PasswordField = PasswordField("Password", validators=[DataRequired()])
+    submit: SubmitField = SubmitField("Login")
