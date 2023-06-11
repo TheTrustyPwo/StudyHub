@@ -100,17 +100,9 @@
 <div class="container">
     <div class="sidebar">
         <h2>Chats</h2>
-        <ul id="chat-list">
-            {% for user in chats %}
-                <li class="chat-item" data-user-id="{{ user.id }}">
-                    <div class="chat-info">
-                        <div class="chat-name">{{ user.username }}</div>
-                        <div class="chat-preview">{{ user.content }}</div>
-                    </div>
-                    <div class="timestamp">{{ user.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</div>
-                </li>
-            {% endfor %}
-        </ul>
+        <ul id="chat-list"></ul>
+        <button id="create-conversation">Create Conversation</button>
+        <button id="create-group-conversation">Create Group</button>
     </div>
 
     <div class="chat-section">
@@ -130,7 +122,6 @@
     $(document).ready(function () {
         const socket = io.connect(`/messages/socket`, {rememberTransport: false});
         const chatItems = document.querySelectorAll('.chat-item');
-        const chatList = document.getElementById('chat-list');
         const chatUsername = document.getElementById('chat-username');
         const chatMessages = document.getElementById('chat-messages');
         const messageInput = document.getElementById('message');
@@ -231,6 +222,67 @@
                 chatMessages.appendChild(createMessageElement(data))
             }
         });
+
+        const createConversationButton = document.getElementById('create-conversation');
+        createConversationButton.addEventListener('click', function () {
+            const targetUserId = prompt('Enter the user ID to create a conversation with:');
+            if (!targetUserId) return;
+
+            const data = {
+                target: targetUserId
+            };
+
+            fetch('/api/v1/conversations/private/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response, e.g., update the chat list
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error(error);
+            });
+        });
+
+        const createGroupConversationButton = document.getElementById('create-group-conversation');
+        createGroupConversationButton.addEventListener('click', function () {
+            const groupName = prompt('Enter the group name:');
+            if (!groupName) return;
+
+            const userIDsString = prompt('Enter the user IDs (comma-separated) for the group members:');
+            if (!userIDsString) return;
+
+            const userIDs = userIDsString.split(',').map(id => id.trim());
+
+            const data = {
+                name: groupName,
+                users: userIDs
+            };
+
+            fetch('/api/v1/conversations/group/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response, e.g., update the chat list
+                console.log(data);
+            })
+            .catch(error => {
+                // Handle any errors
+                console.error(error);
+            });
+        });
+
     });
 </script>
 {% endblock %}
