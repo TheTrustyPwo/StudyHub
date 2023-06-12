@@ -187,6 +187,8 @@
                                 chatMessages.appendChild(createMessageElement(message))
                             });
                         });
+
+                    socket.emit('read_conversation', { 'conversation_id': selectedChatItem.getAttribute('data-chat-id') })
                 });
             }))
 
@@ -207,20 +209,39 @@
 
         function createMessageElement(message) {
             const li = document.createElement("li");
+            li.id = message.id.toLocaleString();
             li.classList.add('message');
             li.innerHTML = `
                 <span class="sender">${message.sender.username}</span>
                 <span class="content">${message.content}</span>
                 <span class="timestamp">(${moment.utc(message.timestamp).local().calendar()})</span>
+                <span>READ: ${message.readByAll}</span>
             `;
             return li;
+        }
+
+        function updateMessageElement(message) {
+            const element = document.getElementById(message.id.toLocaleString());
+            if (element === undefined) return;
+            element.innerHTML = `
+                <span class="sender">${message.sender.username}</span>
+                <span class="content">${message.content}</span>
+                <span class="timestamp">(${moment.utc(message.timestamp).local().calendar()})</span>
+                <span>READ: ${message.readByAll}</span>
+            `;
         }
 
         socket.on('new_message', function (data) {
             console.log(data);
             if (selectedChatItem && selectedChatItem.getAttribute('data-chat-id') === data.conversation_id) {
-                chatMessages.appendChild(createMessageElement(data))
+                chatMessages.appendChild(createMessageElement(data));
+                socket.emit('read_message', { 'message_id': data.id });
             }
+        });
+
+        socket.on('bluetick', function (data) {
+           console.log(data);
+           data.forEach(d => updateMessageElement(d));
         });
 
         const createConversationButton = document.getElementById('create-conversation');
