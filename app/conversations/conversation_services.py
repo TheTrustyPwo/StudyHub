@@ -3,7 +3,7 @@ from sqlalchemy.orm import joinedload
 from typing import List, Union
 
 from app import db
-from app.models import Message, User, Conversation, ConversationMember
+from app.models import Message, User, Conversation, ConversationMember, ReadMessage
 
 
 def get_user_conversations(user_id: int) -> List[Conversation]:
@@ -18,6 +18,32 @@ def get_user_conversations(user_id: int) -> List[Conversation]:
 
     user = User.get_by_id(user_id)
     return [] if user is None else list(user.conversations)
+
+
+def read_conversation(user_id: int, conversation_id: str):
+    # Get the conversation by its ID
+    conversation = Conversation.get_by_id(conversation_id)
+
+    if conversation is None:
+        # Conversation not found
+        return
+
+    # Retrieve all unread messages in the conversation for the user
+    unread_messages = db.session.query(Message). \
+        filter(Message.conversation_id == conversation_id). \
+        filter(~Message.read_users.any(user_id=user_id)). \
+        all()
+
+    # Create a list of ReadMessage objects to be inserted
+    read_messages = [ReadMessage(message_id=message.id, user_id=user_id) for message in unread_messages]
+
+    # Bulk insert the ReadMessage objects
+    db.session.bulk_save_objects(read_messages)
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    return read_messages
 
 
 def private_conversation_exists(user1_id: int, user2_id: int) -> bool:
