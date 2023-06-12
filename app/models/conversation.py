@@ -10,7 +10,7 @@ class Conversation(db.Model):
     """
     __tablename__ = "conversations"
 
-    id = db.Column(db.String(36), primary_key=True, default=str(uuid.uuid4()))
+    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(36), nullable=True)
     description = db.Column(db.String(1024), nullable=True)
     date_created = db.Column(db.DateTime, index=True, nullable=False, default=datetime.datetime.utcnow)
