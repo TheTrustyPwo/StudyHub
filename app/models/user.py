@@ -30,6 +30,7 @@ class User(db.Model, UserMixin):
 
     messages = db.relationship('Message', foreign_keys='Message.sender_id', back_populates='sender', lazy='dynamic')
     conversations = db.relationship('Conversation', secondary='conversation_members', back_populates='users', lazy='dynamic')
+    read_messages = db.relationship('ReadMessage', foreign_keys='ReadMessage.user_id', back_populates='user', lazy='dynamic')
 
     def __repr__(self):
         return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"
