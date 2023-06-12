@@ -129,7 +129,7 @@
         let selectedChatItem = null;
 
         const chatList = document.getElementById('chat-list');
-        fetch('/api/v1/conversations/data/all')
+        fetch('/api/v1/conversations/all')
             .then(response => response.json())
             .then(data => data.conversations.forEach(chat => {
                 const item = document.createElement('li');
@@ -232,7 +232,7 @@
                 target: targetUserId
             };
 
-            fetch('/api/v1/conversations/private/create', {
+            fetch('/api/v1/conversations/new/private', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -265,7 +265,7 @@
                 users: userIDs
             };
 
-            fetch('/api/v1/conversations/group/create', {
+            fetch('/api/v1/conversations/new/group', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

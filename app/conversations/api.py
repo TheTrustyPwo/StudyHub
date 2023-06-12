@@ -8,7 +8,7 @@ from app.exceptions import BadRequest, Unauthorized, NotFound, Conflict
 from app.models import User, Conversation
 
 
-@conversations_api_blueprint.route('/data/all')
+@conversations_api_blueprint.route('/all')
 @login_required
 def get_all_conversations():
     """
@@ -86,7 +86,7 @@ def get_conversation_history(conversation_id: str):
     return jsonify({'messages': [message.serialized for message in conversation.messages]})
 
 
-@conversations_api_blueprint.route('/private/create', methods=['POST', ])
+@conversations_api_blueprint.route('/new/private', methods=['POST', ])
 @login_required
 def create_private_conversation():
     """
@@ -117,7 +117,7 @@ def create_private_conversation():
     return jsonify(conversation.serialized)
 
 
-@conversations_api_blueprint.route('/group/create', methods=['POST', ])
+@conversations_api_blueprint.route('/new/group', methods=['POST', ])
 @login_required
 def create_group_conversation():
     """
