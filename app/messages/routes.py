@@ -5,12 +5,18 @@ from flask_socketio import emit, join_room, leave_room
 from app import socketio
 from app.conversations import conversation_services
 from app.messages import messages_blueprint, messages_service
-from app.models import User, Conversation
+from app.models import User, Conversation, Message, ReadMessage
 
 
 @messages_blueprint.route("/messages")
 @login_required
 def messages():
+    """
+    Render the messages template.
+
+    :return: Rendered messages template.
+    :rtype: flask.Response
+    """
     return render_template("messages.html")
 
 
@@ -18,7 +24,9 @@ def messages():
 @login_required
 def handle_connect():
     """
-    Join a room based on the user's ID
+    Handle the user connection event.
+
+    Join a room based on the user's ID.
     """
     user_id = current_user.id
     join_room(user_id)
@@ -28,7 +36,9 @@ def handle_connect():
 @login_required
 def handle_disconnect():
     """
-    Leave the room when the user disconnects
+    Handle the user disconnection event.
+
+    Leave the room when the user disconnects.
     """
     user_id = current_user.id
     leave_room(user_id)
@@ -37,6 +47,14 @@ def handle_disconnect():
 @socketio.on('message', namespace="/messages/socket")
 @login_required
 def handle_message(payload):
+    """
+    Handle the message event.
+
+    Create a new message and emit it to the appropriate users in the conversation.
+
+    :param payload: The message payload containing conversation ID and content.
+    :type payload: dict
+    """
     conversation_id = payload['conversation_id']
     content = payload['content']
 
@@ -45,3 +63,52 @@ def handle_message(payload):
 
     for user in conversation.users:
         emit('new_message', message.serialized, room=user.id, json=True)
+
+
+@socketio.on('read_message', namespace='/messages/socket')
+@login_required
+def handle_read_message(payload):
+    """
+    Handle the read message event.
+
+    Mark a message as read by the current user and emit the bluetick event
+    to the conversation users if all members have read the message.
+
+    :param payload: The read message payload containing the message ID.
+    :type payload: dict
+    """
+    message_id = payload['message_id']
+
+    message = Message.get_by_id(message_id)
+    read_message_data = messages_service.read_message(message_id, current_user.id)
+
+    if not read_message_data.message.read_by_all:
+        return
+
+    for user in message.conversation.users:
+        emit('bluetick', [read_message_data.message.serialized], room=user.id, json=True)
+
+
+@socketio.on('read_conversation', namespace='/messages/socket')
+@login_required
+def handle_read_conversation(payload):
+    """
+    Handle the read conversation event.
+
+    Mark all messages in a conversation as read by the current user and
+    emit the bluetick event to the conversation users if all members have read the message.
+
+    :param payload: The read conversation payload containing the conversation ID.
+    :type payload: dict
+    """
+    conversation_id = payload['conversation_id']
+
+    conversation = Conversation.get_by_id(conversation_id)
+    read_messages_data = conversation_services.read_conversation(current_user.id, conversation_id)
+    emit_data = [data.message.serialized for data in read_messages_data if data.message.read_by_all]
+
+    if not emit_data:
+        return
+
+    for user in conversation.users:
+        emit('bluetick', emit_data, room=user.id, json=True)
