@@ -113,9 +113,15 @@ def handle_read_conversation(payload):
     """
     conversation_id = payload['conversation_id']
 
+    if not conversation_id:
+        raise BadRequest(message='conversation_id is not specified in payload')
+
     conversation = Conversation.get_by_id(conversation_id)
+    if current_user not in conversation.users:
+        raise Unauthorized(message='User cannot read conversation it is not part of')
+
     read_messages_data = conversation_services.read_conversation(current_user.id, conversation_id)
-    emit_data = [data.message.serialized for data in read_messages_data if data.message.read_by_all]
+    emit_data = [data.message.id for data in read_messages_data if data.message.read_by_all]
 
     if not emit_data:
         return
