@@ -1,4 +1,6 @@
-from flask import render_template, request, redirect, url_for, jsonify
+from typing import Type
+
+from flask import render_template
 from flask_login import current_user, login_required
 from flask_socketio import emit, join_room, leave_room
 
