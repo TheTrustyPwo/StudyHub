@@ -86,6 +86,9 @@ def handle_read_message(payload):
     """
     message_id = payload['message_id']
 
+    if not message_id:
+        raise BadRequest(message='message_id is not specified in payload')
+
     message = Message.get_by_id(message_id)
     read_message_data = messages_service.read_message(message_id, current_user.id)
 
@@ -93,7 +96,7 @@ def handle_read_message(payload):
         return
 
     for user in message.conversation.users:
-        emit('bluetick', [read_message_data.message.serialized], room=user.id, json=True)
+        emit('bluetick', [read_message_data.message.id], room=user.id, json=True)
 
 
 @socketio.on('read_conversation', namespace='/messages/socket')
