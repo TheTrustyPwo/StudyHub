@@ -54,7 +54,7 @@ class User(db.Model, UserMixin):
             "id": self.id,
             "email": self.email,
             "username": self.username,
-            "date_created": self.date_created.strftime('%Y-%m-%d %H:%M:%S')
+            "dateCreated": self.date_created.strftime('%Y-%m-%d %H:%M:%S')
         }
 
     @staticmethod
@@ -80,7 +80,7 @@ class User(db.Model, UserMixin):
         """
         Check a user by their email address
         :param email:
-        :return:
+        :return: User or None
         """
         return User.query.filter_by(email=email).first()
 
@@ -89,7 +89,7 @@ class User(db.Model, UserMixin):
         """
         Check a user by their username
         :param username:
-        :return:
+        :return: User of None
         """
         return User.query.filter_by(username=username).first()
 
