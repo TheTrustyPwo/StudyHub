@@ -21,6 +21,21 @@ def messages():
     return render_template("messages.html")
 
 
+@socketio.on_error(namespace='/messages/socket')
+@login_required
+def error_handler(error: Type[Exception]):
+    """
+    Handles API exceptions only by emitting an error event to the current user
+
+    :param error: Error that is being handled
+    :type error: Exception
+    """
+    if not isinstance(error, type(APIException)):
+        return
+
+    emit('error', error.to_dict(), room=current_user.id, json=True)
+
+
 @socketio.on('connect', namespace="/messages/socket")
 @login_required
 def handle_connect():
