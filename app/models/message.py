@@ -50,13 +50,22 @@ class Message(db.Model):
     @property
     def serialized(self):
         return {
-            "id": self.id,
-            "sender": self.sender.serialized,
-            "conversation_id": self.conversation_id,
-            "content": self.content,
-            "readBy": [data.serialized for data in self.read_users],
-            "readByAll": self.read_by_all,
-            "timestamp": self.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+            'id': self.id,
+            'senderId': self.sender_id,
+            'conversationId': self.conversation_id,
+            'content': self.content,
+            'readUserIds': [data.user.id for data in self.read_users],
+            'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+        }
+
+    @property
+    def serialized_min(self):
+        return {
+            'id': self.id,
+            'senderId': self.sender_id,
+            'content': self.content,
+            'readUserIds': [data.user.id for data in self.read_users],
+            'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
         }
 
     @staticmethod
