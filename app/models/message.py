@@ -34,6 +34,13 @@ class Message(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def delete(self):
+        """
+        Delete the message from the database
+        """
+        db.session.delete(self)
+        db.session.commit()
+
     @property
     def read_by_all(self) -> bool:
         """
