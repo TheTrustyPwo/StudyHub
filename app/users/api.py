@@ -6,7 +6,7 @@ from app.exceptions import NotFound
 from app.users import user_api_blueprint, user_service
 
 
-@user_api_blueprint.route("/current_user")
+@user_api_blueprint.route("/current")
 def get_current_user():
     """
     Retrieve current user data, usually used by AJAX requests
