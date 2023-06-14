@@ -128,3 +128,61 @@ def handle_read_conversation(payload):
 
     for user in conversation.users:
         emit('bluetick', emit_data, room=user.id, json=True)
+
+
+@socketio.on('edit_message', namespace='/messages/socket')
+@login_required
+def handle_edit_message(payload: dict):
+    """
+    Handle the edit message event.
+
+    Edit a message content if the user is the message sender,
+    and emit the edited message to the conversation users.
+
+    :param payload: The edit message payload containing the message ID and new content.
+    :type payload: dict
+    """
+    message_id = payload['message_id']
+    new_content = payload['new_content']
+
+    if not message_id:
+        raise BadRequest(message='message_id is not specified in payload')
+
+    if not new_content:
+        raise BadRequest(message='new_content is not specified in payload')
+
+    message = Message.get_by_id(message_id)
+    if message.sender_id != current_user.id:
+        raise Unauthorized(message='User cannot edit messages of other users')
+
+    message.content = new_content
+    message.save()
+
+    for user in message.conversation.users:
+        emit('edit', {'id': message.id, 'content': message.content}, room=user.id, json=True)
+
+
+@socketio.on('delete_message', namespace='/messages/socket')
+@login_required
+def handle_delete_message(payload: dict):
+    """
+    Handle the delete message event.
+
+    Delete a message if the user is the message sender,
+    and emit the deleted message ID to the conversation users.
+
+    :param payload: The delete message payload containing the message ID.
+    :type payload: dict
+    """
+    message_id = payload['message_id']
+    if not message_id:
+        raise BadRequest(message='message_id is not specified in payload')
+
+    message = Message.get_by_id(message_id)
+    if message.sender_id != current_user.id:
+        raise Unauthorized(message='User cannot delete messages of other users')
+
+    message.delete()
+
+    for user in message.conversation.users:
+        emit('delete', {'id': message_id}, room=user.id, json=True)
