@@ -4,8 +4,9 @@ from flask_socketio import emit, join_room, leave_room
 
 from app import socketio
 from app.conversations import conversation_services
+from app.exceptions import APIException, Unauthorized, BadRequest
 from app.messages import messages_blueprint, messages_service
-from app.models import User, Conversation, Message, ReadMessage
+from app.models import Conversation, Message
 
 
 @messages_blueprint.route("/messages")
@@ -57,6 +58,12 @@ def handle_message(payload):
     """
     conversation_id = payload['conversation_id']
     content = payload['content']
+
+    if not conversation_id:
+        raise BadRequest(message='conversation_id is not specified in payload')
+
+    if not content:
+        raise BadRequest(message='content is not specified in payload')
 
     message = messages_service.create_message(current_user.id, conversation_id, content)
     conversation = Conversation.get_by_id(conversation_id)
