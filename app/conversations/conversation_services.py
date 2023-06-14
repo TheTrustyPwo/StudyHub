@@ -21,7 +21,6 @@ def get_user_conversations(user_id: int) -> List[Conversation]:
 
 
 def read_conversation(user_id: int, conversation_id: str):
-    # Get the conversation by its ID
     conversation = Conversation.get_by_id(conversation_id)
 
     if conversation is None:
@@ -34,13 +33,14 @@ def read_conversation(user_id: int, conversation_id: str):
         filter(~Message.read_users.any(user_id=user_id)). \
         all()
 
+    if not unread_messages:
+        return
+
     # Create a list of ReadMessage objects to be inserted
-    read_messages = [ReadMessage(message_id=message.id, user_id=user_id) for message in unread_messages]
+    read_messages = [ReadMessage(message_id=message.id, user_id=user_id) for message in list(unread_messages)]
 
-    # Bulk insert the ReadMessage objects
-    db.session.bulk_save_objects(read_messages)
-
-    # Commit the changes to the database
+    # Commit all the ReadMessage objects
+    db.session.add_all(read_messages)
     db.session.commit()
 
     return read_messages
