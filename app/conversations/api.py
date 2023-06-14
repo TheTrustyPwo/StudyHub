@@ -35,7 +35,7 @@ def get_all_conversations():
 
     convs = conversation_services.get_user_conversations(current_user.id)
     convs.sort(key=lambda conv: last_update(conv), reverse=True)
-    return jsonify({'conversations': [conv.serialized for conv in convs]})
+    return jsonify([conv.serialized for conv in convs])
 
 
 @conversations_api_blueprint.route('/<string:conversation_id>', methods=['GET', ])
@@ -83,7 +83,10 @@ def get_conversation_history(conversation_id: str):
     if not conversation_services.check_user_in_conversation(current_user.id, conversation_id):
         raise Unauthorized(message='You are not in this conversation, and therefore cannot view its data')
 
-    return jsonify({'messages': [message.serialized for message in conversation.messages]})
+    onlyGetMessageIds = request.args.get('onlyGetId', default='false').lower() == 'true'
+    if onlyGetMessageIds:
+        return jsonify([message.id for message in conversation.messages])
+    return jsonify([message.serialized_min for message in conversation.messages])
 
 
 @conversations_api_blueprint.route('/new/private', methods=['POST', ])
