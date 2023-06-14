@@ -44,9 +44,9 @@ class Conversation(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
-            "is_group": self.is_group,
-            "date_created": self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
-            "users": [user.serialized for user in self.users]
+            "isGroup": self.is_group,
+            "dateCreated": self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
+            "userIds": [user.id for user in self.users]
         }
 
     @staticmethod
