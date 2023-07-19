@@ -1,4 +1,5 @@
 from app.models import User
+from flask import render_template
 from app.users import user_blueprint, user_service
 
 
@@ -8,5 +9,4 @@ def view_user(username: str):
     Route displaying a user's profile page
     """
     user = User.query.filter_by(username=username).first_or_404()
-    return user.username
-    # return render_template("user.html", user=user)
+    return render_template("user.html", user=user)
