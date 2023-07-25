@@ -3,8 +3,8 @@
 <head>
     <style>
         #pfp {
-            width: 100px;
-            height: 100px;
+            width: 100px; /* Adjusted width of profile picture */
+            height: 100px; /* Adjusted height of profile picture */
             border-radius: 50%;
             background-repeat: no-repeat;
             background-position: center center;
@@ -15,14 +15,14 @@
 <div class="page-content page-container" id="page-content">
     <div class="padding1 text-center"> <!-- Added text-center class here -->
         <div class="row container d-flex justify-content-center mx-auto">
-            <div class="col-xl-6 col-md-12">
+            <div class="col-xl-8 col-md-10">
                 <div class="card1 user-card-full w-100"> <!-- Added w-100 class here -->
                     <div class="row m-l-0 m-r-0">
                         <div class="col-sm-4 bg-c-lite-green user-profile">
                             <div class="card-block text-center text-white">
                                 <div class="m-b-25">
                                     <img alt="" id="pfp"
-                                         src="{{ url_for('static', filename='assets/notsexygirl.jpg') }}">
+                                         src="{{ url_for('static', filename='assets/pwo.png') }}">
                                 </div>
                                 <h6 class="f-w-600" id="username"></h6>
                                 <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
@@ -36,13 +36,17 @@
                                         <p class="m-b-10 f-w-600">Date Joined</p>
                                         <h6 class="text-muted f-w-400" id="datecreated"></h6>
                                     </div>
+                                    <div class="col-sm-6">
+                                        <p class="m-b-10 f-w-600">Email</p>
+                                        <h6 class="text-muted f-w-400" id="email"></h6>
+                                    </div>
                                 </div>
                             </div>
-                            <br>
-                            <br>
                             <div>
                                 <button class="btn btn-primary" id="message" type="button">Message</button>
                             </div>
+                            <br>
+                            <br>
                         </div>
                     </div>
                 </div>
