@@ -33,6 +33,17 @@ class Reply(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @property
+    def serialized(self):
+        return {
+            'id': self.id,
+            'reply': self.reply,
+            'authorId': self.user_id,
+            'postId': self.post_id,
+            'timestamp': self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
+            'votes': [vote.serialized for vote in self.reply_votes]
+        }
+
     @staticmethod
     def get_by_id(reply_id):
         """
