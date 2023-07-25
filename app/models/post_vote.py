@@ -28,6 +28,13 @@ class PostVote(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @property
+    def serialized(self):
+        return {
+            'vote': self.vote,
+            'userId': self.user_id
+        }
+
     @staticmethod
     def get_by_id(post_vote_id):
         """

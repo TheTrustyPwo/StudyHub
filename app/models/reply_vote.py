@@ -22,11 +22,18 @@ class ReplyVote(db.Model):
 
     def save(self):
         """
-        Persist the post vote in the database
+        Persist the reply vote in the database
         :return
         """
         db.session.add(self)
         db.session.commit()
+
+    @property
+    def serialized(self):
+        return {
+            'vote': self.vote,
+            'userId': self.user_id
+        }
 
     @staticmethod
     def get_by_id(reply_vote_id):
