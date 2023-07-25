@@ -36,6 +36,17 @@ class Post(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    @property
+    def serialized(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'body': self.post,
+            'authorId': self.user_id,
+            'timestamp': self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
+            'votes': [vote.serialized for vote in self.post_votes]
+        }
+
     @staticmethod
     def get_by_id(post_id):
         """
