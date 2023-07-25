@@ -57,6 +57,18 @@ class User {
 
         return User.fromJson(userData);
     }
+
+    /**
+     * Get a user by username
+     * @param {string} username - The username of the user to retrieve
+     * @returns {User} - The retrieved User object
+     */
+    static async getByUsername(username) {
+        const response = await fetch(`/api/v1/users/${username}`);
+        const userData = await response.json();
+
+        return User.fromJson(userData);
+    }
 }
 
 export default User;

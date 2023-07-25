@@ -5,6 +5,7 @@ $(document).ready(async function () {
     const user = await User.getByUsername(username);
     document.getElementById('username').innerText = user.username;
     document.getElementById('datecreated').innerText = user.dateCreated;
+    document.getElementById('email').innerText = user.email;
     const current = await User.getCurrent();
     const message = document.getElementById('message');
     message.style.visibility = 'hidden';
