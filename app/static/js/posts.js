@@ -78,6 +78,7 @@ $(document).ready(async function () {
         const userVote = reply.votes.find(vote => vote.userId === currentUser.id)?.vote || 0;
         const element = document.createElement('div');
         element.id = reply.id;
+        element.setAttribute('data-reply-id', reply.id);
         element.classList.add('card', 'mb-2');
 
         element.innerHTML =
