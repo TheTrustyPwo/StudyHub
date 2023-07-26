@@ -37,7 +37,7 @@
         }
 
         .redbutton {
-            background-color: #FF0000;
+            background-color: #FF1A1A;
             border: none;
             color: white;
             padding: 4px 24px;
@@ -48,14 +48,14 @@
             font-weight: bold;
             border-radius: 20px;
             cursor: pointer;
-            width: 40%;
+            width: 40%
             position: absolute;
             bottom: 10px;
             right: 10px;
         }
 
         .replybutton {
-            background-color: #FF0000;
+            background-color: #FF1A1A;
             border: none;
             color: white;
             padding: 4px 24px;
@@ -83,6 +83,7 @@
             height: 100px;
             resize: vertical;
             padding: 5px;
+            border-radius: 20px;
         }
 
 
@@ -163,8 +164,12 @@
         }
 
         .votes, .votes1 {
-            margin-left: 10px;
             font-weight: bold;
+            text-align: center;
+        }
+
+        body {
+            margin-top: 100px;
         }
     </style>
 
@@ -188,7 +193,8 @@
 
                         <div class="card-body">
                             <h6 class="card-subtitle text-muted mb-3">
-                                <small>Posted on <span id="post-timestamp">Timestamp</span> by <a id="post-author" class="text-muted">User</a></small>
+                                <small>Posted on <span id="post-timestamp">Timestamp</span> by <a id="post-author"
+                                                                                                  class="text-muted">User</a></small>
                             </h6>
                             <h4 id="post-title" class="card-title"></h4>
 
@@ -201,6 +207,12 @@
                     </div>
                 </div>
             </div>
+
+            <div class="reply-container">
+                <textarea id="reply-text" class="reply-textarea" placeholder="Write your reply here..."></textarea>
+                <button id="reply-button" class="replybutton">Reply</button>
+            </div>
+
             <p class="text-muted ml-1">
                 Sort by: Recent
 
@@ -209,10 +221,6 @@
 
             <ul id="post-replies"></ul>
 
-            <div class="reply-container">
-                <textarea id="reply-text" class="reply-textarea" placeholder="Write your reply here..."></textarea>
-                <button id="reply-button" class="replybutton">Reply</button>
-            </div>
             <nav class="my-2" aria-label="Page navigation example">
                 <ul class="pagination">
 
