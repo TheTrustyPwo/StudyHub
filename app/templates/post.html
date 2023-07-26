@@ -1,261 +1,174 @@
 {% extends 'base.html' %}
 {% block content %}
     <style>
-        html {
-            height: 100%;
-            width: 100%;
-        }
 
-        img {
-            max-width: 20%;
-            height: auto;
-        }
-
-        .list-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .list-group > * {
-            margin-bottom: 10px;
-        }
-
-        .buttons {
-            background-color: #1A8CFF;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 100%
-        }
-
-        .redbutton {
-            background-color: #FF0000;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 40%;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-        }
-
-        .replybutton {
-            background-color: #FF0000;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 100%
-        }
-
-        .redbutton:hover, .replybutton:hover {
-            background-color: #c30000; /* Darker color when hovering */
-        }
-
-        .buttons:hover {
-            background-color: #0057B3;
-        }
+        
+html{
+  height: 100px;
+  resize: vertical;
+  padding: 5px;
+  border-radius:20px;
+}
 
 
-        .reply-textarea {
-            width: 100%;
-            height: 100px;
-            resize: vertical;
-            padding: 5px;
-        }
+.button-wrapper {
+  margin-bottom: 16px; /* Add margin bottom to create space */
+}
+
+.container-fluid {
+  padding-left: 20px;
+}
+
+.comment-container {
+  background-color: #f6f7f8;
+  border-radius: 5px;
+  padding: 10px;
+}
+.comment {
+  background-color: #fff;
+  padding: 10px;
+  border-top: 1px solid #e6e6e6;
+}
+.comment .time{
+  font-size:8px;
+}
+.comment .body {
+  font-size: 14px;
+  color: #333;
+}
+.row{
+  margin-left: 40px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.container-fluid1{
+  margin-left: 40px;
+  position: absolute;
+  right: 0;
+  max-width:200px;
+}
+
+.upvote-button, .downvote-button {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  cursor: pointer;
+  font-size: 20px;
+  transition: all 0.3s;
+}
 
 
-        .button-wrapper {
-            margin-bottom: 16px; /* Add margin bottom to create space */
-        }
+.col-8 {
+  flex: 1;
+}
 
-        .container-fluid {
-            padding-left: 20px;
-        }
+.upvote-button.active {
+  border-bottom: 20px solid #ff4500;
+}
 
-        .comment-container {
-            background-color: #f6f7f8;
-            border-radius: 5px;
-            padding: 10px;
-        }
+.downvote-button.active {
+  border-top: 20px solid #149EF0;
+}
 
-        .comment {
-            background-color: #fff;
-            padding: 10px;
-            border-top: 1px solid #e6e6e6;
-        }
+.upvote-button {
+  border-bottom: 20px solid #808080;
+  transition: color 0.3s; 
+}
 
-        .comment .time {
-            font-size: 8px;
-        }
+.downvote-button {
+  border-top: 20px solid #808080;
+  transition: color 0.3s; 
+}
+.votes,.votes1 {
+  font-weight: bold;
+  text-align:center;
+}
 
-        .comment .body {
-            font-size: 14px;
-            color: #333;
-        }
-
-        .row {
-            margin-left: 40px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .container-fluid1 {
-            margin-left: 40px;
-            position: absolute;
-            right: 0;
-            max-width: 200px;
-        }
-
-        .upvote-button, .downvote-button {
-            display: inline-block;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s;
-        }
-
-
-        .col-8 {
-            flex: 1;
-        }
-
-        .upvote-button.active {
-            border-bottom: 20px solid #ff4500;
-        }
-
-        .downvote-button.active {
-            border-top: 20px solid #149EF0;
-        }
-
-        .upvote-button {
-            border-bottom: 20px solid #808080;
-            transition: color 0.3s;
-        }
-
-        .downvote-button {
-            border-top: 20px solid #808080;
-            transition: color 0.3s;
-        }
-
-        .votes, .votes1 {
-            margin-left: 10px;
-            font-weight: bold;
-        }
+body{
+ margin-top: 100px; 
+}
     </style>
 
-    <div class="row">
-        <div class="col-8">
-            <div class="card mb-2">
-                <div class="row">
-                    <div class="col-2">
-                        <div class="list-group text-center border-0">
-                            <span></span>
+<!DOCTYPE html>
+<html>
 
-                            <div class="upvote-button" id="post-upvote-button"></div>
-                            <span class="votes" id="post-votes"></span>
-                            <span></span>
-                            <div class="downvote-button" id="post-downvote-button"></div>
-                            <span></span>
-                        </div>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+  <!-- Include the Bootstrap Icons CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/bootstrap-icons.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+   <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
+</head>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dum.css">
+
+    <title>Study Hub</title>
+</head>
+
+<body>
+  <script defer src="script.js"></script>
+  
+<div class="row">
+    <div class="col-8">
+        <div class="card mb-2">
+            <div class="row">
+                <div class="col-2">
+                  <div class="list-group text-center border-0">
+                    <span></span>
+                    
+                    <div class="upvote-button"  data-post-id="1" onclick="upvotePost(1); toggleUpvote(1)">
                     </div>
-
-                    <div class="col-10">
-
-                        <div class="card-body">
-                            <h6 class="card-subtitle text-muted mb-3">
-                                <small>Posted on <span id="post-timestamp">Timestamp</span> by <a id="post-author" class="text-muted">User</a></small>
-                            </h6>
-                            <h4 id="post-title" class="card-title"></h4>
-
-                            <p id="post-body" class="card-text"></p>
-                        </div>
-                    </div>
-                    <div class="button-wrapper">
-                        <button id="post-delete" class="redbutton">Delete Post <span style="font-size: 14px;">&#x1F5D1;&#xFE0F;</span>
-                        </button>
+                    <span class="votes" id="votes-1"></span>
+                    <span></span>
+                    <div class="downvote-button" data-post-id="1" onclick="downvotePost(1);toggleDownvote(1)"></div>
+                    <span></span>
+                  </div>
+                </div>
+               
+                <div class="col-10">
+                  
+                    <div class="card-body">
+                      <h6 class="card-subtitle text-muted mb-3">
+                            <small>Posted on 05/05/2023 by
+                            <a class="text-muted">u/StudentA</a>
+                            </small>
+                        </h6>
+                        <h4 class="card-title">
+                            I have a query about Math.
+                        </h4>
+                       
+                        <p class="card-text">
+                            I have a question regarding the Navier-Stokes equations.
+                        </p>
                     </div>
                 </div>
-            </div>
-            <p class="text-muted ml-1">
-                Sort by: Recent
-
-            </p>
-            <hr>
-
-            <ul id="post-replies"></ul>
-
-            <div class="reply-container">
-                <textarea id="reply-text" class="reply-textarea" placeholder="Write your reply here..."></textarea>
-                <button id="reply-button" class="replybutton">Reply</button>
-            </div>
-            <nav class="my-2" aria-label="Page navigation example">
-                <ul class="pagination">
-
-                </ul>
-            </nav>
-        </div>
-
-
-        <div class="col-4">
-            <div class="card">
-                <div class="card-header">
-
-                </div>
-                <div class="card-body">
-                    <p class="card-text">
-
-                    </p>
-                    <div class="container-fluid">
-                        <div class="row1">
-                            <div>
-
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRctoywU2IIJfVZ1slPmP-E2KDGU95Ags4vWfzw1Omz&s"></img><b>Subject:
-                                Mathematics</b>
-
-                            </div>
-                            <small> A place for students to discuss questions related to Math.</small>
-                        </div>
-                        <hr>
-                        <small>Members Active: </small> <span>50</span>
-                        <div>
-                            <small>Members joined: </small><span>100</span>
-                        </div>
-                        <div class="button-wrapper">
-                            <button class="buttons">Join</button>
-                        </div>
-                        <div>
-                            <button class="buttons">Create Post</button>
-                        </div>
-                    </div>
-                </div>
+              <div class="button-wrapper">
+                  <button class="redbutton">Delete Post <span style="font-size: 14px;">&#x1F5D1;&#xFE0F;</span></button>
+                  </div>
             </div>
         </div>
-    </div>
+      <div class="reply-container">
+                <textarea class="reply-textarea" placeholder="Write your reply here..."></textarea>
+                <button class="replybutton">Reply</button>
+              </div>
+        <p class="text-muted ml-1">
+            Sort by:  Recent /
+            <a href="/post/2">Top</a>
+            
+        </p>
+        <hr>
+        
 
     <script type="module" src="{{ url_for('static', filename='js/posts.js') }}"></script>
 {% endblock %}
