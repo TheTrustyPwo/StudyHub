@@ -2,6 +2,8 @@ import {Post, Reply, User} from "./models/index.js";
 
 $(document).ready(async function () {
     const currentUser = await User.getCurrent();
+    const searchParams = new URLSearchParams(window.location.search);
+    const sortBy = searchParams.get('sortBy')?.toLowerCase() || 'recent';
 
     const postId = parseInt(window.location.pathname.split('/').pop());
     const post = await Post.getById(postId);
@@ -42,8 +44,12 @@ $(document).ready(async function () {
     await renderReplies();
 
     replyButton.onclick = async () => {
-        const reply = await Reply.create(replyText.value, post);
-        await renderReply(reply);
+        const text = replyText.value;
+        replyText.value = '';
+        const reply = await Reply.create(text, post);
+        const element = await renderReply(reply);
+        postReplies.prepend(element);
+        element.scrollIntoView({behavior: 'auto', block: 'center', inline: 'center'});
     }
 
     async function renderPost() {
@@ -56,12 +62,16 @@ $(document).ready(async function () {
         postTitle.innerText = post.title;
         postBody.innerText = post.body;
         postVotes.innerText = post.getVoteCount().toLocaleString();
-        postTimestamp.innerText = post.timestamp.calendar();
+        postTimestamp.innerText = post.timestamp.local().calendar();
         postAuthor.innerText = post.author.username;
     }
 
     async function renderReplies() {
-        post.replies.sort((a, b) => b.timestamp - a.timestamp).forEach(reply => postReplies.appendChild(renderReply(reply)));
+        const sorting = {
+            'recent': (a, b) => b.timestamp - a.timestamp,
+            'popular': (a, b) => b.getVoteCount() - a.getVoteCount() || b.timestamp - a.timestamp
+        }
+        post.replies.sort(sorting[sortBy]).forEach(reply => postReplies.appendChild(renderReply(reply)));
     }
 
     function renderReply(reply) {
@@ -87,7 +97,7 @@ $(document).ready(async function () {
                         <div class="comment">
                             <div class="comment-header">
                                 <span class="comment-author">${reply.author.username}</span>
-                                <span class="comment-time text-muted">${reply.timestamp.calendar()}</span>
+                                <span class="comment-time text-muted">${reply.timestamp.local().calendar()}</span>
                             </div>
                             <div class="comment-body"><p>${reply.reply}</p></div>
                         </div>
