@@ -55,7 +55,6 @@ async function handleScroll() {
 window.addEventListener('scroll', handleScroll);
 window.addEventListener('load', async () => {
     const initialPosts = await (await fetchPosts(startPostIndex, startPostIndex + postsPerPage)).json();
-    console.log(initialPosts)
     addPosts(initialPosts);
     startPostIndex += postsPerPage;
 });

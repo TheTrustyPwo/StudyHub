@@ -48,14 +48,3 @@ class Post(db.Model):
     @staticmethod
     def get_post_range(start_row, end_row):
         return Post.query.slice(start_row, end_row).all()
-
-    @property
-    def serialized(self):
-        return {
-            'id': self.id,
-            'title': self.title,
-            'post': self.post,
-            'user_id': self.user_id,
-            'replies': self.replies,
-            'date_created': self.date_created.strftime('%Y-%m-%d %H:%M:%S')
-        }
