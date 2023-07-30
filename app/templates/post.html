@@ -1,206 +1,269 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2 class="mb-3">{{ post.title }}</h2>
-<div class="row">
-    <div class="col-8">
-        <div class="card mb-2">
-            <div class="row">
-                <div class="col-2">
-                    <ul class="list-group text-center border-0">
-                        <li class="list-group-item py-1 my-1 border-0">
-                            <form
-                                action="{{ url_for('post.upvote_post', post_id=post.id) }}"
-                                method="POST"
-                                >
-                                <small
-                                    ><input
-                                class="border-0"
-                                type="submit"
-                                value="▲"
-                                {% if
-                                not
-                                current_user.is_authenticated %}disabled{% endif %}
-                                /></small>
-                            </form>
-                        </li>
-                        <li class="list-group-item py-1 my-1 border-0">
-                            <small>{{ post.votes }}</small>
-                        </li>
-                        <li class="list-group-item py-1 my-1 border-0">
-                            <form
-                                action="{{ url_for('post.downvote_post', post_id=post.id) }}"
-                                method="POST"
-                                >
-                                <small
-                                    ><input
-                                class="border-0"
-                                type="submit"
-                                value="▼"
-                                {% if
-                                not
-                                current_user.is_authenticated %}disabled{% endif %}
-                                /></small>
-                            </form>
-                        </li>
-                    </ul>
+    <style>
+        html {
+            height: 100%;
+            width: 100%;
+        }
+
+        img {
+            max-width: 20%;
+            height: auto;
+        }
+
+        .list-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .list-group > * {
+            margin-bottom: 10px;
+        }
+
+        .buttons {
+            background-color: #1A8CFF;
+            border: none;
+            color: white;
+            padding: 4px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%
+        }
+
+        .redbutton {
+            background-color: #FF1A1A;
+            border: none;
+            color: white;
+            padding: 4px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 40%
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+        .replybutton {
+            background-color: #FF1A1A;
+            border: none;
+            color: white;
+            padding: 4px 24px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            width: 100%
+        }
+
+        .redbutton:hover, .replybutton:hover {
+            background-color: #c30000; /* Darker color when hovering */
+        }
+
+        .buttons:hover {
+            background-color: #0057B3;
+        }
+
+
+        .reply-textarea {
+            width: 100%;
+            height: 100px;
+            resize: vertical;
+            padding: 5px;
+            border-radius: 20px;
+        }
+
+
+        .button-wrapper {
+            margin-bottom: 16px; /* Add margin bottom to create space */
+        }
+
+        .container-fluid {
+            padding-left: 20px;
+        }
+
+        .comment-container {
+            background-color: #f6f7f8;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .comment {
+            background-color: #fff;
+            padding: 10px;
+            border-top: 1px solid #e6e6e6;
+        }
+
+        .comment .time {
+            font-size: 8px;
+        }
+
+        .comment .body {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .row {
+            margin-left: 40px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .container-fluid1 {
+            margin-left: 40px;
+            position: absolute;
+            right: 0;
+            max-width: 200px;
+        }
+
+        .upvote-button, .downvote-button {
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+        }
+
+
+        .col-8 {
+            flex: 1;
+        }
+
+        .upvote-button.active {
+            border-bottom: 20px solid #ff4500;
+        }
+
+        .downvote-button.active {
+            border-top: 20px solid #149EF0;
+        }
+
+        .upvote-button {
+            border-bottom: 20px solid #808080;
+            transition: color 0.3s;
+        }
+
+        .downvote-button {
+            border-top: 20px solid #808080;
+            transition: color 0.3s;
+        }
+
+        .votes, .votes1 {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        body {
+            margin-top: 100px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-8">
+            <div class="card mb-2">
+                <div class="row">
+                    <div class="col-2">
+                        <div class="list-group text-center border-0">
+                            <span></span>
+
+                            <div class="upvote-button" id="post-upvote-button"></div>
+                            <span class="votes" id="post-votes"></span>
+                            <span></span>
+                            <div class="downvote-button" id="post-downvote-button"></div>
+                            <span></span>
+                        </div>
+                    </div>
+
+                    <div class="col-10">
+
+                        <div class="card-body">
+                            <h6 class="card-subtitle text-muted mb-3">
+                                <small>Posted on <span id="post-timestamp">Timestamp</span> by <a id="post-author"
+                                                                                                  class="text-muted">User</a></small>
+                            </h6>
+                            <h4 id="post-title" class="card-title"></h4>
+
+                            <p id="post-body" class="card-text"></p>
+                        </div>
+                    </div>
+                    <div class="button-wrapper">
+                        <button id="post-delete" class="redbutton">Delete Post <span style="font-size: 14px;">&#x1F5D1;&#xFE0F;</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-10">
-                    <div class="card-body">
-                        <h4 class="card-title">
-                            {{ post.title }}
-                        </h4>
-                        <h6 class="card-subtitle text-muted mb-3">
-                            <small
-                                >Posted on {{ post.date_created.strftime("%m/%d/%Y") }} by
-                            <a
-                                class="text-muted"
-                                >u/{{ post.username }}</a
-                                >
-                            </small>
-                        </h6>
-                        <p class="card-text">
-                            {{ post.post }}
-                        </p>
+            </div>
+
+            <div class="reply-container">
+                <textarea id="reply-text" class="reply-textarea" placeholder="Write your reply here..."></textarea>
+                <button id="reply-button" class="replybutton">Reply</button>
+            </div>
+
+            <p class="text-muted ml-1">
+                Sort by: Recent
+
+            </p>
+            <hr>
+
+            <ul id="post-replies"></ul>
+
+            <nav class="my-2" aria-label="Page navigation example">
+                <ul class="pagination">
+
+                </ul>
+            </nav>
+        </div>
+
+
+        <div class="col-4">
+            <div class="card">
+                <div class="card-header">
+
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+
+                    </p>
+                    <div class="container-fluid">
+                        <div class="row1">
+                            <div>
+
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRctoywU2IIJfVZ1slPmP-E2KDGU95Ags4vWfzw1Omz&s"></img><b>Subject:
+                                Mathematics</b>
+
+                            </div>
+                            <small> A place for students to discuss questions related to Math.</small>
+                        </div>
+                        <hr>
+                        <small>Members Active: </small> <span>50</span>
+                        <div>
+                            <small>Members joined: </small><span>100</span>
+                        </div>
+                        <div class="button-wrapper">
+                            <button class="buttons">Join</button>
+                        </div>
+                        <div>
+                            <button class="buttons">Create Post</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <p class="text-muted ml-1">
-            Sort by: {% if tab == "recent" %} Recent /
-            <a
-                href="{{ url_for('post.view_post', post_id=post.id) }}"
-                >Top</a
-                >
-            {% elif tab == "top" %}
-            <a
-                href="{{ url_for('post.view_post', post_id=post.id) }}"
-                >Recent</a
-                >
-            / Top {% endif %}
-        </p>
-        <hr/>
-        {% for reply in replies.items %}
-        <div class="card mb-2">
-            <div class="row">
-                <div class="col-2">
-                    <ul class="list-group text-center border-0">
-                        <li class="list-group-item py-1 border-0">
-                            <form
-                                action="{{ url_for('reply.upvote_reply', post_id=post.id, reply_id=reply.id) }}"
-                                method="POST"
-                                >
-                                <small
-                                    ><input
-                                class="border-0"
-                                type="submit"
-                                value="▲"
-                                {% if
-                                not
-                                current_user.is_authenticated %}disabled{% endif %}
-                                /></small>
-                            </form>
-                        </li>
-                        <li class="list-group-item py-1 border-0">
-                            <small>{{ reply.votes }}</small>
-                        </li>
-                        <li class="list-group-item py-1 border-0">
-                            <form
-                                action="{{ url_for('reply.downvote_reply', post_id=post.id, reply_id=reply.id) }}"
-                                method="POST"
-                                >
-                                <small
-                                    ><input
-                                class="border-0"
-                                type="submit"
-                                value="▼"
-                                {% if
-                                not
-                                current_user.is_authenticated %}disabled{% endif %}
-                                /></small>
-                            </form>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-10">
-                    <div class="card-body">
-                        <p class="card-text">
-                            {{ reply.reply }}
-                        </p>
-                        <h6 class="card-subtitle text-muted">
-                            <small
-                                >Replied on {{ reply.date_created.strftime("%m/%d/%Y") }} by
-                            <a
-                                class="text-muted"
-                                >u/{{ reply.username }}</a
-                                >
-                            {% if current_user.is_authenticated and current_user.id ==
-                            reply.user_id %} &#183;
-                            <a
-                                class="text-muted"
-                                >Edit</a
-                                >
-                            {% endif %}
-                            </small>
-                        </h6>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-        <nav class="my-2" aria-label="Page navigation example">
-            <ul class="pagination">
-                {% if replies.prev_num %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ replies.prev_num }}">Previous</a>
-                </li>
-                {% endif %} {% if replies.next_num %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ replies.next_num }}">Next</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
     </div>
-    <div class="col-4">
-        <div class="card">
-            <div class="card-header">
 
-            </div>
-            <div class="card-body">
-                <p class="card-text">
-
-                </p>
-                <div class="container-fluid">
-                    <div class="row">
-                        <a
-                            href="{{ url_for('reply.create_reply', post_id=post.id) }}"
-                            class="btn btn-sm btn-primary mb-1"
-                            >Reply</a
-                            >
-                    </div>
-                    {% if current_user.is_authenticated and current_user.id ==
-                    post.user_id %}
-                    <div class="row">
-                        <a
-
-                            class="btn btn-sm btn-primary mb-1"
-                            >Update</a
-                            >
-                    </div>
-                    <div class="row">
-                        <form
-                            action="{{ url_for('post.delete_post', post_id=post.id) }}"
-                            method="POST"
-                            >
-                            <button class="btn btn-sm btn-danger">
-                            Delete
-                            </button>
-                        </form>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    <script type="module" src="{{ url_for('static', filename='js/posts.js') }}"></script>
 {% endblock %}

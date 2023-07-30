@@ -1,6 +1,6 @@
 from typing import Type
 
-from flask import Flask
+from flask import Flask, render_template
 from flask_cors import CORS
 from flask_login import LoginManager
 from flask_moment import Moment
@@ -36,7 +36,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     from app.auth import auth_blueprint
     from app.post import post_blueprint, post_api_blueprint
     from app.feed import feed_blueprint
-    from app.replies import reply_blueprint
+    from app.replies import reply_blueprint, reply_api_blueprint
     from app.messages import messages_blueprint, messages_api_blueprint
     from app.conversations import conversations_blueprint, conversations_api_blueprint
     from app.users import user_blueprint, user_api_blueprint
@@ -46,6 +46,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     app.register_blueprint(post_api_blueprint)
     app.register_blueprint(feed_blueprint)
     app.register_blueprint(reply_blueprint)
+    app.register_blueprint(reply_api_blueprint)
     app.register_blueprint(messages_blueprint)
     app.register_blueprint(messages_api_blueprint)
     app.register_blueprint(conversations_blueprint)
@@ -55,6 +56,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
 
     from app.exceptions.api_exception import APIException, handle_api_exception
     app.register_error_handler(APIException, handle_api_exception)
+    app.register_error_handler(404, lambda _: render_template('404.html'))
 
     with app.app_context():
         db.create_all()
