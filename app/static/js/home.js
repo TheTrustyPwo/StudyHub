@@ -3,8 +3,8 @@ import { User } from "./models/index.js";
 let post_count
 const currentUrl = window.location.href;
 $(document).ready(async function () {
-    post_count = await fetch(`/api/v1/posts/count`)}
-);
+    post_count = parseInt(await (await fetch(`/api/v1/posts/count`)).json());
+});
 
 async function fetchPosts(from, to) {
     return await fetch(`/api/v1/posts/${from}/${to}`)

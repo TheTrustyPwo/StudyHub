@@ -86,4 +86,4 @@ def get_post_by_range(start_row, end_row):
 
 @post_api_blueprint.route("/count", methods = ["GET"])
 def get_post_count():
-    return Post.query.count()
+    return str(Post.query.count())
