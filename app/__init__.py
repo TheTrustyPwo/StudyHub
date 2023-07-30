@@ -34,7 +34,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     login_manager.init_app(app)
 
     from app.auth import auth_blueprint
-    from app.post import post_blueprint
+    from app.post import post_blueprint, post_api_blueprint
     from app.feed import feed_blueprint
     from app.replies import reply_blueprint
     from app.messages import messages_blueprint, messages_api_blueprint
@@ -43,6 +43,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
 
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(post_blueprint)
+    app.register_blueprint(post_api_blueprint)
     app.register_blueprint(feed_blueprint)
     app.register_blueprint(reply_blueprint)
     app.register_blueprint(messages_blueprint)
