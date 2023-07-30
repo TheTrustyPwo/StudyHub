@@ -1,4 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-    {{ current_user }}
+<br>
+<br>
+<div class="page-content page-container" id="page-content">
+    <div class="col-md-9 px-3 mx-auto">
+        <div class="text-center mt-20 mb-12">
+            <h1 class="display-3 ls-tight">
+                <span class="d-inline-flex text-transparent bg-clip-text gradient-bottom-right start-purple-500 end-indigo-400 position-relative">Welcome To StudyHub</span>
+            </h1>
+            <p class="text-lg font-semibold mt-5 px-lg-32">
+                A website for people to post questions and get answers!
+            </p>
+            <div class="mx-sm-n2 mt-7">
+                <a href="https://github.com/TheTrustyPwo/StudyHub.git" class="btn btn-dark" target="_blank">
+                    <i class="bi bi-github me-2"></i>
+                    <span>See on Github</span>
+                </a>
+            </div>
+        </div>
+        <div class="row g-6 g-lg-6" id="posts">
+        </div>
+
+        <p class="text-muted text-sm font-semibold text-center my-12">
+            Made by <i class="bi bi-heart mx-1"></i> The Pwo </a>
+        </p>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/home.js') }}" type="module"></script>
 {% endblock %}
