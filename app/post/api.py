@@ -1,3 +1,5 @@
+from typing import List
+
 from flask import jsonify, Response
 from flask_login import current_user, login_required
 
