@@ -1,4 +1,4 @@
-from flask import redirect, url_for, jsonify, request
+from flask import redirect, url_for, jsonify, request, Response
 from flask_login import current_user, login_required
 from app import db
 
@@ -8,7 +8,13 @@ from app.models import Reply, ReplyVote, Post
 
 
 @reply_api_blueprint.route('/<int:reply_id>')
-def get_reply(reply_id: int):
+def get_reply(reply_id: int) -> Response:
+    """
+    Get reply data by reply ID.
+
+    :param reply_id: The ID of the reply to retrieve.
+    :return: JSON representation of the reply data.
+    """
     reply = Reply.get_by_id(reply_id)
     if not reply:
         raise NotFound(message='Reply not found')
@@ -18,7 +24,14 @@ def get_reply(reply_id: int):
 
 @reply_api_blueprint.route('/create', methods=['POST', 'GET'])
 @login_required
-def create_reply():
+def create_reply() -> Response:
+    """
+    Create a new reply.
+
+    :return: JSON representation of the created reply data.
+    :raises BadRequest: If the request does not contain post_id or reply text.
+    :raises NotFound: If the post with the provided post_id does not exist.
+    """
     post_id = request.json.get('post_id')
     if post_id is None:
         raise BadRequest(message='Reply must contain post_id')
@@ -38,7 +51,13 @@ def create_reply():
 
 @reply_api_blueprint.route('/<int:reply_id>/upvote', methods=['POST', 'GET'])
 @login_required
-def upvote_reply(reply_id: int):
+def upvote_reply(reply_id: int) -> Response:
+    """
+    Upvote a reply.
+
+    :param reply_id: The ID of the reply to upvote.
+    :return: JSON representation of the updated reply data.
+    """
     reply = Reply.get_by_id(reply_id)
     if not reply:
         raise NotFound(message='Reply not found')
@@ -57,7 +76,13 @@ def upvote_reply(reply_id: int):
 
 @reply_api_blueprint.route('/<int:reply_id>/downvote', methods=['POST', 'GET'])
 @login_required
-def downvote_reply(reply_id: int):
+def downvote_reply(reply_id: int) -> Response:
+    """
+    Downvote a reply.
+
+    :param reply_id: The ID of the reply to downvote.
+    :return: JSON representation of the updated reply data.
+    """
     reply = Reply.get_by_id(reply_id)
     if not reply:
         raise NotFound(message='Reply not found')
@@ -76,7 +101,14 @@ def downvote_reply(reply_id: int):
 
 @reply_api_blueprint.route('/<int:reply_id>/delete', methods=['DELETE'])
 @login_required
-def delete_reply(reply_id: int):
+def delete_reply(reply_id: int) -> None:
+    """
+    Delete a reply.
+
+    :param reply_id: The ID of the reply to delete.
+    :raises NotFound: If the reply with the provided ID does not exist.
+    :raises Unauthorized: If the current user is not the owner of the reply.
+    """
     reply = Reply.get_by_id(reply_id)
     if not reply:
         raise NotFound(message='Reply not found')

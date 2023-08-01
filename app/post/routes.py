@@ -1,9 +1,8 @@
-from flask import abort, flash, redirect, render_template, request, url_for
-from flask_login import current_user, login_required
+from flask import render_template
 
-from app.post import post_blueprint
-from app.exceptions import Unauthorized, NotFound
 from app.models import Post
+from app.post import post_blueprint
+
 
 @post_blueprint.route("/post/<int:post_id>")
 def view_post(post_id):
