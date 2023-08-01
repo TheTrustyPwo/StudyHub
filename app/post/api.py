@@ -4,7 +4,7 @@ from flask import jsonify, Response, request
 from flask_login import current_user, login_required
 
 from app import db
-from app.exceptions import Unauthorized, NotFound
+from app.exceptions import Unauthorized, NotFound, BadRequest
 from app.models import Post, PostVote
 from app.post import post_api_blueprint
 
