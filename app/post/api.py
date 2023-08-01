@@ -75,3 +75,15 @@ def delete_post(post_id: int):
 
     db.session.delete(post)
     db.session.commit()
+
+
+@post_api_blueprint.route("/<int:start_row>/<int:end_row>", methods=["GET"])
+def get_post_by_range(start_row, end_row):
+    out = []
+    for i in Post.get_post_range(start_row, end_row):
+        out.append({'ptitle': i.title, 'post': i.post, 'date': i.date_created, 'user': i.user_id, 'id': i.id})
+    return out
+
+@post_api_blueprint.route("/count", methods = ["GET"])
+def get_post_count():
+    return str(Post.query.count())
