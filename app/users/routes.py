@@ -1,6 +1,6 @@
 from app.models import User
 from flask import render_template
-from app.users import user_blueprint, user_service
+from app.users import user_blueprint
 
 
 @user_blueprint.route("/users/<string:username>")

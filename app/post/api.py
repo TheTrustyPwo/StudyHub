@@ -1,12 +1,35 @@
 from typing import List
 
-from flask import jsonify, Response
+from flask import jsonify, Response, request
 from flask_login import current_user, login_required
 
 from app import db
 from app.exceptions import Unauthorized, NotFound
 from app.models import Post, PostVote
 from app.post import post_api_blueprint
+
+
+@post_api_blueprint.route('/create', methods=['POST', 'GET'])
+@login_required
+def create_post() -> Response:
+    """
+    Create a new post.
+
+    :return: JSON representation of the created post data.
+    :raises BadRequest: If the request does not contain title or body.
+    """
+    title = request.json.get('title')
+    if not title:
+        raise BadRequest(message='Post must contain title')
+
+    body = request.json.get('body')
+    if not body:
+        raise BadRequest(message='Post must contain body')
+
+    post = Post(title=title, post=body, user_id=current_user.id)
+    post.save()
+
+    return jsonify(post.serialized)
 
 
 @post_api_blueprint.route('/<int:post_id>')
