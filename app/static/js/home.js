@@ -28,7 +28,7 @@ async function addPosts(posts) {
                                 By ${(await User.getById(post.user)).username}
                             </p>
                             <footer>
-                                <a href=${currentUrl + "post/" + post.id}  class="font-semibold link-primary stretched-link">See Post -></a>
+                                <a href=post/${post.id} class="font-semibold link-primary stretched-link">See Post -></a>
                             </footer>
                         </section>
                     </div>
