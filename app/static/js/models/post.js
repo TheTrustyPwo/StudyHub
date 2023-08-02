@@ -10,16 +10,18 @@ class Post {
      * @param {number} id - The unique ID of the post.
      * @param {string} title - The title of the post.
      * @param {string} body - The body content of the post.
+     * @param {string} subject - The subject of the post.
      * @param {User} author - The User object representing the author of the post.
      * @param {Array} votes - An array of Vote objects representing the votes on the post.
      * @param {Date} timestamp - The timestamp indicating when the post was created.
      */
-    constructor(id, title, body, author, votes, timestamp) {
+    constructor(id, title, body, subject, author, votes, timestamp) {
         if (Post.#cache.has(id)) return Post.#cache.get(id);
 
         this.id = id;
         this.title = title;
         this.body = body;
+        this.subject = subject;
         this.author = author;
         this.votes = votes;
         this.timestamp = timestamp;
@@ -33,25 +35,26 @@ class Post {
      * @returns {Post} - The created Post object.
      */
     static async fromJson(json) {
-        const { id, title, body, authorId, votes, timestamp } = json;
+        const { id, title, body, subject, authorId, votes, timestamp } = json;
         const user = await User.getById(authorId);
-        return new Post(id, title, body, user, votes, moment.utc(timestamp));
+        return new Post(id, title, body, subject, user, votes, moment.utc(timestamp));
     }
 
     /**
      * Create a new post with the given title and body.
      * @param {string} title - The title of the post.
      * @param {string} body - The body content of the post.
+     * @param {string} subject - The subject of the post.
      * @returns {Promise<Post>} - A Promise that resolves to the created Post object.
      */
-    static async create(title, body) {
+    static async create(title, body, subject) {
         const response = await fetch(`/api/v1/posts/create`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({'title': title, 'body': body})
+            body: JSON.stringify({'title': title, 'body': body, 'subject': subject})
         });
 
         const jsonData = await response.json();
