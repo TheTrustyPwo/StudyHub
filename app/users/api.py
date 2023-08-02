@@ -1,13 +1,13 @@
+from typing import List
+
 import flask
 from flask import jsonify, request
 from flask_login import current_user, login_required
-from typing import List
 
-from app import db
-from app.exceptions import NotFound
+from app.exceptions import BadRequest, NotFound
 from app.models import User
+from app.upload.files import ProfileFile
 from app.users import user_api_blueprint
-from app.upload.files import FilePurpose, ProfileFile
 
 
 @user_api_blueprint.route("/current")
