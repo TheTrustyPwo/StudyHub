@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+</head>
+<body>
+<h1>File Upload Example</h1>
+<input type="file" id="file-input">
+<button id="upload-btn">Upload</button>
+<button id="refresh">Refresh</button>
+<img id="image" src="" alt="">
+
+<script>
+    // Function to upload a file to the server
+    async function uploadFile(file) {
+        // Create a new FormData object
+        const formData = new FormData();
+
+        // Append the file to the FormData object with a key named 'file'
+        formData.append('file', file);
+
+        // Make a fetch request to the server with the FormData
+        const response = await fetch('/api/v1/users/pfp/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        // Check if the response is successful
+        if (response.ok) {
+            // const data = await response.json()
+            console.log('File uploaded successfully:', response);
+        } else {
+            console.error('Error uploading file:', response);
+        }
+    }
+
+    const refreshBtn = document.getElementById('refresh');
+    refreshBtn.addEventListener('click', async () => {
+        const response = await fetch('/api/v1/users/current');
+        const data = await response.json();
+        document.getElementById('image').src = data.pfp;
+    });
+
+    // Example usage: Upload a file when the "Upload" button is clicked
+    const uploadBtn = document.getElementById('upload-btn');
+    uploadBtn.addEventListener('click', async () => {
+        const fileInput = document.getElementById('file-input');
+        console.log(fileInput.files)
+        const file = fileInput.files[0];
+        if (file) {
+            await uploadFile(file);
+        }
+    });
+</script>
+</body>
+</html>
