@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 
 from app import db
 from app.exceptions import Unauthorized, NotFound, BadRequest
-from app.models import Post, PostVote
+from app.models import Post, PostVote, Subject
 from app.post import post_api_blueprint
 
 
@@ -26,10 +26,26 @@ def create_post() -> Response:
     if not body:
         raise BadRequest(message='Post must contain body')
 
-    post = Post(title=title, post=body, user_id=current_user.id)
+    subject = request.json.get('subject')
+    if not subject or not Subject.has_key(subject):
+        raise BadRequest(message='Invalid post subject')
+
+    post = Post(title=title, post=body, subject=Subject(subject), user_id=current_user.id)
     post.save()
 
     return jsonify(post.serialized)
+
+
+@post_api_blueprint.route('/search/<string:query>')
+def search_post(query: str) -> Response:
+    """
+    Search for posts.
+
+    :param query: The search query to match against posts.
+    :return: JSON representation of a list of matching post data.
+    """
+    posts: List[Post] = Post.query.filter(Post.title.ilike(f'%{query}%')).all()
+    return jsonify([post.serialized for post in posts])
 
 
 @post_api_blueprint.route('/<int:post_id>')

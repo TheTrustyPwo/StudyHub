@@ -1,14 +1,17 @@
 import flask
-from flask import jsonify
-from flask_login import current_user
+from flask import jsonify, request
+from flask_login import current_user, login_required
 from typing import List
 
+from app import db
 from app.exceptions import NotFound
 from app.models import User
 from app.users import user_api_blueprint
+from app.upload.files import FilePurpose, ProfileFile
 
 
 @user_api_blueprint.route("/current")
+@login_required
 def get_current_user() -> flask.Response:
     """
     Retrieve current user data, usually used by AJAX requests.
@@ -56,3 +59,19 @@ def search_user(query: str) -> flask.Response:
     """
     users: List[User] = User.query.filter(User.username.ilike(f'%{query}%')).all()
     return jsonify([user.serialized for user in users])
+
+
+@user_api_blueprint.route('/pfp/upload', methods=['POST'])
+@login_required
+def upload_pfp() -> flask.Response:
+    file_data = request.files['file']
+    if not file_data:
+        raise BadRequest(message='Upload must contain file')
+
+    image = ProfileFile(file_data, current_user.id)
+    url = image.upload()
+
+    current_user.pfp_file_name = image.filename
+    current_user.save()
+
+    return jsonify({'url': url})

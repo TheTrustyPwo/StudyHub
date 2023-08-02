@@ -33,6 +33,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     cors.init_app(app)
     login_manager.init_app(app)
 
+    from app.upload import upload_api_blueprint
     from app.auth import auth_blueprint
     from app.post import post_blueprint, post_api_blueprint
     from app.feed import feed_blueprint
@@ -40,7 +41,9 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     from app.messages import messages_blueprint, messages_api_blueprint
     from app.conversations import conversations_blueprint, conversations_api_blueprint
     from app.users import user_blueprint, user_api_blueprint
+    from app.ai import ai_blueprint, ai_api_blueprint
 
+    app.register_blueprint(upload_api_blueprint)
     app.register_blueprint(auth_blueprint)
     app.register_blueprint(post_blueprint)
     app.register_blueprint(post_api_blueprint)
@@ -53,6 +56,8 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     app.register_blueprint(conversations_api_blueprint)
     app.register_blueprint(user_blueprint)
     app.register_blueprint(user_api_blueprint)
+    app.register_blueprint(ai_blueprint)
+    app.register_blueprint(ai_api_blueprint)
 
     from app.exceptions.api_exception import APIException, handle_api_exception
     app.register_error_handler(APIException, handle_api_exception)

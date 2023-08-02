@@ -10,15 +10,30 @@ class User {
      * @param {string} email - The email of the user
      * @param {string} username - The username of the user
      * @param {Date} dateCreated - The date the user was created
+     * @param {string} pfp - The profile picture URL of the user
      */
-    constructor(id, email, username, dateCreated) {
+    constructor(id, email, username, dateCreated, pfp) {
         if (User.#cache.has(id)) return User.#cache.get(id);
 
         this.id = id;
         this.email = email;
         this.username = username;
         this.dateCreated = dateCreated;
+        this.pfp = pfp;
         User.#cache.set(id, this);
+    }
+
+    async updateProfilePicture(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const response = await fetch('/api/v1/users/pfp/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        const json = await response.json();
+        this.pfp = json.url;
     }
 
     /**
@@ -27,8 +42,8 @@ class User {
      * @returns {User} - The created User object
      */
     static fromJson(json) {
-        const { id, email, username, dateCreated } = json;
-        return new User(id, email, username, moment.utc(dateCreated));
+        const { id, email, username, dateCreated, pfp } = json;
+        return new User(id, email, username, moment.utc(dateCreated), pfp);
     }
 
     /**

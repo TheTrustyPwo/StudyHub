@@ -9,6 +9,7 @@ from app.models.reply import Reply
 from app.models.post_vote import PostVote
 from app.models.reply import ReplyVote
 from app.models.message import Message
+from app.upload.files import ProfileFile, FilePurpose
 
 
 class User(db.Model, UserMixin):
@@ -22,6 +23,9 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    pfp_file_name = db.Column(db.String(255), nullable=True)
+
+    essays = db.relationship("Essay", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
     posts = db.relationship("Post", backref="user", lazy="dynamic", cascade="all, delete-orphan")
     replies = db.relationship("Reply", backref="user", lazy="dynamic", cascade="all, delete-orphan")
@@ -49,12 +53,17 @@ class User(db.Model, UserMixin):
         db.session.commit()
 
     @property
+    def pfp(self):
+        return ProfileFile.get(self.pfp_file_name, FilePurpose.PROFILE_PICTURE, self.id)
+
+    @property
     def serialized(self):
         return {
             "id": self.id,
             "email": self.email,
             "username": self.username,
-            "dateCreated": self.date_created.strftime('%Y-%m-%d %H:%M:%S')
+            "dateCreated": self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
+            'pfp': self.pfp
         }
 
     @staticmethod
