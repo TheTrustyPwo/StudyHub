@@ -36,53 +36,167 @@
     <title>Study Hub</title>
 </head>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the search input element
+        var searchInput = document.getElementById('searchInput');
+
+        // Function to handle the search
+        function performSearch(query) {
+            // Define the API endpoint for searching posts
+            var apiUrl = '/api/v1/posts/search/' + encodeURIComponent(query);
+
+            // Send an AJAX GET request to the server
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(posts => {
+                    // Clear the previous search results
+                    document.getElementById('searchResults').innerHTML = '';
+
+                    // Display the search results on the page
+                    if (posts.length === 0) {
+                        document.getElementById('searchResults').innerHTML = '<p>No results found.</p>';
+                    } else {
+                        var resultHtml = '<ul>';
+                        posts.forEach(post => {
+                            resultHtml += '<li>';
+                            resultHtml += `<a href=/post/${post.id}> ${post.title} </a>`;
+                            resultHtml += '</li>';
+                        });
+                        resultHtml += '</ul>';
+                        document.getElementById('searchResults').innerHTML = resultHtml;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error occurred:', error);
+                });
+        }
+
+        // Add event listener to the search input to handle user input
+        searchInput.addEventListener('input', function () {
+            var query = searchInput.value.trim();
+            if (query !== '') {
+                performSearch(query);
+            } else {
+                // Clear the search results if the input is empty
+                document.getElementById('searchResults').innerHTML = '';
+            }
+        });
+    });
+</script>
+
+<style>
+    /* CSS for the search results dropdown */
+    #searchResults {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+
+    #searchResults ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    #searchResults li {
+        padding: 8px 16px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    #searchResults li:last-child {
+        border-bottom: none;
+    }
+
+    #searchResults a {
+        text-decoration: none;
+        color: #000;
+        display: block;
+        line-height: 1.5;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    #searchResults a:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+
 <body class="color-theme-blue mont-font loaded">
-    <div id="root">
-        {% if current_user.is_authenticated %}
-            <div class="nav-header bg-white shadow-xs border-0">
-                <div class="nav-top">
-                    <a href="/">
-                        <i class="feather-zap text-success display2-size me-3 ms-0"></i>
-                        <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Study Hub. </span>
-                    </a>
-                    <a class="mob-menu ms-auto me-2 chat-active-btn" href="/">
-                        <i class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"></i>
-                    </a>
-                    <a class="mob-menu me-2" href="/">
-                        <i class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"></i>
-                    </a>
-                    <span class="me-2 menu-search-icon mob-menu">
+<div id="root">
+    {% if current_user.is_authenticated %}
+        <div class="nav-header bg-white shadow-xs border-0">
+            <div class="nav-top">
+                <a href="/">
+                    <i class="feather-zap text-success display2-size me-3 ms-0"></i>
+                    <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Study Hub. </span>
+                </a>
+                <a class="mob-menu ms-auto me-2 chat-active-btn" href="/">
+                    <i class="feather-message-circle text-grey-900 font-sm btn-round-md bg-greylight"></i>
+                </a>
+                <a class="mob-menu me-2" href="/">
+                    <i class="feather-video text-grey-900 font-sm btn-round-md bg-greylight"></i>
+                </a>
+                <span class="me-2 menu-search-icon mob-menu">
                         <i class="feather-search text-grey-900 font-sm btn-round-md bg-greylight"></i>
                     </span>
-                    <button class="nav-menu me-0 ms-2 "></button>
-                </div>
-                <form action="#" class="float-left header-search ms-3">
-                    <div class="form-group mb-0 icon-input">
-                        <i class="feather-search font-sm text-grey-400"></i>
-                        <input type="text" placeholder="Start typing to search.." class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg">
-                    </div>
-                </form>
-                <a aria-current="page" class="p-2 text-center ms-3 menu-icon center-menu-icon active" href="/home"><i class="feather-home font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/defaultstorie"><i class="feather-zap font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/defaultvideo"><i class="feather-video font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/defaultgroup"><i class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/shop2"><i class="feather-shopping-bag font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><span class="p-2 pointer text-center ms-auto menu-icon " id="dropdownMenu3" data-bs-toggle="dropdown" aria-expanded="false"><span class="dot-count bg-warning"></span><i class="feather-bell font-xl text-current"></i></span>
-                <a class="p-2 text-center ms-3 menu-icon chat-active-btn" href="/"><i class="feather-message-square font-xl text-current"></i></a><span class="pointer p-2 text-center ms-3 menu-icon chat-active-btn "><i class="feather-moon font-xl text-current"></i></span><a class="p-0 ms-3 menu-icon" href="/defaultsettings"><img src="assets/images/profile-4.png" alt="user" class="w40 mt--1"></a>
+                <button class="nav-menu me-0 ms-2 "></button>
             </div>
-
-            <div class="main-content">
-        {% else %}
-            <div class="main-wrap">
-                <div class="nav-header bg-transparent shadow-none border-0">
-                    <div class="nav-top w-100">
-                        <a href="/">
-                            <i class="feather-zap text-success display1-size me-2 ms-0"></i>
-                            <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Study Hub. </span>
-                        </a>
-                        <button class="nav-menu me-0 ms-auto"></button>
-                        <a href="/login" class="header-btn d-none d-lg-block bg-dark fw-500 text-white font-xsss p-3 ms-auto w100 text-center lh-20 rounded-xl">Login</a>
-                        <a href="/register" class="header-btn d-none d-lg-block bg-current fw-500 text-white font-xsss p-3 ms-2 w100 text-center lh-20 rounded-xl">Register</a>
+            <form action="#" class="float-left header-search ms-3">
+                <div class="form-group mb-0 icon-input">
+                    <i class="feather-search font-sm text-grey-400"></i>
+                    <input id="searchInput" type="text" placeholder="Start typing to search.."
+                           class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xssss fw-500 rounded-xl w350 theme-dark-bg">
+                    <div id="searchResults">
+                        <!-- Search results will be displayed here -->
                     </div>
                 </div>
-        {% endif %}
-            {% block content %} {% endblock %}
+            </form>
+            <a aria-current="page" class="p-2 text-center ms-3 menu-icon center-menu-icon active" href="/home"><i
+                    class="feather-home font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a
+                class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/defaultstorie"><i
+                class="feather-zap font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a
+                class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/defaultvideo"><i
+                class="feather-video font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a
+                class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/defaultgroup"><i
+                class="feather-user font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><a
+                class="p-2 text-center ms-0 menu-icon center-menu-icon" href="/shop2"><i
+                class="feather-shopping-bag font-lg bg-greylight btn-round-lg theme-dark-bg text-grey-500 "></i></a><span
+                class="p-2 pointer text-center ms-auto menu-icon " id="dropdownMenu3" data-bs-toggle="dropdown"
+                aria-expanded="false"><span class="dot-count bg-warning"></span><i
+                class="feather-bell font-xl text-current"></i></span>
+            <a class="p-2 text-center ms-3 menu-icon chat-active-btn" href="/"><i
+                    class="feather-message-square font-xl text-current"></i></a><span
+                class="pointer p-2 text-center ms-3 menu-icon chat-active-btn "><i
+                class="feather-moon font-xl text-current"></i></span><a class="p-0 ms-3 menu-icon"
+                                                                        href="/defaultsettings"><img
+                src="assets/images/profile-4.png" alt="user" class="w40 mt--1"></a>
         </div>
+
+        <div class="main-content">
+    {% else %}
+        <div class="main-wrap">
+        <div class="nav-header bg-transparent shadow-none border-0">
+            <div class="nav-top w-100">
+                <a href="/">
+                    <i class="feather-zap text-success display1-size me-2 ms-0"></i>
+                    <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxl logo-text mb-0">Study Hub. </span>
+                </a>
+                <button class="nav-menu me-0 ms-auto"></button>
+                <a href="/login"
+                   class="header-btn d-none d-lg-block bg-dark fw-500 text-white font-xsss p-3 ms-auto w100 text-center lh-20 rounded-xl">Login</a>
+                <a href="/register"
+                   class="header-btn d-none d-lg-block bg-current fw-500 text-white font-xsss p-3 ms-2 w100 text-center lh-20 rounded-xl">Register</a>
+            </div>
+        </div>
+    {% endif %}
+    {% block content %} {% endblock %}
+    </div>
     </div>
 
     <section class="full-height">
@@ -99,6 +213,6 @@
             {% endwith %}
         </div>
     </section>
-    </div>
+</div>
 </body>
 </html>
