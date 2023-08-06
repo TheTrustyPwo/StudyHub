@@ -6,6 +6,9 @@ from werkzeug.datastructures import FileStorage
 from app.upload import s3
 
 
+cache = {}
+
+
 class FilePurpose(Enum):
     PROFILE_PICTURE = 'profile_picture'
     MESSAGE_ATTACHMENT = 'message_attachment'
@@ -42,6 +45,7 @@ class File:
         """
         try:
             s3.put_object(Body=self.file_data, Bucket=self.bucket, Key=self.s3_key)
+            cache[self.s3_key] = s3.generate_presigned_url('get_object', Params={'Bucket': cls.bucket, 'Key': self.s3_key})
             return f'{self.endpoint}/{self.s3_key}'
         except Exception as e:
             print(f"An error occurred while uploading the image: {e}")
@@ -56,8 +60,9 @@ class File:
         """
         try:
             s3_key = f'{image_type.value}/{user_id}/{filename}'
-            response = s3.generate_presigned_url('get_object', Params={'Bucket': cls.bucket, 'Key': s3_key})
-            return response
+            if s3_key not in cache:
+                cache[s3_key] = s3.generate_presigned_url('get_object', Params={'Bucket': cls.bucket, 'Key': s3_key})
+            return cache[s3_key]
         except Exception as e:
             print(f"An error occurred while getting the image: {e}")
         return None
@@ -86,6 +91,11 @@ class File:
 class ProfileFile(File):
     def __init__(self, file_data: FileStorage, user_id: int):
         super().__init__(file_data, FilePurpose.PROFILE_PICTURE, user_id)
+
+
+class PostAttachment(File):
+    def __init__(self, file_data: FileStorage, user_id: int):
+        super().__init__(file_data, FilePurpose.POST_ATTACHMENT, user_id)
 
 
 class MessageAttachment(File):
