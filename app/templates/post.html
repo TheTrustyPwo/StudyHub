@@ -1,269 +1,98 @@
 {% extends 'base.html' %}
 {% block content %}
-    <style>
-        html {
-            height: 100%;
-            width: 100%;
-        }
 
-        img {
-            max-width: 20%;
-            height: auto;
-        }
+<script type="module" src="{{ url_for('static', filename='js/posts.js') }}" async></script>
 
-        .list-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .list-group > * {
-            margin-bottom: 10px;
-        }
-
-        .buttons {
-            background-color: #1A8CFF;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 100%
-        }
-
-        .redbutton {
-            background-color: #FF1A1A;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 40%;
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-        }
-
-        .replybutton {
-            background-color: #FF1A1A;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 100%
-        }
-
-        .redbutton:hover, .replybutton:hover {
-            background-color: #c30000; /* Darker color when hovering */
-        }
-
-        .buttons:hover {
-            background-color: #0057B3;
-        }
-
-
-        .reply-textarea {
-            width: 100%;
-            height: 100px;
-            resize: vertical;
-            padding: 5px;
-            border-radius: 20px;
-        }
-
-
-        .button-wrapper {
-            margin-bottom: 16px; /* Add margin bottom to create space */
-        }
-
-        .container-fluid {
-            padding-left: 20px;
-        }
-
-        .comment-container {
-            background-color: #f6f7f8;
-            border-radius: 5px;
-            padding: 10px;
-        }
-
-        .comment {
-            background-color: #fff;
-            padding: 10px;
-            border-top: 1px solid #e6e6e6;
-        }
-
-        .comment .time {
-            font-size: 8px;
-        }
-
-        .comment .body {
-            font-size: 14px;
-            color: #333;
-        }
-
-        .row {
-            margin-left: 40px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .container-fluid1 {
-            margin-left: 40px;
-            position: absolute;
-            right: 0;
-            max-width: 200px;
-        }
-
-        .upvote-button, .downvote-button {
-            display: inline-block;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            cursor: pointer;
-            font-size: 20px;
-            transition: all 0.3s;
-        }
-
-
-        .col-8 {
-            flex: 1;
-        }
-
-        .upvote-button.active {
-            border-bottom: 20px solid #ff4500;
-        }
-
-        .downvote-button.active {
-            border-top: 20px solid #149EF0;
-        }
-
-        .upvote-button {
-            border-bottom: 20px solid #808080;
-            transition: color 0.3s;
-        }
-
-        .downvote-button {
-            border-top: 20px solid #808080;
-            transition: color 0.3s;
-        }
-
-        .votes, .votes1 {
-            font-weight: bold;
-            text-align: center;
-        }
-
-        body {
-            margin-top: 100px;
-        }
-    </style>
-
+<div class="container">
     <div class="row">
-        <div class="col-8">
-            <div class="card mb-2">
-                <div class="row">
-                    <div class="col-2">
-                        <div class="list-group text-center border-0">
-                            <span></span>
+        <div class="col-lg-9">
+            <div class="card post-card w-100 shadow-xss rounded-xxl border-0 p-4 mt-5 mb-3">
+                <div class="card-body p-0 d-flex">
+                    <figure class="avatar me-3">
+                        <img id="post-author-pfp" src="{{ url_for('static', filename='assets/default-pfp.jpg') }}" alt="avater"
+                             class="shadow-sm rounded-circle w45">
+                    </figure>
+                    <div>
+                        <h4 id="post-author" class="fw-700 text-grey-900 font-xssss mt-1">Loading...</h4>
+                        <span id="post-timestamp" class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">Loading...</span>
+                    </div>
+                    <div class="ms-auto pointer"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></div>
+                </div>
 
-                            <div class="upvote-button" id="post-upvote-button"></div>
-                            <span class="votes" id="post-votes"></span>
-                            <span></span>
-                            <div class="downvote-button" id="post-downvote-button"></div>
-                            <span></span>
-                        </div>
+                <h4 id="post-title" class="fw-bold font-xs">Loading...</h4>
+                <div class="card-body p-0 me-lg-5">
+                    <p id="post-body" class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">
+                        Loading...
+                    </p>
+                </div>
+
+                <div id="post-attachment-wrap" class="card-body p-0 mb-3" style="display: none;">
+                    <div class="row ps-2 pe-2">
+                        <div class="col-sm-12 p-1"><img id="post-attachment" src="" class="rounded-3 w-100" alt="attachment"></div>
+                    </div>
+                </div>
+
+                <div class="card-body d-flex p-0">
+                    <div class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
+                        <i id="post-upvote" class="upvote"></i>
+                        <span id="post-votes" class="mx-2">Loading...</span> 
+                        <i id="post-downvote" class="downvote"></i>
                     </div>
 
-                    <div class="col-10">
+                    <a class="d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss">
+                        <i class="feather-message-circle text-dark text-grey-900 btn-round-sm font-lg"></i>
+                        <span id="post-reply-count" class="d-none-xss">Loading...</span>
+                    </a>
 
-                        <div class="card-body">
-                            <h6 class="card-subtitle text-muted mb-3">
-                                <small>Posted on <span id="post-timestamp">Timestamp</span> by <a id="post-author"
-                                                                                                  class="text-muted">User</a></small>
-                            </h6>
-                            <h4 id="post-title" class="card-title"></h4>
-
-                            <p id="post-body" class="card-text"></p>
-                        </div>
+                    <div class="pointer ms-auto d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss" id="dropdownMenu32" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="feather-share-2 text-grey-900 text-dark btn-round-sm font-lg"></i>
+                        <span class="d-none-xs">Share</span>
                     </div>
-                    <div class="button-wrapper">
-                        <button id="post-delete" class="redbutton">Delete Post <span style="font-size: 14px;">&#x1F5D1;&#xFE0F;</span>
-                        </button>
+
+                    <div class="dropdown-menu dropdown-menu-end p-4 rounded-xxl border-0 shadow-lg right-0 " aria-labelledby="dropdownMenu32">
+                        <h4 class="fw-700 font-xss text-grey-900 d-flex align-items-center">Share <i class="feather-x ms-auto font-xssss btn-round-xs bg-greylight text-grey-900 me-2"></i></h4>
+                        <div class="card-body p-0 d-flex">
+                            <ul class="d-flex align-items-center justify-content-between mt-2">
+                                <li class="me-1"><span class="btn-round-lg pointer bg-tumblr"><i class="font-xs ti-tumblr text-white"></i></span></li>
+                                <li class="me-1"><span class="btn-round-lg pointer bg-youtube"><i class="font-xs ti-youtube text-white"></i></span></li>
+                                <li class="me-1"><span class="btn-round-lg pointer bg-flicker"><i class="font-xs ti-flickr text-white"></i></span></li>
+                                <li class="me-1"><span class="btn-round-lg pointer bg-black"><i class="font-xs ti-vimeo-alt text-white"></i></span></li>
+                                <li><span class="btn-round-lg pointer bg-whatsup"><i class="font-xs feather-phone text-white"></i></span></li>
+                            </ul>
+                        </div>
+                        <h4 class="fw-700 font-xssss mt-4 text-grey-500 d-flex align-items-center mb-3">Copy Link</h4>
+                        <i class="feather-copy position-absolute right-35 mt-3 font-xs text-grey-500"></i>
+                        <input type="text" placeholder="https://studyhub.thepwo.com/post/{{ post.id }}" class="bg-grey text-grey-500 font-xssss border-0 lh-32 p-2 font-xssss fw-600 rounded-3 w-100 theme-dark-bg">
                     </div>
                 </div>
             </div>
 
-            <div class="reply-container">
-                <textarea id="reply-text" class="reply-textarea" placeholder="Write your reply here..."></textarea>
-                <button id="reply-button" class="replybutton">Reply</button>
+            <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
+                <label class="mont-font fw-600 font-xsss text-dark p-1">Know the answer or require further clarifications? Reply here!</label>
+                <textarea id="reply-text" class="style2-textarea form-control h100" placeholder="Write your reply here." minlength="1"
+                          maxlength="500" required></textarea>
+                <button id="reply-button" class="bg-current form-control text-white font-xsss fw-600 mt-2 p-3 w175 border-0 rounded-3 d-inline-block" style="line-height: 0 !important; height: 40px;">
+                    Reply
+                </button>
+                <button id="reply-button-loading" class="d-none bg-current form-control text-white font-xsss fw-600 mt-2 w175 border-0 rounded-3 d-inline-block" style="line-height: 30px !important; height: 40px;" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                    Sending...
+                </button>
             </div>
 
-            <p class="text-muted ml-1">
-                Sort by: Recent
-
-            </p>
-            <hr>
-
-            <ul id="post-replies"></ul>
-
-            <nav class="my-2" aria-label="Page navigation example">
-                <ul class="pagination">
-
-                </ul>
-            </nav>
+            <hr class="p-0 my-3">
+            <div id="post-replies"></div>
         </div>
 
-
-        <div class="col-4">
-            <div class="card">
-                <div class="card-header">
-
-                </div>
-                <div class="card-body">
-                    <p class="card-text">
-
-                    </p>
-                    <div class="container-fluid">
-                        <div class="row1">
-                            <div>
-
-                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRctoywU2IIJfVZ1slPmP-E2KDGU95Ags4vWfzw1Omz&s"></img><b>Subject:
-                                Mathematics</b>
-
-                            </div>
-                            <small> A place for students to discuss questions related to Math.</small>
-                        </div>
-                        <hr>
-                        <small>Members Active: </small> <span>50</span>
-                        <div>
-                            <small>Members joined: </small><span>100</span>
-                        </div>
-                        <div class="button-wrapper">
-                            <button class="buttons">Join</button>
-                        </div>
-                        <div>
-                            <button class="buttons">Create Post</button>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-lg-3">
+            <div class="card post-card w-100 shadow-xss rounded-xxl border-0 p-4 mt-5">
+                <h4 class="fw-bold fs-5">Related Posts</h4><hr class="my-3">
+                <div id="related-posts" class="list-group w-100 rounded-lg"></div>
             </div>
         </div>
     </div>
+</div>
 
-    <script type="module" src="{{ url_for('static', filename='js/posts.js') }}"></script>
+<div id="loading-screen"><div class="spinner"></div></div>
+
 {% endblock %}
