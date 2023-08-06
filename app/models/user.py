@@ -54,6 +54,8 @@ class User(db.Model, UserMixin):
 
     @property
     def pfp(self):
+        if not self.pfp_file_name:
+            return None
         return ProfileFile.get(self.pfp_file_name, FilePurpose.PROFILE_PICTURE, self.id)
 
     @property
