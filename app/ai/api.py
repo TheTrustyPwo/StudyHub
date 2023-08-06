@@ -5,7 +5,7 @@ from flask_login import current_user, login_required
 
 from app.ai import ai_api_blueprint, ai_services
 from app.exceptions import BadRequest, Unauthorized, NotFound, Conflict
-from app.models import User, Essay, EssayCriticism, EssayEvaluation, EssayCompliment
+from app.models import User, Essay
 
 
 @ai_api_blueprint.route('/essay/<int:essay_id>')
