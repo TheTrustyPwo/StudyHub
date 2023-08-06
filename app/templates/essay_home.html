@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script type="module" src="{{ url_for('static', filename='js/essayHome.js') }}" async></script>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <form method="POST" id="essay-form" class="mb-4">
+                {{ form.csrf_token }}
+
+                <div class="mb-3 form-group">
+                    {{ form.title(class="form-control shadow-none font-xl fw-600 border-0", style="background-color: transparent !important",
+                        placeholder="Essay topic", id="essayTitle") }}
+                </div>
+                <div class="mb-3 form-group">
+                    {{ form.content(class="style2-textarea form-control font-xss fw-400 lh-base pt-3 h300", placeholder="Paste your essay here",
+                            id="essayContent", rows="8") }}
+                </div>
+                <input type="submit" value="Grade" id="grade-button" class="bg-current form-control text-white font-xsss fw-600 p-3 w175 border-0 rounded-3 d-inline-block" style="line-height: 0 !important; height: 40px;">
+                <button id="grade-button-loading" class="d-none bg-current form-control text-white font-xsss fw-600 mt-2 w175 border-0 rounded-3 d-inline-block" style="line-height: 30px !important; height: 40px;" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                    Grading...
+                </button>
+            </form>
+        </div>
+
+        <div class="col-lg-4">
+            <div id="recently-graded" class="w-100 rounded-xxl border-0 shadow-xss list-group p-3 mb-3">
+                <p class="fw-semibold mb-2 p-2 font-md">Recently graded</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
