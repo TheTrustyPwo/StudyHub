@@ -2,7 +2,7 @@ import json
 
 from flask_testing import TestCase
 
-from app import app, db
+from app import create_app, db, config
 
 
 class BaseTestCase(TestCase):
@@ -11,8 +11,7 @@ class BaseTestCase(TestCase):
         Create an instance of the app with the testing configuration
         :return:
         """
-        app.config.from_object('app.config.TestingConfig')
-        return app
+        return create_app(config.TestingConfig)
 
     def setUp(self):
         """
