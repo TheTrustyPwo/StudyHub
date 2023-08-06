@@ -8,8 +8,7 @@ from tests.base import BaseTestCase
 class TestAuth(BaseTestCase):
     def test_get_register(self):
         """
-        Tests GET request to the /register route to assert the registration page is
-        returned.
+        Tests GET request to the /register route to assert the registration page is returned.
         """
         response = self.client.get("/register")
 
@@ -19,8 +18,7 @@ class TestAuth(BaseTestCase):
 
     def test_post_register(self):
         """
-        Test POST request to the /register route to assert the user is successfully
-        registered.
+        Test POST request to the /register route to assert the user is successfully registered.
         """
         response = self.register_user('test@gmail.com', 'test', 'test123')
 
@@ -40,10 +38,10 @@ class TestAuth(BaseTestCase):
 
     def test_post_login(self):
         """
-        Test POST request to the /login route to assert the user is successfully logged
-        in.
+        Test POST request to the /login route to assert the user is successfully logged in.
         """
         self.register_user('test@gmail.com', 'test', 'test123')
+        self.client.post("/logout", follow_redirects=True)
         response = self.login_user('test@gmail.com', 'test123')
 
         assert response is not None
@@ -52,11 +50,9 @@ class TestAuth(BaseTestCase):
 
     def test_post_logout(self):
         """
-        Test POST request to the /logout route to assert the user is successfully
-        logged out.
+        Test POST request to the /logout route to assert the user is successfully logged out.
         """
         self.register_user('test@gmail.com', 'test', 'test123')
-        self.login_user('test@gmail.com', 'test123')
 
         response = self.client.post("/logout", follow_redirects=True)
 
