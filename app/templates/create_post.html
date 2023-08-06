@@ -1,70 +1,66 @@
 {% extends "base.html" %}
 {% block content %}
 
-    <style>
-        html {
-            height: 100%;
-            width: 100%;
-        }
+<div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left">
+        <div class="middle-wrap">
+            <div class="card w-100 border-0 bg-white shadow-xs p-0 mb-4">
+                <div class="card-body p-4 w-100 bg-current border-0 d-flex rounded-3">
+                    <a class="d-inline-block mt-2" href="/">
+                        <i class="ti-arrow-left font-sm text-white"></i>
+                    </a>
+                    <h4 class="font-xs text-white fw-600 ms-4 mb-0 mt-2">Post a question!</h4>
+                </div>
 
-        .replybutton {
-            background-color: #FF0000;
-            border: none;
-            color: white;
-            padding: 4px 24px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-            width: 100%
-        }
+                <div class="card-body p-lg-5 p-4 w-100 border-0">
+                    <form method="POST">
+                        {{ form.csrf_token }}
 
-        .reply-textarea {
-            width: 100%;
-            height: 100px;
-            resize: vertical;
-            padding: 5px;
-        }
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <div class="form-group">
+                                    <label class="mont-font fw-600 font-xsss text-dark">Question</label>
+                                    {{ form.title(class="style2-textarea form-control",
+                                        placeholder="Keep your question short and sweet!") }}
+                                </div>
+                            </div>
+                            <div class="col-lg-12 mb-3">
+                                <div class="form-group">
+                                    <label class="mont-font fw-600 font-xsss text-dark">Elaboration</label>
+                                    {{ form.body(class="style2-textarea form-control h200", rows=5,
+                                        placeholder="Elaborate on your question or provide clarifications here.") }}
+                                </div>
+                            </div>
+                        </div>
 
-        .reply-textarea1 {
-            width: 100%;
-            height: 50px;
-            resize: vertical;
-            padding: 5px;
-        }
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <div class="form-group">
+                                    <label class="mont-font fw-600 font-xsss text-dark">Subject</label>
+                                    {{ form.subject(class="form-control style2-select text-grey-700 font-xsss", style="line-height: 25px; height: 40px;") }}
+                                </div>
+                            </div>
+                        </div>
 
-        h1 {
-            font-size: 40px;
-            font-weight: bold;
-            border-radius: 20px;
-        }
-    </style>
+                        <div class="row">
+                            <div class="col-lg-12 mb-3">
+                                <div class="form-group">
+                                    <label class="mont-font fw-600 font-xsss text-dark">Attachment (Optional)</label>
+                                    {{ form.attachment(class="form-control style2-input", style="line-height: 25px; height: 40px;") }}
+                                </div>
+                            </div>
+                        </div>
 
-    <h1 style="text-align: center">Post a question!</h1>
-    <div class="reply-container">
-        <textarea id="title" class="reply-textarea1" placeholder="Type your title here..."></textarea> <br>
-        <textarea id="body" class="reply-textarea" placeholder="Type your question here..."></textarea>
-        <label for="subject">Choose a subject:</label>
-        <select id="subject" name="subject">
-            <option value="english">ENGLISH</option>
-            <option value="mathematics">MATHEMATICS</option>
-            <option value="physics">PHYSICS</option>
-            <option value="chemistry">CHEMISTRY</option>
-            <option value="biology">BIOLOGY</option>
-            <option value="social_studies">SOCIAL STUDIES</option>
-            <option value="geography">GEOGRAPHY</option>
-            <option value="history">HISTORY</option>
-            <option value="chinese">CHINESE</option>
-            <option value="computing">COMPUTING</option>
-            <option value="literature">LITERATURE</option>
-            <option value="music">MUSIC</option>
-            <option value="art">ART</option>
-        </select>
-        <button id="submit" class="replybutton">Post</button>
+                        <div class="row">
+                            <div class="col-lg-12 mb-0">
+                                <input type="submit" value="Post" class="bg-current text-center text-white font-xsss fw-600 p-3 w175 border-0 rounded-3 d-inline-block">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 
-    <script type="module" src="{{ url_for('static', filename='js/createPost.js') }}"></script>
 {% endblock %}
