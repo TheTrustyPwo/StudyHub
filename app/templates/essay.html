@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+
+<script type="module" src="{{ url_for('static', filename='js/essay.js') }}" async></script>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <form id="essayForm" class="mb-4">
+                <div class="mb-3 form-group">
+                    <input type="text" class="form-control shadow-none font-xl fw-600 border-0" style="background-color: transparent !important"
+                           value="Loading..." id="essay-title" required>
+                </div>
+                <div class="mb-3 form-group">
+                    <textarea class="style2-textarea form-control font-xss fw-400 lh-base pt-3 h300" id="essay-content"
+                              rows="8" required>Loading...</textarea>
+                </div>
+                <button id="grade-button" class="bg-current form-control text-white font-xsss fw-600 p-3 w175 border-0 rounded-3 d-inline-block" style="line-height: 0 !important; height: 40px;">
+                    Regrade
+                </button>
+            </form>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="w-100 rounded-xxl border bg-body list-group p-3 mb-3">
+                <p class="fw-semibold mb-2 p-2 font-sm">Suggestions</p>
+                <ul id="essay-compliments" class="list-group font-xss fw-500"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="loading-screen"><div class="spinner"></div></div>
+
+{% endblock %}
