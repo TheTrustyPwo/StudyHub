@@ -656,6 +656,21 @@
   width: 400px !important;
 }
 
+.w500 {
+  width: 500px !important;
+}
+
+
+.w600 {
+  width: 600px !important;
+}
+
+
+.w700 {
+  width: 700px !important;
+}
+
+
 .w__12 {
   width: 12.1% !important;
   flex: 0 0 30% !important;
@@ -756,6 +771,35 @@
 
 .h600 {
   height: 600px !important;
+}
+
+.upvote, .downvote {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s;
+}
+
+.upvote.active {
+    border-bottom: 20px solid #ff4500;
+}
+
+.downvote.active {
+    border-top: 20px solid #149EF0;
+}
+
+.upvote {
+    border-bottom: 20px solid #808080;
+    transition: color 1.0s;
+}
+
+.downvote {
+    border-top: 20px solid #808080;
+    transition: color 1.0s;
 }
 
 .btn-round-xss {
