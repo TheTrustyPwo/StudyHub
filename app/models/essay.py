@@ -3,12 +3,12 @@ import datetime
 from app import db
 from enum import Enum
 
-class EssayEvaluation(Enum):
+class EssayGrade(Enum):
     POOR = 'poor'
     FAIR = 'fair'
     SATISFACTORY = 'satisfactory'
     GOOD = 'good'
-    VERY_GOOD = 'very_good'
+    VERY_GOOD = 'very good'
     EXCELLENT = 'excellent'
 
     @classmethod
@@ -16,15 +16,19 @@ class EssayEvaluation(Enum):
         return name.upper() in cls.__members__
 
 
-class EssayCompliment(db.Model):
-    __tablename__ = 'essay_compliments'
+class EssaySuggestion(db.Model):
+    __tablename__ = 'essay_suggestions'
 
     id = db.Column(db.Integer, primary_key=True)
-    remarks = db.Column(db.Text, nullable=False)
+    area = db.Column(db.Text, nullable=False)
+    problem = db.Column(db.Text, nullable=False)
+    solution = db.Column(db.Text, nullable=False)
     essay_id = db.Column(db.Integer, db.ForeignKey('essays.id'), nullable=False)
 
-    def __init__(self, remarks: str, essay_id: int):
-        self.remarks = remarks
+    def __init__(self, area: str, problem: str, solution: str, essay_id: int):
+        self.area = area
+        self.problem = problem
+        self.solution = solution
         self.essay_id = essay_id
 
     def save(self):
@@ -34,31 +38,10 @@ class EssayCompliment(db.Model):
     @property
     def serialized(self):
         return {
-            'remarks': self.remarks
+            'area': self.area,
+            'problem': self.problem,
+            'solution': self.solution
         }
-
-
-class EssayCriticism(db.Model):
-    __tablename__ = 'essay_criticism'
-
-    id = db.Column(db.Integer, primary_key=True)
-    remarks = db.Column(db.Text, nullable=False)
-    essay_id = db.Column(db.Integer, db.ForeignKey('essays.id'), nullable=False)
-
-    def __init__(self, remarks: str, essay_id: int):
-        self.remarks = remarks
-        self.essay_id = essay_id
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-
-    @property
-    def serialized(self):
-        return {
-            'remarks': self.remarks
-        }
-
 
 
 class Essay(db.Model):
@@ -70,20 +53,21 @@ class Essay(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     topic = db.Column(db.Text, nullable=False)
     essay = db.Column(db.Text, nullable=False)
-    evaluation = db.Column(db.Enum(EssayEvaluation), nullable=False)
+    comment = db.Column(db.Text, nullable=False)
+    grade = db.Column(db.Enum(EssayGrade), nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
-    compliments = db.relationship(EssayCompliment, backref='essay', lazy="dynamic", cascade="all, delete-orphan")
-    criticisms = db.relationship(EssayCriticism, backref='essay', lazy="dynamic", cascade="all, delete-orphan")
+    suggestions = db.relationship(EssaySuggestion, backref='essay', lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Essay (id='{self.id}', topic='{self.topic}', user_id='{self.user_id}')>"
 
-    def __init__(self, topic: str, essay: str, evaluation: EssayEvaluation, user_id: int):
+    def __init__(self, topic: str, essay: str, comment: str, grade: EssayGrade, user_id: int):
         self.topic = topic
         self.essay = essay
-        self.evaluation = evaluation
+        self.comment = comment
+        self.grade = grade
         self.user_id = user_id
 
     def save(self):
@@ -100,10 +84,10 @@ class Essay(db.Model):
             'id': self.id,
             'topic': self.topic,
             'essay': self.essay,
-            'user_id': self.user_id,
-            'evaluation': self.evaluation.name,
-            'compliments': [o.serialized for o in self.compliments],
-            'criticisms': [o.serialized for o in self.criticisms],
+            'userId': self.user_id,
+            'comment': self.comment,
+            'grade': self.grade.name,
+            'suggestions': [suggestion.serialized for suggestion in self.suggestions],
             'timestamp': self.timestamp.strftime('%Y-%m-%d %H:%M:%S')
         }
 
