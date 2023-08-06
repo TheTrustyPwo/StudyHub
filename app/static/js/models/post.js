@@ -12,10 +12,12 @@ class Post {
      * @param {string} body - The body content of the post.
      * @param {string} subject - The subject of the post.
      * @param {User} author - The User object representing the author of the post.
+     * @param {Number} replyCount - The number of replies the post has.
+     * @param {string} attachment - The attachment of the post, if present.
      * @param {Array} votes - An array of Vote objects representing the votes on the post.
      * @param {Date} timestamp - The timestamp indicating when the post was created.
      */
-    constructor(id, title, body, subject, author, votes, timestamp) {
+    constructor(id, title, body, subject, author, votes, replyCount, attachment, timestamp) {
         if (Post.#cache.has(id)) return Post.#cache.get(id);
 
         this.id = id;
@@ -24,6 +26,8 @@ class Post {
         this.subject = subject;
         this.author = author;
         this.votes = votes;
+        this.replyCount = replyCount;
+        this.attachment = attachment;
         this.timestamp = timestamp;
         this.replies = [];
         Post.#cache.set(id, this);
@@ -35,9 +39,9 @@ class Post {
      * @returns {Post} - The created Post object.
      */
     static async fromJson(json) {
-        const { id, title, body, subject, authorId, votes, timestamp } = json;
+        const { id, title, body, subject, authorId, votes, replyCount, attachment, timestamp } = json;
         const user = await User.getById(authorId);
-        return new Post(id, title, body, subject, user, votes, moment.utc(timestamp));
+        return new Post(id, title, body, subject, user, votes, replyCount, attachment, moment.utc(timestamp));
     }
 
     /**
@@ -47,14 +51,18 @@ class Post {
      * @param {string} subject - The subject of the post.
      * @returns {Promise<Post>} - A Promise that resolves to the created Post object.
      */
-    static async create(title, body, subject) {
+    static async create(title, body, subject, attachment) {
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('body', body);
+        formData.append('subject', subject);
+        if (attachment !== undefined) formData.append('file', attachment);
+
         const response = await fetch(`/api/v1/posts/create`, {
             method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({'title': title, 'body': body, 'subject': subject})
+            body: formData,
+            contentType: false,
+            processData: false,
         });
 
         const jsonData = await response.json();
@@ -75,6 +83,39 @@ class Post {
         } catch (error) {
             console.error(`Could not retrieve Post by ID: ${postId}`);
             return undefined;
+        }
+    }
+
+    /**
+     * Get a list of posts with pagination and before timestamp.
+     * @param {number} page - The page number to fetch.
+     * @param {number} limit - The number of posts to fetch per page.
+     * @param {string|null} before - The timestamp in 'YYYY-MM-DD HH:mm:ss' format to fetch posts created before this timestamp.
+     * @param {Set|null} subjects - The set of subjects to filter the posts by.
+     * @returns {Promise<Array<Post>>} - A Promise that resolves to an array of Post objects.
+     */
+    static async getPosts(page, limit, before = null, subjects = null) {
+        try {
+            let url = `/api/v1/posts/all?page=${page}&limit=${limit}${before ? `&before=${before}` : ''}`;
+            if (subjects) url += `&subjects=${Array.from(subjects).join(',')}`;
+            console.log(url)
+            const response = await fetch(url);
+            const postData = await response.json();
+            return await Promise.all(postData.map(async post => await Post.fromJson(post)));
+        } catch (error) {
+            console.error(`Could not fetch posts with pagination`);
+            return [];
+        }
+    }
+
+    static async search(query) {
+        try {
+            const response = await fetch(`/api/v1/posts/search/${encodeURIComponent(query)}`);
+            const postData = await response.json();
+            return await Promise.all(postData.map(async post => await Post.fromJson(post)));
+        } catch (error) {
+            console.error(`Could not search for posts`);
+            return [];
         }
     }
 
