@@ -6,4 +6,4 @@ from app.models.post_vote import PostVote
 from app.models.reply import Reply
 from app.models.reply_vote import ReplyVote
 from app.models.user import User
-from app.models.essay import EssayEvaluation, Essay, EssayCriticism, EssayCompliment
+from app.models.essay import EssayGrade, Essay, EssaySuggestion
