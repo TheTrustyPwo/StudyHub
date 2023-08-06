@@ -4,9 +4,11 @@ from flask import jsonify, Response, request
 from flask_login import current_user, login_required
 
 from app import db
+from sqlalchemy import desc, func
 from app.exceptions import Unauthorized, NotFound, BadRequest
 from app.models import Post, PostVote, Subject
 from app.post import post_api_blueprint
+from app.upload.files import FilePurpose, PostAttachment
 
 
 @post_api_blueprint.route('/create', methods=['POST', 'GET'])
@@ -18,19 +20,26 @@ def create_post() -> Response:
     :return: JSON representation of the created post data.
     :raises BadRequest: If the request does not contain title or body.
     """
-    title = request.json.get('title')
+    title = request.form.get('title')
     if not title:
         raise BadRequest(message='Post must contain title')
 
-    body = request.json.get('body')
+    body = request.form.get('body')
     if not body:
         raise BadRequest(message='Post must contain body')
 
-    subject = request.json.get('subject')
+    subject = request.form.get('subject')
     if not subject or not Subject.has_key(subject):
         raise BadRequest(message='Invalid post subject')
 
-    post = Post(title=title, post=body, subject=Subject(subject), user_id=current_user.id)
+    attachment = request.files.get('file', None)
+    filename = None
+    if attachment:
+        image = PostAttachment(attachment, current_user.id)
+        image.upload()
+        filename = image.filename
+
+    post = Post(title=title, post=body, subject=Subject(subject), user_id=current_user.id, attachment_name=filename)
     post.save()
 
     return jsonify(post.serialized)
@@ -147,27 +156,31 @@ def delete_post(post_id: int) -> None:
     db.session.commit()
 
 
-@post_api_blueprint.route("/<int:start_row>/<int:end_row>", methods=["GET"])
-def get_post_by_range(start_row: int, end_row: int) -> List[dict]:
-    """
-    Get posts within a specified range.
+@post_api_blueprint.route('/all', methods=['GET'])
+def get_posts():
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 10, type=int)
+    before = request.args.get('before')
+    subjects = request.args.get('subjects')
+    sort_by = request.args.get('sort', 'latest').lower()
 
-    :param start_row: The starting row of the range.
-    :param end_row: The ending row of the range.
-    :return: List of dictionaries containing post data within the range.
-    """
-    # @Stucknight TODO: Please use jsonify and use post.serialized
-    out = []
-    for i in Post.get_post_range(start_row, end_row):
-        out.append({'ptitle': i.title, 'post': i.post, 'date': i.date_created, 'user': i.user_id, 'id': i.id})
-    return out
+    if subjects:
+        subjects = list(map(str.upper, subjects.split(',')))
+        if 'ALL SUBJECTS' in subjects:
+            subjects = None
 
+    query = Post.query
+    if subjects:
+        query = query.filter(Post.subject.in_(subjects))
 
-@post_api_blueprint.route("/count", methods=["GET"])
-def get_post_count() -> str:
-    """
-    Get the total count of posts.
+    if before:
+        query = query.filter(Post.date_created < before)
 
-    :return: The count of posts as a string.
-    """
-    return str(Post.query.count())
+    if sort_by == 'latest':
+        query = query.order_by(Post.date_created.desc())
+    elif sort_by == 'popular':
+        query = query.order_by(desc(func.sum(Post.post_votes.vote)).label('score')).all()
+
+    posts = query.offset((page - 1) * limit).limit(limit).all()
+    serialized_posts = [post.serialized for post in posts]
+    return jsonify(serialized_posts), 200
