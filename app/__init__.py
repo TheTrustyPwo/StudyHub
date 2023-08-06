@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from flask_moment import Moment
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 from app.config import BaseConfig, DevelopmentConfig
 
@@ -13,6 +14,7 @@ db = SQLAlchemy()
 socketio = SocketIO()
 moment = Moment()
 cors = CORS()
+migrate = Migrate()
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
@@ -31,6 +33,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     socketio.init_app(app)
     moment.init_app(app)
     cors.init_app(app)
+    migrate.init_app(app, db)
     login_manager.init_app(app)
 
     from app.upload import upload_api_blueprint
