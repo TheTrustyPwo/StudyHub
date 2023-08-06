@@ -5,5 +5,6 @@ from app.feed import feed_blueprint, feed_service
 
 @feed_blueprint.route("/")
 @feed_blueprint.route("/home")
+@login_required
 def home():
     return render_template("home.html")
