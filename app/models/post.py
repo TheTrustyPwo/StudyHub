@@ -5,6 +5,7 @@ from app import db
 from app.models.reply import Reply
 from app.models.post_vote import PostVote
 from enum import Enum
+from sqlalchemy import Index, desc
 
 
 class Subject(Enum):
@@ -35,11 +36,14 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
     post = db.Column(db.Text, nullable=False)
-    subject = db.Column(db.Enum(Subject), nullable=False)
+    subject = db.Column(db.Enum(Subject), nullable=False, index=True)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False, index=True)
     replies = db.relationship("Reply", backref="post", lazy="dynamic", cascade="all, delete-orphan")
     post_votes = db.relationship("PostVote", backref="post", lazy="dynamic", cascade="all, delete-orphan")
+
+    user_id_index = Index("user_id_index", user_id)
+    date_created_index = Index("date_created_index", date_created)
 
     def __repr__(self):
         return f"<Post (id='{self.id}', title='{self.title}', post='{self.post}', subject='{self.subject.name}', date_created='{self.date_created}')>"
@@ -82,3 +86,7 @@ class Post(db.Model):
     @staticmethod
     def get_post_range(start_row, end_row):
         return Post.query.slice(start_row, end_row).all()
+
+    @staticmethod
+    def get_most_recent_by_user(user_id):
+        return Post.query.filter_by(user_id=user_id).order_by(desc(Post.date_created)).first()

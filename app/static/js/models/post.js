@@ -79,6 +79,23 @@ class Post {
     }
 
     /**
+     * Retrieve a post by its ID.
+     * @param {number} userId - The ID of the user whose post to retrieve.
+     * @returns {Promise<Post|undefined>} - A Promise that resolves to the retrieved Post object,
+     *                                      or undefined if the post does not exist.
+     */
+    static async getLatestPostByUser(userId) {
+        try {
+            const response = await fetch(`/api/v1/posts/latest/${userId}`);
+            const postData = await response.json();
+            return await Post.fromJson(postData);
+        } catch (error) {
+            console.error(`Could not retrieve latest Post by the User ID: ${userId}`);
+            return undefined;
+        }
+    }
+
+    /**
      * Load the replies associated with this post.
      * @returns {Promise<void>} - A Promise that resolves when the replies are loaded.
      */

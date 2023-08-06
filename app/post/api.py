@@ -146,6 +146,17 @@ def delete_post(post_id: int) -> None:
     db.session.delete(post)
     db.session.commit()
 
+@post_api_blueprint.route("/latest/<int:user_id>", methods=["GET"])
+def get_most_recent_post(user_id):
+    """
+    Get the latest post of a user
+
+    :param user_id: The ID of the user
+    """
+    post = Post.get_most_recent_by_user(user_id)
+    if not post:
+        raise NotFound(message='User has not created a post yet')
+    return jsonify(post.serialized)
 
 @post_api_blueprint.route("/<int:start_row>/<int:end_row>", methods=["GET"])
 def get_post_by_range(start_row: int, end_row: int) -> List[dict]:
