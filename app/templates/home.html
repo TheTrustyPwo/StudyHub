@@ -1,30 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
-<br>
-<br>
-<div class="page-content page-container" id="page-content">
-    <div class="col-md-9 px-3 mx-auto">
-        <div class="text-center mt-20 mb-12">
-            <h1 class="display-3 ls-tight">
-                <span class="d-inline-block fredoka-font ls-3 fw-600 text-current font-xxxl logo-text mb-0">Welcome To StudyHub</span>
-            </h1>
-            <p class="text-lg font-semibold mt-5 px-lg-32">
-                A website for people to post questions and get answers!
-            </p>
-            <div class="mx-sm-n2 mt-7">
-                <a href="https://github.com/TheTrustyPwo/StudyHub.git" class="btn btn-dark" target="_blank">
-                    <i class="bi bi-github me-2"></i>
-                    <span>See on Github</span>
-                </a>
-            </div>
-        </div>
-        <div class="row g-6 g-lg-6" id="posts">
+
+<script src="{{ url_for('static', filename='js/home.js') }}" type="module" async></script>
+
+<style>
+    .post-card {
+        transition: background-color 0.3s ease;
+    }
+
+    .post-card:hover {
+        background-color: #e1e8f0;
+        cursor: pointer;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <aside class="sidebar">
+                <div class="subject-list">
+                    <h4 class="fw-bold fs-5 mt-5">Subjects</h4><hr class="my-3">
+                    <div id="subject-buttons" class="btn-group-vertical">
+                        <!-- Subject selection to be populated by Javascript -->
+                    </div>
+                </div>
+            </aside>
         </div>
 
-        <p class="text-muted text-sm font-semibold text-center my-12">
-            Made by <i class="bi bi-heart mx-1"></i> The Pwo </a>
-        </p>
+        <div class="col-lg-9">
+            <section class="latest-posts py-5">
+                <h2 class="text-center mb-4">Latest Posts</h2>
+                <div id="posts-container">
+                    <!-- Posts will be here -->
+                </div>
+                <div id="loading-spinner" class="text-center d-none">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
 </div>
-<script src="{{ url_for('static', filename='js/home.js') }}" type="module"></script>
+
 {% endblock %}
