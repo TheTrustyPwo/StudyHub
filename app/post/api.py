@@ -1,14 +1,15 @@
+from datetime import datetime
 from typing import List
 
 from flask import jsonify, Response, request
 from flask_login import current_user, login_required
+from sqlalchemy import desc, func
 
 from app import db
-from sqlalchemy import desc, func
 from app.exceptions import Unauthorized, NotFound, BadRequest
 from app.models import Post, PostVote, Subject
 from app.post import post_api_blueprint
-from app.upload.files import FilePurpose, PostAttachment
+from app.upload.files import PostAttachment
 
 
 @post_api_blueprint.route('/create', methods=['POST', 'GET'])
@@ -174,7 +175,7 @@ def get_posts():
         query = query.filter(Post.subject.in_(subjects))
 
     if before:
-        query = query.filter(Post.date_created < datetime.datetime.strptime(before))
+        query = query.filter(Post.date_created < datetime.strptime(before, '%a %b %d %Y %H:%M:%S GMT 0000'))
 
     if sort_by == 'latest':
         query = query.order_by(Post.date_created.desc())
