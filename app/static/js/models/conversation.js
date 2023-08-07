@@ -102,36 +102,18 @@ class Conversation {
     /**
      * Create a private conversation
      * @param {number} targetUserId - The ID of the user to create the conversation with
-     * @returns {Conversation} - The created Conversation object
      */
-    static async createPrivate(targetUserId) {
-        const data = {target: targetUserId};
-        const response = await fetch('/api/v1/conversations/new/private', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-
-        const conversationData = await response.json();
-        return await Conversation.fromJson(conversationData);
+    static createPrivate(targetUserId) {
+        socket.emit('create_private_conversation', { 'target_id': targetUserId });
     }
 
     /**
      * Create a group conversation
      * @param {string} groupName - The name of the group conversation
      * @param {Array<number>} memberIds - The IDs of the users to add to the group conversation
-     * @returns {Conversation} - The created Conversation object
      */
-    static async createGroup(groupName, memberIds) {
-        const data = {name: groupName, users: memberIds};
-        const response = await fetch('/api/v1/conversations/new/group', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(data)
-        });
-
-        const conversationData = await response.json();
-        return await Conversation.fromJson(conversationData);
+    static createGroup(groupName, memberIds) {
+        socket.emit('create_group_conversation', { name: groupName, users: memberIds });
     }
 
     /**

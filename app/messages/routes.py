@@ -8,7 +8,7 @@ from app import socketio
 from app.conversations import conversation_services
 from app.exceptions import APIException, Unauthorized, BadRequest
 from app.messages import messages_blueprint, messages_service
-from app.models import Conversation, Message
+from app.models import Conversation, Message, User
 
 
 @messages_blueprint.route("/messages")
@@ -114,6 +114,71 @@ def handle_read_message(payload):
 
     for user in message.conversation.users:
         emit('bluetick', [read_message_data.message.id], room=user.id, json=True)
+
+
+@socketio.on('create_private_conversation', namespace='/messages/socket')
+@login_required
+def handle_create_private_conversation(payload):
+    """
+    Handles the create private conversation event.
+
+    Creates the private conversation depending on the payload and
+    emit the new_conversation event to the users affected.
+
+    :param payload: The create conversation payload containing the necessary data.
+    :return:
+    """
+    target_id = payload['target_id']
+    if not target_id:
+        raise BadRequest(message='Target user ID was not specified')
+
+    target = User.get_by_id(target_id)
+    if not target:
+        raise BadRequest(message='User ID is invalid')
+
+    if current_user.id == target_id:
+        raise BadRequest(message='Target user ID cannot be current user ID')
+
+    conversation = conversation_services.create_private_conversation(current_user.id, target_id)
+
+    if not conversation:
+        raise Conflict(message='A conversation already exists between the users')
+
+    emit('new_conversation', conversation.serialized, room=current_user.id, json=True)
+    emit('new_conversation', conversation.serialized, room=target.id, json=True)
+
+
+@socketio.on('create_group_conversation', namespace='/messages/socket')
+@login_required
+def handle_create_group_conversation(payload):
+    """
+    Handles the create group conversation event.
+
+    Creates the group conversation depending on the payload and
+    emit the new_conversation event to the users affected.
+
+    :param payload: The create conversation payload containing the necessary data.
+    :return:
+    """
+    group_name = payload['name']
+    if not group_name:
+        raise BadRequest(message='Group name was not specified')
+
+    user_ids = payload['users']
+    if not user_ids or len(user_ids) < 1:
+        raise BadRequest(message='User IDs were not specified')
+
+    if current_user.id not in user_ids:
+        user_ids.append(current_user.id)
+
+    users = [User.get_by_id(user_id) for user_id in user_ids]
+    if None in users:
+        raise BadRequest(message='One of more of the provided user IDs was invalid')
+
+    conversation = conversation_services.create_group_conversation(group_name, user_ids, current_user.id)
+
+    for user in users:
+        emit('new_conversation', conversation.serialized, room=user.id, json=True)
 
 
 @socketio.on('read_conversation', namespace='/messages/socket')

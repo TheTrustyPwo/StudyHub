@@ -13,7 +13,6 @@ $(document).ready(async function () {
     const chatList = document.getElementById('chat-list');
     // Get all conversations and display them
     const conversations = await Conversation.getAll();
-    console.log(conversations);
     for (const conversation of conversations) {
         console.log(conversation);
         await conversation.loadHistory();
@@ -139,15 +138,15 @@ $(document).ready(async function () {
 
     socket.on('error', data => console.log(data));
 
+    socket.on('new_conversation', async data => displayConversation(await Conversation.fromJson(data)));
+
     // Create conversation button click event
     const createConversationButton = document.getElementById('create-conversation');
     createConversationButton.addEventListener('click', function () {
         const targetUserId = prompt('Enter the user ID to create a conversation with:');
         if (!targetUserId) return;
 
-        Conversation.createPrivate(targetUserId).then(conversation => {
-            displayConversation(conversation);
-        });
+        Conversation.createPrivate(targetUserId);
     });
 
     // Create group conversation button click event
@@ -161,9 +160,7 @@ $(document).ready(async function () {
 
         const userIDs = userIDsString.split(',').map(id => id.trim());
 
-        Conversation.createGroup(groupName, userIDs).then(conversation => {
-            displayConversation(conversation);
-        });
+        Conversation.createGroup(groupName, userIDs);
     });
 
 });
