@@ -1,58 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-<head>
-    <style>
-        #pfp {
-            width: 100px; /* Adjusted width of profile picture */
-            height: 100px; /* Adjusted height of profile picture */
-            border-radius: 50%;
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-size: cover;
-        }
-    </style>
-</head>
-<div class="page-content page-container" id="page-content">
-    <div class="padding1 text-center"> <!-- Added text-center class here -->
-        <div class="row container d-flex justify-content-center mx-auto">
-            <div class="col-xl-8 col-md-10">
-                <div class="card1 user-card-full w-100"> <!-- Added w-100 class here -->
-                    <div class="row m-l-0 m-r-0">
-                        <div class="col-sm-4 bg-c-lite-green user-profile">
-                            <div class="card-block text-center text-white">
-                                <div class="m-b-25">
-                                    <img alt="" id="pfp"
-                                         src="{{ url_for('static', filename='assets/pwo.png') }}">
-                                </div>
-                                <h6 class="f-w-600" id="username"></h6>
-                                <i class=" mdi mdi-square-edit-outline feather icon-edit m-t-10 f-16"></i>
-                            </div>
-                        </div>
-                        <div class="col-sm-8">
-                            <div class="card-block">
-                                <h6 class="m-b-20 p-b-5 b-b-default f-w-600">Information</h6>
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Date Joined</p>
-                                        <h6 class="text-muted f-w-400" id="datecreated"></h6>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <p class="m-b-10 f-w-600">Email</p>
-                                        <h6 class="text-muted f-w-400" id="email"></h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="btn btn-primary" id="message" type="button">Message</button>
-                            </div>
-                            <br>
-                            <br>
+
+<div class="middle-sidebar-bottom">
+    <div class="middle-sidebar-left pe-0">
+        <div class="row">
+            <div class="col-xl-12 mb-3">
+                <div class="card w-100 border-0 p-0 bg-white shadow-xss rounded-xxl">
+                    <div class="card-body h250 p-0 rounded-xxl overflow-hidden m-3">
+                        <img alt="avatar" src="{{ url_for('static', filename='assets/banner.png')}}"
+                            style="object-fit: none; object-position: bottom; width: 100%; max-height: 38vh;">
+                    </div>
+                    <div class="card-body p-0 position-relative">
+                        <figure class="avatar position-absolute w100 z-index-1" style="top: -40px; left: 30px;">
+                            <img alt="avatar" class="float-right p-1 bg-white rounded-circle w-100"
+                                 src="/static/assets/default-pfp.jpg" id="pfp"></figure>
+                        <h4 class="fw-700 font-sm mt-2 mb-lg-5 mb-4 pl-15">
+                            <span id="username">Loading...</span>
+                            <span class="fw-500 font-xssss text-grey-500 mt-1 mb-3 d-block" id="email">Loading...</span>
+                        </h4>
+                        <div class="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2">
+                            <a class="d-none d-lg-block bg-success p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3"
+                               href="/messages" id="message">Message</a><a
+                                class="d-none d-lg-block bg-greylight btn-round-lg ms-2 rounded-3 text-grey-700"
+                                href="/"><i class="feather-mail font-md"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="col-xl-12 col-xxl-9 col-lg-8">
+                <div class="card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3">
+                    <h2 class="fw-700 mb-0 mt-0 font-md text-grey-900 d-flex align-items-center">Latest Post</h2>
+                </div>
+            </div>
+            <div class="col-xl-12 col-xxl-9 col-lg-8" id="latestpost">
+            </div>
         </div>
     </div>
 </div>
+
 <script src="{{ url_for('static', filename='js/users.js') }}" type="module"></script>
 {% endblock %}
