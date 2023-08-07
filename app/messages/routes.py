@@ -6,7 +6,7 @@ from flask_socketio import emit, join_room, leave_room
 
 from app import socketio
 from app.conversations import conversation_services
-from app.exceptions import APIException, Unauthorized, BadRequest
+from app.exceptions import APIException, Unauthorized, BadRequest, Conflict
 from app.messages import messages_blueprint, messages_service
 from app.models import Conversation, Message, User
 
