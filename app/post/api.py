@@ -174,7 +174,7 @@ def get_posts():
         query = query.filter(Post.subject.in_(subjects))
 
     if before:
-        query = query.filter(Post.date_created < before)
+        query = query.filter(Post.date_created < datetime.datetime.strptime(before))
 
     if sort_by == 'latest':
         query = query.order_by(Post.date_created.desc())

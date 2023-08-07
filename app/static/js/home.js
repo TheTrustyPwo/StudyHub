@@ -1,5 +1,4 @@
 import { Post } from "./models/index.js";
-import { hideLoadingScreen } from "./index.js";
 
 const subjects = [
     {name: 'All Subjects', icon: 'globe'},
@@ -31,7 +30,6 @@ window.addEventListener('scroll', handleScroll);
 $(document).ready(async function () {
     createSubjectButtons();
     await fetchPosts();
-    hideLoadingScreen();
 });
 
 async function fetchPosts() {
