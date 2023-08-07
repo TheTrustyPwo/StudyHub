@@ -47,6 +47,9 @@
                                 <div class="form-group">
                                     <label class="mont-font fw-600 font-xsss text-dark">Attachment (Optional)</label>
                                     {{ form.attachment(class="form-control style2-input", style="line-height: 25px; height: 40px;") }}
+                                    {% for error in form.attachment.errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
