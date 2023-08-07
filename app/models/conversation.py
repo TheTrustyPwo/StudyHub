@@ -10,11 +10,11 @@ class Conversation(db.Model):
     """
     __tablename__ = "conversations"
 
-    id = db.Column(db.String(36), primary_key=True, default=uuid.uuid4)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     name = db.Column(db.String(36), nullable=True)
     description = db.Column(db.String(1024), nullable=True)
     date_created = db.Column(db.DateTime, index=True, nullable=False, default=datetime.datetime.utcnow)
-    is_group = db.Column(db.Boolean, default=False)
+    is_group = db.Column(db.Boolean, nullable=False)
 
     users = db.relationship('User', secondary='conversation_members', back_populates='conversations', lazy='dynamic')
     messages = db.relationship('Message', foreign_keys='Message.conversation_id', back_populates='conversation', lazy='dynamic')
