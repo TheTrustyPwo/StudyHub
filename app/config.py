@@ -9,6 +9,8 @@ class BaseConfig:
     """
     DEBUG = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'strong_key')
+    AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY', 'aws')
+    AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', 'secret')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 
