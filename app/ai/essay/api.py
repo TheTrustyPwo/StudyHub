@@ -1,11 +1,10 @@
-import datetime
-
 from flask import request, jsonify, Response
 from flask_login import current_user, login_required
 
-from app.ai import ai_api_blueprint, ai_services
-from app.exceptions import BadRequest, Unauthorized, NotFound, Conflict
-from app.models import User, Essay
+from app.ai import ai_api_blueprint
+from app.ai.essay import services
+from app.exceptions import BadRequest, Unauthorized, NotFound
+from app.models import Essay
 
 
 @ai_api_blueprint.route('/essay/<int:essay_id>')
@@ -39,5 +38,5 @@ def grade_essay() -> Response:
     if not essay:
         raise BadRequest(message='Essay not present')
 
-    essay = ai_services.grade_essay(topic, essay, current_user.id)
+    essay = services.grade_essay(topic, essay, current_user.id)
     return jsonify(essay.serialized)

@@ -1,13 +1,8 @@
-import datetime
-import openai
 import json
-from flask import request, jsonify, Response
-from flask_login import current_user, login_required
 
-from app.ai import ai_api_blueprint, ai_services
-from app.exceptions import BadRequest, Unauthorized, NotFound, Conflict
-from app.models import User, Essay, EssayGrade, EssaySuggestion
+import openai
 
+from app.models import Essay, EssayGrade, EssaySuggestion
 
 ESSAY_PROMPT = """
 You are a diligent and harsh teacher who knows all about scoring essays. Your goal is to provide accurate and reliable feedback on the essay's quality. Please follow these instructions carefully:
@@ -46,10 +41,7 @@ Excellent: Exemplary vocabulary, insightful explanations, engaging.
 def grade_essay(topic: str, essay: str, user_id: int):
     prompt = f"{ESSAY_PROMPT} \nEssay Topic: {topic} \nEssay Content: {essay}"
     response = openai.ChatCompletion.create(model='gpt-3.5-turbo', messages=[{"role": "system", "content": prompt}])
-    print(response)
     graded = json.loads(response.choices[0].message.content.replace("\n", ""))
-
-    print(graded)
 
     essay = Essay(topic, essay, graded['comment'], EssayGrade(graded['grade'].lower()), user_id)
     essay.save()

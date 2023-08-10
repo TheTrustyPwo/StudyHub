@@ -1,13 +1,10 @@
-import datetime
-
-from flask import request, jsonify, Response, render_template, redirect, url_for
+from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 
+from app.ai import ai_blueprint
+from app.ai.essay import services
+from app.ai.essay.forms import GradeEssayForm
 from app.models import Essay
-from app.ai import ai_blueprint, ai_services
-from app.ai.forms import GradeEssayForm
-from app.exceptions import BadRequest, Unauthorized, NotFound, Conflict
-from app.models import User, Essay
 
 
 @ai_blueprint.route('/ai/essay', methods=['GET', 'POST'])
@@ -19,7 +16,7 @@ def grade_essay():
         title = form.title.data
         content = form.content.data
 
-        essay = ai_services.grade_essay(title, content, current_user.id)
+        essay = services.grade_essay(title, content, current_user.id)
 
         return redirect(url_for('ai.view_essay', essay_id=essay.id))
 
