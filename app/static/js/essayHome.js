@@ -11,7 +11,7 @@ const gradeColors = {
 
 $(document).ready(async function () {
     const essays = await Essay.getEssays();
-    essays.forEach(essay => renderEssay(essay));
+    essays.sort((a, b) => b.timestamp - a.timestamp).forEach(essay => renderEssay(essay));
 
     document.getElementById('essay-form').onsubmit = () => {
         document.getElementById('grade-button').classList.add('d-none');
@@ -41,3 +41,5 @@ function renderEssay(essay) {
 
     document.getElementById('recently-graded').appendChild(element);
 }
+
+export { gradeColors };

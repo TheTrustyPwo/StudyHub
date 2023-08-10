@@ -12,19 +12,26 @@
                            value="Loading..." id="essay-title" required>
                 </div>
                 <div class="mb-3 form-group">
-                    <textarea class="style2-textarea form-control font-xss fw-400 lh-base pt-3 h300" id="essay-content"
+                    <textarea class="style2-textarea form-control font-xss fw-400 lh-base pt-3 h100" id="essay-content"
                               rows="8" required>Loading...</textarea>
                 </div>
-                <button id="grade-button" class="bg-current form-control text-white font-xsss fw-600 p-3 w175 border-0 rounded-3 d-inline-block" style="line-height: 0 !important; height: 40px;">
-                    Regrade
-                </button>
             </form>
         </div>
 
         <div class="col-lg-4">
+            <div class="d-flex w-100 rounded-xxl border bg-body p-3 mb-3">
+                <span class="fw-semibold font-sm p-3">Grade: </span>
+                <span id="essay-grade" class="font-sm fw-600 mt-3">Loading...</span>
+            </div>
+
             <div class="w-100 rounded-xxl border bg-body list-group p-3 mb-3">
-                <p class="fw-semibold mb-2 p-2 font-sm">Suggestions</p>
-                <ul id="essay-compliments" class="list-group font-xss fw-500"></ul>
+                <p class="fw-semibold mb-2 px-3 pt-3 font-sm">Overall Comments:</p>
+                <span id="essay-comments" class="px-3 font-xss fw-500">Loading...</span>
+            </div>
+
+            <div class="w-100 rounded-xxl border bg-body list-group p-3 mb-3">
+                <p class="fw-semibold mb-2 p-3 font-sm text-decoration-underline">Areas for Improvement:</p>
+                <div id="essay-suggestions" class="list-group font-xss fw-500"></div>
             </div>
         </div>
     </div>
