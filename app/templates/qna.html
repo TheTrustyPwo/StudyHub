@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="d-flex align-items-center mt-5">
+        <div class="container mx-auto">
+            <h1 class="font-xxl fw-600 mb-4 text-center">Unlocking Knowledge: Ask, Learn, Explore</h1>
+            <p class="font-sm text-center mx-auto w-75">Experience the power of AI-driven learning. Our AI provides explanations aligned with GCE examination requirements. Just ask and embark on a journey of insightful learning!</p>
+            <div class="mt-5 mx-auto" style="width: 800px !important">
+                <label for="question-input" class="mont-font fw-600 font-xss text-dark text-start">Question</label>
+                <textarea id="question-input" class="form-control font-xss style2-textarea h200 p-2" rows="4"
+                          placeholder="Ask a question about physics"
+                          style="line-height: 1.5;"></textarea>
+                <button id="submit-button"
+                        class="bg-current text-center text-white font-xss fw-600 py-2 w-100 border-0 rounded-3 d-inline-block">
+                    Submit
+                </button>
+                <button id="submit-button-loading" class="d-none bg-current text-center text-white font-xsss fw-600 py-2 w-100 border-0 rounded-3 d-inline-block" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status"></span>
+                    Thinking...
+                </button>
+                <div id="response-div" class="d-none mt-3 mb-5 fw-400 rounded-xl w-100 p-4 bg-body">
+                    <h3 class="fw-600 font-md">AI Response:</h3>
+                    <span id="response-text"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questionInput = document.getElementById('question-input');
+        const submitButton = document.getElementById('submit-button');
+        const submitButtonLoading = document.getElementById('submit-button-loading');
+        const responseDiv = document.getElementById('response-div');
+        const responseText = document.getElementById('response-text');
+
+        submitButton.addEventListener('click', async () => {
+            const question = questionInput.value;
+            if (question.trim() === '') return;
+
+            submitButton.classList.add('d-none');
+            submitButtonLoading.classList.remove('d-none');
+
+            responseText.innerText = await fetch(`/api/v1/ai/qna/answer`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({question: question})
+            }).then(response => response.json()).then(json => json.answer);
+            responseDiv.classList.remove('d-none')
+
+            submitButtonLoading.classList.add('d-none');
+            submitButton.classList.remove('d-none');
+        });
+    </script>
+
+{% endblock %}
