@@ -1,0 +1,42 @@
+D.C. Circuits
+In this article we will learn about D.C. Circuits. We will get to know
+
+The basic ideas of what constitutes a series circuit and a parallel circuit.
+Current is equal at all points along a series circuit and e.m.f. = sum of p.d. across all components.
+Current in main path = sum of the current in all parallel paths, and p.d. across all parallel paths are equal.
+The details covered in the article are as per the requirements of the Secondary 4 Physics class.
+
+Introduction To D.C. Circuits
+The D.C. in D.C. circuits stands for Direct Current. For D.C.,  current only flows in one direction, i.e. from the positive terminal to the negative terminal of the power source.
+
+The opposite of D.C. current is A.C. current and it stands for Alternating Current.
+ 
+Electromotive Force(e.m.f.)
+
+Before directly diving into the circuits, let us be clear about a concept called electromotive force.
+
+Identical Cells In Series
+When identical cells are arranged in series, the resultant e.m.f. is the sum of all the e.m.f.s of the cells.
+
+In the above image, both cells, each of 1.5 V, are arranged in series. The resultant e.m.f. is the sum of the e.m.f. of the two cells which is 3.0 V (=1.5+1.5).   
+
+Identical Cells In Parallel
+When identical cells are arranged in parallel, the resultant e.m.f. Is equal to that of a single cell.
+
+In the above image, both cells, each of 1.5 V, are arranged in parallel. The resultant e.m.f. will be the e.m.f. of a single cell, which is 1.5 V.
+
+Series vs Parallel Circuits
+
+Series Circuits:
+The resultant e.m.f. is the sum of all the e.m.f.s of the cells.
+The components are connected one after another in a single loop.
+There is only one path through which electric current can flow.
+The current at every point is the same.
+I_source=I1=I2=....=In
+
+Parallel Circuits:
+The resultant e.m.f. is equal to that of a single cell.
+The components are connected to the cell in 2 or more loops.
+There are several paths through which electric current can flow.
+The sum of individual currents in each of the branches is equal to the main current.
+I_source=I1+I2+....+In

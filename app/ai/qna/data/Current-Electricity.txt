@@ -1,0 +1,97 @@
+Current Electricity
+
+Electric Current
+Electrostatics is the study of stationary charges. 
+
+Current Electricity involves the study of moving charges.
+
+Components Of A Circuit
+These are the four key components in a circuit. The bulb is the load in an electric circuit. It is the purpose for which the circuit is being drawn. The source is the battery to transfer electricity. The metallic wire is the pathway. The switch is for controlling the circuit.
+
+Conventional Current vs Electron Flow
+It has to be understood that the current flow that has been discussed so far is conventional current. However, the actual flow of current, which is basically electron flow, is in the opposite direction. 
+
+Conventional current is the flow of positive  charges (previously thought prior to the discovery of electrons). 
+
+Electron flow is the (actual) flow of negative  charges (known as electrons). 
+
+Conventional current flows from the positive to the negative terminals of the battery. 
+
+Electrons flow from the positive to the negative terminals of the battery.
+
+Electric Current
+An electric current is a measure of the rate of flow of electric charges through a given cross-section of a conductor. The equation for electric current is therefore:
+
+I=Q/t
+
+Here,
+I is for current.
+Q is for the electric charges.
+t is the rate of flow.
+
+The unit of current is ampere (A), coulomb (C) for charge and second (s) for time.
+
+Electromotive Force And Potential Difference
+Why do the electrons go round the circuit?
+
+There is a driving force, known as the electromotive force (e.m.f.). 
+
+What drives the electrons around the circuit?
+
+The dry cell/battery provides the electromotive force that moves the electrons round the circuit.
+
+ 
+
+Fun Fact
+Is electromotive force e.m.f. a force?
+
+No. Electromotive force e.m.f. is not a force.
+
+ 
+
+Electromotive Force
+The electromotive force e.m.f. of an electrical source is the work done by the source in driving a unit charge around a complete circuit. The formula to calculate e.m.f. is as follows:
+
+emf = W/Q
+
+In the equation, the units: 
+V stands for Volts.
+J stands for Joules.
+C stands for Coulomb.
+
+Electromotive Force:
+
+When identical cells are arranged in series, the resultant e.m.f. is the sum of all the e.m.f.s of the cells.
+
+When identical cells are arranged in parallel, the resultant e.m.f. is equal to that of a single cell.
+
+Potential Difference
+The potential difference, p.d., across a circuit component is the work done to drive a unit charge through the component.
+
+The equation governing potential difference is as follows:
+
+V = WQ
+
+Where,
+V stands for Potential Difference. 
+W stands for Work Done.
+Q stands for Total Charge.
+
+In the equation, the units are:
+V stands for Volts.
+J stands for Joules. 
+C stands for Coulomb.
+
+Electromotive Force e.m.f. vs Potential Difference p.d.
+ 
+
+Electromotive Force e.m.f.:
+
+Associated with an electrical energy source (example: a dry cell).
+It is work done by the source in driving a unit charge round a circuit.
+It is the conversion from chemical energy to electrical energy to drive a unit charge.
+
+Potential Difference p.d.:
+Associated with 2 points in an electrical circuit (example: between a lamp).
+It is work done in driving a unit charge across 2 points in the circuit.
+It is the conversion from electrical energy to other forms of energy when driving a unit charge.
