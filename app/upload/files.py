@@ -6,9 +6,6 @@ from werkzeug.datastructures import FileStorage
 from app.upload import s3
 
 
-cache = {}
-
-
 class FilePurpose(Enum):
     PROFILE_PICTURE = 'profile_picture'
     MESSAGE_ATTACHMENT = 'message_attachment'
@@ -45,8 +42,7 @@ class File:
         """
         try:
             s3.put_object(Body=self.file_data, Bucket=self.bucket, Key=self.s3_key)
-            cache[self.s3_key] = s3.generate_presigned_url('get_object', ExpiresIn=0, Params={'Bucket': self.bucket, 'Key': self.s3_key})
-            return f'{self.endpoint}/{self.s3_key}'
+            return f'https://{cls.bucket}.s3.amazonaws.com/{self.s3_key}'
         except Exception as e:
             print(f"An error occurred while uploading the image: {e}")
         return None
@@ -58,14 +54,7 @@ class File:
 
         :return: URL of the image if found, None otherwise.
         """
-        try:
-            s3_key = f'{image_type.value}/{user_id}/{filename}'
-            if s3_key not in cache:
-                cache[s3_key] = s3.generate_presigned_url('get_object', ExpiresIn=0, Params={'Bucket': cls.bucket, 'Key': s3_key})
-            return cache[s3_key]
-        except Exception as e:
-            print(f"An error occurred while getting the image: {e}")
-        return None
+        return f'https://{cls.bucket}.s3.amazonaws.com/{image_type.value}/{user_id}/{filename}'
 
     # def delete_from_s3(self, file_extension):
     #     """
