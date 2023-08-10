@@ -45,7 +45,7 @@ class File:
         """
         try:
             s3.put_object(Body=self.file_data, Bucket=self.bucket, Key=self.s3_key)
-            cache[self.s3_key] = s3.generate_presigned_url('get_object', Params={'Bucket': self.bucket, 'Key': self.s3_key})
+            cache[self.s3_key] = s3.generate_presigned_url('get_object', ExpiresIn=0, Params={'Bucket': self.bucket, 'Key': self.s3_key})
             return f'{self.endpoint}/{self.s3_key}'
         except Exception as e:
             print(f"An error occurred while uploading the image: {e}")
@@ -61,7 +61,7 @@ class File:
         try:
             s3_key = f'{image_type.value}/{user_id}/{filename}'
             if s3_key not in cache:
-                cache[s3_key] = s3.generate_presigned_url('get_object', Params={'Bucket': cls.bucket, 'Key': s3_key})
+                cache[s3_key] = s3.generate_presigned_url('get_object', ExpiresIn=0, Params={'Bucket': cls.bucket, 'Key': s3_key})
             return cache[s3_key]
         except Exception as e:
             print(f"An error occurred while getting the image: {e}")
