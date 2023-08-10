@@ -11,7 +11,7 @@ flask-moment==1.0.5
 pymysql==1.0.2
 pyjwt==2.6.0
 coverage==7.1.0
-gunicorn==20.1.0
+https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0 # eventlet bug workaround
 eventlet==0.33.3
 flask-wtf==1.1.1
 flask-login==0.6.2
