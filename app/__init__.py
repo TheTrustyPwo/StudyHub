@@ -1,5 +1,6 @@
 from typing import Type
 
+import pinecone
 from flask import Flask, render_template
 from flask_cors import CORS
 from flask_login import LoginManager
@@ -36,6 +37,8 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     migrate.init_app(app, db)
     login_manager.init_app(app)
 
+    load_pinecone_index(app)
+
     from app.upload import upload_api_blueprint
     from app.auth import auth_blueprint
     from app.post import post_blueprint, post_api_blueprint
@@ -70,3 +73,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
         db.create_all()
 
     return app
+
+
+def load_pinecone_index(app):
+    pinecone.init(api_key=app.config['PINECONE_API_KEY'], environment=app.config['PINECONE_ENV'])
