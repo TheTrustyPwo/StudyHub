@@ -42,7 +42,7 @@ class File:
         """
         try:
             s3.put_object(Body=self.file_data, Bucket=self.bucket, Key=self.s3_key)
-            return f'https://{cls.bucket}.s3.amazonaws.com/{self.s3_key}'
+            return f'https://{self.bucket}.s3.amazonaws.com/{self.s3_key}'
         except Exception as e:
             print(f"An error occurred while uploading the image: {e}")
         return None
