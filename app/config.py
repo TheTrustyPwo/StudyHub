@@ -25,7 +25,7 @@ class DevelopmentConfig(BaseConfig):
     Development application configuration
     """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URLL', 'sqlite:///test.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///test.sqlite')
 
 
 class TestingConfig(BaseConfig):
