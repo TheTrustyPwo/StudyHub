@@ -161,7 +161,7 @@ def delete_post(post_id: int) -> None:
 def get_posts():
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 10, type=int)
-    before = request.args.get('before')
+    before = request.args.get('before', type=int)
     subjects = request.args.get('subjects')
     sort_by = request.args.get('sort', 'latest').lower()
 
@@ -175,13 +175,11 @@ def get_posts():
         query = query.filter(Post.subject.in_(subjects))
 
     if before:
-        query = query.filter(Post.date_created < datetime.strptime(before, '%a %b %d %Y %H:%M:%S GMT 0000'))
+        query = query.filter(Post.date_created < datetime.fromtimestamp(before))
 
     if sort_by == 'latest':
         query = query.order_by(Post.date_created.desc())
-    elif sort_by == 'popular':
-        query = query.order_by(desc(func.sum(Post.post_votes.vote)).label('score')).all()
 
-    posts = query.offset((page - 1) * limit).limit(limit).all()
+    posts = query.paginate(page=page, per_page=limit).items
     serialized_posts = [post.serialized for post in posts]
     return jsonify(serialized_posts), 200

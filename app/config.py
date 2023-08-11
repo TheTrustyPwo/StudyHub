@@ -9,6 +9,7 @@ class BaseConfig:
     """
     DEBUG = False
     SECRET_KEY = os.getenv('SECRET_KEY', 'strong_key')
+    JSONIFY_PRETTYPRINT_REGULAR = True
 
     AWS_ACCESS_KEY = os.getenv('AWS_ACCESS_KEY')
     AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -25,7 +26,7 @@ class DevelopmentConfig(BaseConfig):
     Development application configuration
     """
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///test.sqlite')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URLL', 'sqlite:///test.sqlite')
 
 
 class TestingConfig(BaseConfig):

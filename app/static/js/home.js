@@ -22,8 +22,7 @@ selectedSubjects.add('all subjects');
 
 let currentPage = 1;
 const postsPerPage = 2;
-let loading = false, reachedEnd = false;
-let lastPostTimestamp = null;
+let loading = false, reachedEnd = false, timestamp = moment();
 
 window.addEventListener('scroll', handleScroll);
 
@@ -36,11 +35,10 @@ async function fetchPosts() {
     loading = true;
     document.getElementById('loading-spinner').classList.remove('d-none');
 
-    const posts = await Post.getPosts(currentPage, postsPerPage, lastPostTimestamp, selectedSubjects);
+    const posts = await Post.getPosts(currentPage, postsPerPage, timestamp, selectedSubjects);
     const postsContainer = document.getElementById('posts-container');
 
     if (posts.length > 0) {
-        lastPostTimestamp = posts[posts.length - 1].timestamp;
         posts.forEach(post => {
             const postElement = createPostCard(post);
             postsContainer.appendChild(postElement);
@@ -150,7 +148,7 @@ function createSubjectButtons() {
 
             document.getElementById('posts-container').innerHTML = '';
             currentPage = 1;
-            lastPostTimestamp = null;
+            timestamp = moment();
             reachedEnd = false;
             await fetchPosts();
         }
