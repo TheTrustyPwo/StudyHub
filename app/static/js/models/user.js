@@ -84,6 +84,17 @@ class User {
 
         return User.fromJson(userData);
     }
+
+    static async getUserPosts(page, limit, userid) {
+        try {
+            let url = `/api/v1/posts/user?page=${page}&limit=${limit}&id=${userid}`;
+            const response = await fetch(url);
+            return await response.json();
+        } catch (error) {
+            console.error(`Could not fetch posts from user`);
+            return [];
+        }
+    }
 }
 
 export default User;

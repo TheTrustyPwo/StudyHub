@@ -90,7 +90,7 @@ class Post {
      * Get a list of posts with pagination and before timestamp.
      * @param {number} page - The page number to fetch.
      * @param {number} limit - The number of posts to fetch per page.
-     * @param {string|null} before - The timestamp in 'YYYY-MM-DD HH:mm:ss' format to fetch posts created before this timestamp.
+     * @param {number} before - The timestamp in 'YYYY-MM-DD HH:mm:ss' format to fetch posts created before this timestamp.
      * @param {Set|null} subjects - The set of subjects to filter the posts by.
      * @returns {Promise<Array<Post>>} - A Promise that resolves to an array of Post objects.
      */
