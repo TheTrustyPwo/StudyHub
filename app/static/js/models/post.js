@@ -109,9 +109,9 @@ class Post {
         }
     }
 
-    static async search(query) {
+    static async search(query, limit = 5) {
         try {
-            const response = await fetch(`/api/v1/posts/search/${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/v1/posts/search?query=${encodeURIComponent(query)}&limit=${limit}`);
             const postData = await response.json();
             return await Promise.all(postData.map(async post => await Post.fromJson(post)));
         } catch (error) {

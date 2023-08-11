@@ -54,7 +54,7 @@ function createPostCard(post) {
     postCard.className = `card post-card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3`;
     postCard.innerHTML = `
         <div class="card-body p-0 d-flex">
-            <figure class="avatar me-3"><img src=${post.author.pfp} alt="avater" class="shadow-sm rounded-circle w45"></figure>
+            <a href="/users/${post.author.username}"><figure class="avatar me-3"><img src=${post.author.pfp} alt="avater" class="shadow-sm rounded-circle w45"></figure></a>
             <div><h4 class="fw-700 text-grey-900 font-xssss mt-1"> ${post.author.username} <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"> ${post.timestamp.fromNow()}</span></h4></div>
             <div class="ms-auto pointer"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></div>
         </div>

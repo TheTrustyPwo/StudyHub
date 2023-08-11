@@ -14,33 +14,34 @@ $(document).ready(async function () {
     })
 
     searchInput.addEventListener('input', async function () {
+        const searchResults = document.getElementById('searchResults');
         const query = searchInput.value.trim();
         if (query === '') {
-            document.getElementById('searchResults').innerHTML = '';
+            searchResults.innerHTML = '';
             return;
         }
 
-        const searchResults = document.getElementById('searchResults');
-        document.getElementById('searchResults').innerHTML = '';
-
-        const posts = await Post.search(query);
+        const posts = await Post.search(query, 5);
         if (posts.length === 0) searchResults.innerHTML = '<p>No results found</p>';
 
-        posts.forEach(post => {
-            const li = document.createElement('li');
-            li.innerHTML =
-                `<a href="/post/${post.id}" class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 pt-4" aria-current="true">
-                      <h4 class="fw-bold font-xs">${post.title}</h4>
-                      <div class="card-body p-0 d-flex">
+        let newInnerHTML = '';
+        posts.forEach((post, index) => {
+            newInnerHTML +=
+                `<a href="/post/${post.id}" class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0">
+                    <div class="pt-3 pb-0">
+                        <h4 class="fw-bold font-xs">${post.title}</h4>
+                        <div class="card-body p-0 d-flex">
                           <figure class="avatar me-3"><img src=${post.author.pfp} alt="avater" class="shadow-sm rounded-circle w25"></figure>
                           <h3 class="fw-600 text-grey-900 font-xsss lh-28">${post.author.username}</h3>
                           <span class="fw-900 font-x mx-2">&#183;</span>
                           <span class="font-xsss fw-500 text-grey-500">${post.timestamp.fromNow()}</span>
-                      </div>
-                      <hr class="p-0 mb-1">
-                  </a>`;
-            searchResults.appendChild(li);
+                        </div>
+                    </div>
+                    ${index === posts.length - 1 ? '' : '<hr class="p-0 my-0 mx-3">'}
+                </a>`;
         });
+
+        searchResults.innerHTML = newInnerHTML;
     });
 });
 

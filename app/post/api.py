@@ -46,15 +46,11 @@ def create_post() -> Response:
     return jsonify(post.serialized)
 
 
-@post_api_blueprint.route('/search/<string:query>')
-def search_post(query: str) -> Response:
-    """
-    Search for posts.
-
-    :param query: The search query to match against posts.
-    :return: JSON representation of a list of matching post data.
-    """
-    posts: List[Post] = Post.query.filter(Post.title.ilike(f'%{query}%')).all()
+@post_api_blueprint.route('/search')
+def search_post() -> Response:
+    query = request.args.get('query')
+    limit = request.args.get('limit', type=int, default=5)
+    posts: List[Post] = Post.query.filter(Post.title.ilike(f'%{query}%')).limit(limit).all()
     return jsonify([post.serialized for post in posts])
 
 
