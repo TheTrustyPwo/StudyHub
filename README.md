@@ -150,6 +150,7 @@ pip install -r requirements.txt
 ```shell
 export AWS_ACCESS_KEY=key
 export AWS_SECRET_ACCESS_KEY=key
+export OPENAI_API_KEY=key
 export PINECONE_API_KEY=key
 flask run
 ```
@@ -192,6 +193,7 @@ simply open an issue with the tag "enhancement". Don't forget to give the projec
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+
 <!-- LICENSE -->
 
 ## License
@@ -201,12 +203,24 @@ Distributed under the GNU GPLv3 License. See `LICENSE.txt` for more information.
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
-<!-- CONTACT -->
+<!-- Developers -->
 
-## Contact
+## Developers
 
-TheTrustyPwo - Pwo#0001 - thetrustypwo@gmail.com
+* [TheTrustyPwo](https://github.com/TheTrustyPwo) (Lead) - [thepwo](https://discordapp.com/users/989672946018693150) (Discord) - thetrustypwo@gmail.com
+* [Stucknight](https://github.com/Stucknight)
+* [Starknight45](https://github.com/Starknight45)
+* [broui](https://github.com/broui)
 
 Project Link: [https://github.com/TheTrustyPwo/StudyHub](https://github.com/TheTrustyPwo/StudyHub)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+
+<!-- Acknowledgements -->
+
+## Acknowledgements
+
+
 
 <p align="right">(<a href="#top">back to top</a>)</p>
