@@ -224,7 +224,7 @@ Project Link: [https://github.com/TheTrustyPwo/StudyHub](https://github.com/TheT
 
 ## Project Report
 
-The full project report is available [here](https://github.com/TheTrustyPwo/StudyHub/assets/StudyHub-report.pdf),
+The full project report is available [here](assets/StudyHub-Report.pdf),
 although some parts have been edited out for privacy reasons.
 
 
