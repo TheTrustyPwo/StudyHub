@@ -152,6 +152,19 @@ def delete_post(post_id: int) -> None:
     db.session.delete(post)
     db.session.commit()
 
+@post_api_blueprint.route('/user', methods=['GET'])
+def get_user_posts():
+    page = int(request.args.get('page', 1))
+    limit = int(request.args.get('limit', 10))
+    user_id = int(request.args.get('id'))
+
+    start_index = (page - 1) * limit
+    end_index = start_index + limit
+
+    posts = Post.query.filter_by(user_id=user_id).order_by(Post.date_created.desc()).slice(start_index, end_index).all()
+    serialized_posts = [post.serialized for post in posts]
+    return jsonify(serialized_posts), 200
+
 
 @post_api_blueprint.route('/all', methods=['GET'])
 def get_posts():
