@@ -90,7 +90,7 @@ function createPostCard(post) {
 <!--                                </a>-->
 <!--                            </div>-->
                             <div class="card-body p-0 me-lg-5"><p
-                                    class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">${post.body}}<a
+                                    class="fw-500 text-grey-500 lh-26 font-xssss w-100 mb-2">${post.body}<a
                                         class="fw-600 text-primary ms-2" href=${window.location.href.split("/")[0] + "/post/" + post.id}>See more</a></p></div>
                             <div class="card-body d-flex p-0">
                                 <div class="emoji-bttn pointer d-flex align-items-center fw-600 text-grey-900 text-dark lh-26 font-xssss me-2">
