@@ -46,15 +46,11 @@ def create_post() -> Response:
     return jsonify(post.serialized)
 
 
-@post_api_blueprint.route('/search/<string:query>')
-def search_post(query: str) -> Response:
-    """
-    Search for posts.
-
-    :param query: The search query to match against posts.
-    :return: JSON representation of a list of matching post data.
-    """
-    posts: List[Post] = Post.query.filter(Post.title.ilike(f'%{query}%')).all()
+@post_api_blueprint.route('/search')
+def search_post() -> Response:
+    query = request.args.get('query')
+    limit = request.args.get('limit', type=int, default=5)
+    posts: List[Post] = Post.query.filter(Post.title.ilike(f'%{query}%')).limit(limit).all()
     return jsonify([post.serialized for post in posts])
 
 
@@ -174,7 +170,7 @@ def get_user_posts():
 def get_posts():
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 10, type=int)
-    before = request.args.get('before')
+    before = request.args.get('before', type=int)
     subjects = request.args.get('subjects')
     sort_by = request.args.get('sort', 'latest').lower()
 
@@ -188,13 +184,11 @@ def get_posts():
         query = query.filter(Post.subject.in_(subjects))
 
     if before:
-        query = query.filter(Post.date_created < datetime.strptime(before, '%a %b %d %Y %H:%M:%S GMT 0000'))
+        query = query.filter(Post.date_created < datetime.fromtimestamp(before))
 
     if sort_by == 'latest':
         query = query.order_by(Post.date_created.desc())
-    elif sort_by == 'popular':
-        query = query.order_by(desc(func.sum(Post.post_votes.vote)).label('score')).all()
 
-    posts = query.offset((page - 1) * limit).limit(limit).all()
+    posts = query.paginate(page=page, per_page=limit).items
     serialized_posts = [post.serialized for post in posts]
     return jsonify(serialized_posts), 200

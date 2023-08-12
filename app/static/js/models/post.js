@@ -90,13 +90,14 @@ class Post {
      * Get a list of posts with pagination and before timestamp.
      * @param {number} page - The page number to fetch.
      * @param {number} limit - The number of posts to fetch per page.
-     * @param {number} before - The timestamp in 'YYYY-MM-DD HH:mm:ss' format to fetch posts created before this timestamp.
+     * @param {Moment|null} before - The timestamp to fetch posts created before this timestamp.
      * @param {Set|null} subjects - The set of subjects to filter the posts by.
      * @returns {Promise<Array<Post>>} - A Promise that resolves to an array of Post objects.
      */
     static async getPosts(page, limit, before = null, subjects = null) {
         try {
-            let url = `/api/v1/posts/all?page=${page}&limit=${limit}${before ? `&before=${before}` : ''}`;
+            console.log(before);
+            let url = `/api/v1/posts/all?page=${page}&limit=${limit}${before ? `&before=${before.unix()}` : ''}`;
             if (subjects) url += `&subjects=${Array.from(subjects).join(',')}`;
             console.log(url)
             const response = await fetch(url);
@@ -108,9 +109,9 @@ class Post {
         }
     }
 
-    static async search(query) {
+    static async search(query, limit = 5) {
         try {
-            const response = await fetch(`/api/v1/posts/search/${encodeURIComponent(query)}`);
+            const response = await fetch(`/api/v1/posts/search?query=${encodeURIComponent(query)}&limit=${limit}`);
             const postData = await response.json();
             return await Promise.all(postData.map(async post => await Post.fromJson(post)));
         } catch (error) {
