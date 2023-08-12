@@ -34,3 +34,5 @@ jobs:
     - name: Test with custom unit tests
       run: |
         python test.py
+    - name: Python Security Scanner
+      uses: tonybaloney/pycharm-security@1.25.1
