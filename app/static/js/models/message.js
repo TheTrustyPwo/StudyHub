@@ -70,7 +70,7 @@ class Message {
         const response = await fetch(`/api/v1/messages/${messageId}`);
         const messageData = await response.json();
 
-        return await Message.fromJson(messageData);
+        return Message.fromJson(messageData);
     }
 
     /**
