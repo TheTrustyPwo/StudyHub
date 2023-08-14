@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List
+from typing import List, Tuple
 
 from flask import jsonify, Response, request
 from flask_login import current_user, login_required
@@ -7,7 +7,7 @@ from sqlalchemy import desc, func
 
 from app import db
 from app.exceptions import Unauthorized, NotFound, BadRequest
-from app.models import Post, PostVote, Subject
+from app.models import Post, PostVote, Subject, Reply
 from app.post import post_api_blueprint
 from app.upload.files import PostAttachment
 
@@ -136,7 +136,7 @@ def downvote_post(post_id: int) -> Response:
 
 @post_api_blueprint.route('/<int:post_id>/delete', methods=['DELETE'])
 @login_required
-def delete_post(post_id: int) -> None:
+def delete_post(post_id: int) -> tuple[Response, int]:
     """
     Delete a post.
 
@@ -152,6 +152,8 @@ def delete_post(post_id: int) -> None:
     db.session.delete(post)
     db.session.commit()
 
+    return jsonify({'message': 'Post deleted'}), 200
+
 @post_api_blueprint.route('/user', methods=['GET'])
 def get_user_posts():
     page = int(request.args.get('page', 1))
@@ -164,6 +166,35 @@ def get_user_posts():
     posts = Post.query.filter_by(user_id=user_id).order_by(Post.date_created.desc()).slice(start_index, end_index).all()
     serialized_posts = [post.serialized for post in posts]
     return jsonify(serialized_posts), 200
+
+
+@post_api_blueprint.route('<int:post_id>/resolve', methods=['POST', 'GET'])
+def resolve(post_id: int):
+    post = Post.get_by_id(post_id)
+    if not post:
+        raise NotFound(message='Post not found')
+    if post.resolved_by_id:
+        raise BadRequest(message='Post already resolved')
+    if post.user_id != current_user.id:
+        raise Unauthorized(message='Cannot resolve other user\'s posts')
+
+    reply_id = request.args.get('reply_id', type=int)
+    if not reply_id:
+        raise BadRequest(message='Reply ID not specified')
+
+    reply = Reply.get_by_id(reply_id)
+    if not reply:
+        raise NotFound(message='Reply not found')
+    if reply.post_id != post.id:
+        raise BadRequest(message='Reply does not belong to post')
+
+    post.resolved_by_id = reply.id
+    post.save()
+
+    reply.user.answered += 1
+    reply.user.save()
+
+    return jsonify(post.serialized), 200
 
 
 @post_api_blueprint.route('/all', methods=['GET'])

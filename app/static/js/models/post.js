@@ -2,35 +2,92 @@ import User from './user.js';
 import Reply from "./reply.js";
 
 class Post {
-    // Static cache map for storing Post objects
     static #cache = new Map();
 
-    /**
-     * Create a new Post object.
-     * @param {number} id - The unique ID of the post.
-     * @param {string} title - The title of the post.
-     * @param {string} body - The body content of the post.
-     * @param {string} subject - The subject of the post.
-     * @param {User} author - The User object representing the author of the post.
-     * @param {Number} replyCount - The number of replies the post has.
-     * @param {string} attachment - The attachment of the post, if present.
-     * @param {Array} votes - An array of Vote objects representing the votes on the post.
-     * @param {Date} timestamp - The timestamp indicating when the post was created.
-     */
-    constructor(id, title, body, subject, author, votes, replyCount, attachment, timestamp) {
+    constructor(id) {
         if (Post.#cache.has(id)) return Post.#cache.get(id);
-
         this.id = id;
-        this.title = title;
-        this.body = body;
-        this.subject = subject;
-        this.author = author;
-        this.votes = votes;
-        this.replyCount = replyCount;
-        this.attachment = attachment;
-        this.timestamp = timestamp;
-        this.replies = [];
         Post.#cache.set(id, this);
+    }
+
+    get title() {
+        return this._title;
+    }
+
+    set title(title) {
+        this._title = title;
+    }
+
+    get body() {
+        return this._body;
+    }
+
+    set body(body) {
+        this._body = body;
+    }
+
+    get subject() {
+        return this._subject;
+    }
+
+    set subject(subject) {
+        this._subject = subject;
+    }
+
+    get author() {
+        return this._author;
+    }
+
+    set author(author) {
+        this._author = author;
+    }
+
+    get votes() {
+        return this._votes;
+    }
+
+    set votes(votes) {
+        this._votes = votes;
+    }
+
+    get replyCount() {
+        return this._replyCount;
+    }
+
+    set replyCount(replyCount) {
+        this._replyCount = replyCount;
+    }
+
+    get attachment() {
+        return this._attachment;
+    }
+
+    set attachment(attachment) {
+        this._attachment = attachment;
+    }
+
+    get timestamp() {
+        return this._timestamp;
+    }
+
+    set timestamp(timestamp) {
+        this._timestamp = timestamp;
+    }
+
+    get resolvedBy() {
+        return this._resolvedBy;
+    }
+
+    set resolvedBy(resolvedBy) {
+        this._resolvedBy = resolvedBy;
+    }
+
+    get replies() {
+        return this._replies;
+    }
+
+    set replies(replies) {
+        this._replies = replies;
     }
 
     /**
@@ -39,9 +96,21 @@ class Post {
      * @returns {Post} - The created Post object.
      */
     static async fromJson(json) {
-        const { id, title, body, subject, authorId, votes, replyCount, attachment, timestamp } = json;
+        const { id, title, body, subject, authorId, votes, replyCount, attachment, resolvedById, timestamp } = json;
         const user = await User.getById(authorId);
-        return new Post(id, title, body, subject, user, votes, replyCount, attachment, moment.utc(timestamp));
+
+        const post = new Post(id);
+        post.title = title;
+        post.body = body;
+        post.subject = subject;
+        post.author = user;
+        post.votes = votes;
+        post.replyCount = replyCount;
+        post.attachment = attachment;
+        post.timestamp = moment.utc(timestamp);
+        post.resolvedBy = resolvedById ? await Reply.getById(resolvedById) : undefined;
+
+        return post;
     }
 
     /**
@@ -49,6 +118,7 @@ class Post {
      * @param {string} title - The title of the post.
      * @param {string} body - The body content of the post.
      * @param {string} subject - The subject of the post.
+     * @param attachment
      * @returns {Promise<Post>} - A Promise that resolves to the created Post object.
      */
     static async create(title, body, subject, attachment) {
@@ -96,15 +166,13 @@ class Post {
      */
     static async getPosts(page, limit, before = null, subjects = null) {
         try {
-            console.log(before);
             let url = `/api/v1/posts/all?page=${page}&limit=${limit}${before ? `&before=${before.unix()}` : ''}`;
             if (subjects) url += `&subjects=${Array.from(subjects).join(',')}`;
-            console.log(url)
             const response = await fetch(url);
             const postData = await response.json();
             return await Promise.all(postData.map(async post => await Post.fromJson(post)));
         } catch (error) {
-            console.error(`Could not fetch posts with pagination`);
+            console.error(`Could not fetch posts with pagination`, error);
             return [];
         }
     }
@@ -144,13 +212,23 @@ class Post {
         }, 0);
     }
 
+    async resolve(reply) {
+        try {
+            const response = await fetch(`/api/v1/posts/${this.id}/resolve?reply_id=${reply.id}`, {method: 'POST'});
+            const postData = await response.json();
+            return Post.fromJson(postData);
+        } catch (error) {
+            console.error(`Could not resolve post: ${this.id}`)
+        }
+    }
+
     /**
      * Upvote the post.
      * @returns {Promise<void>} - A Promise that resolves when the post is upvoted.
      */
     async upvote() {
         try {
-            const response = await fetch(`/api/v1/posts/${this.id}/upvote`, { method: 'POST' });
+            const response = await fetch(`/api/v1/posts/${this.id}/upvote`, {method: 'POST'});
             const postData = await response.json();
             this.votes = postData.votes;
         } catch (error) {
@@ -164,7 +242,7 @@ class Post {
      */
     async downvote() {
         try {
-            const response = await fetch(`/api/v1/posts/${this.id}/downvote`, { method: 'POST' });
+            const response = await fetch(`/api/v1/posts/${this.id}/downvote`, {method: 'POST'});
             const postData = await response.json();
             this.votes = postData.votes;
         } catch (error) {
@@ -178,7 +256,7 @@ class Post {
      */
     async delete() {
         try {
-            await fetch(`/api/v1/posts/${this.id}/delete`, { method: 'DELETE' });
+            await fetch(`/api/v1/posts/${this.id}/delete`, {method: 'DELETE'});
         } catch (error) {
             console.error(`Could not delete post: ${this.id}`);
         }
