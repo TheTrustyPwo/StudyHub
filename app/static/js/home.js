@@ -52,11 +52,14 @@ async function fetchPosts() {
 function createPostCard(post) {
     const postCard = document.createElement('div');
     postCard.className = `card post-card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3`;
-    postCard.innerHTML = `
-        <div class="card-body p-0 d-flex">
+    postCard.innerHTML = DOMPurify.sanitize(
+        `<div class="card-body p-0 d-flex">
             <a href="/users/${post.author.username}"><figure class="avatar me-3"><img src=${post.author.pfp} alt="avater" class="shadow-sm rounded-circle w45"></figure></a>
             <div><h4 class="fw-700 text-grey-900 font-xssss mt-1"> ${post.author.username} <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500"> ${post.timestamp.fromNow()}</span></h4></div>
-            <div class="ms-auto pointer"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></div>
+            <div class="ms-auto pointer d-flex align-items-center">
+                ${post.resolvedBy ? `<div class="rounded-pill bg-success text-white px-4 py-2 me-3 font-xssss">Solved</div>` : ``}
+                <i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i>
+            </div>
         </div>
     
         <h4 class="fw-bold font-xs">${post.title}</h4>
@@ -106,7 +109,7 @@ function createPostCard(post) {
                 <i class="feather-copy position-absolute right-35 mt-3 font-xs text-grey-500"></i>
                 <input type="text" placeholder="https://studyhub.thepwo.com/post/${post.id}" class="bg-grey text-grey-500 font-xssss border-0 lh-32 p-2 font-xssss fw-600 rounded-3 w-100 theme-dark-bg">
             </div>
-        </div>`
+        </div>`)
 
     postCard.onclick = () => window.location.href = `/post/${post.id}`;
     return postCard;
