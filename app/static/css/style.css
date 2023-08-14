@@ -6036,3 +6036,46 @@ select.sort {
   -webkit-transition: all 0.3s ease-in-out;
   transition: all 0.3s ease-in-out;
 }
+
+.loading-skeleton {
+  color: transparent !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: #eee !important;
+  border-color: #eee !important;
+}
+
+.loading-skeleton::placeholder {
+  color: transparent !important;
+}
+
+@keyframes loading-skeleton {
+  from {
+    opacity: 0.4;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.loading-skeleton {
+  pointer-events: none !important;
+  animation: loading-skeleton 1s infinite alternate !important;
+}
+
+.loading-skeleton img {
+  filter: grayscale(100) contrast(0%) brightness(1.8) !important;
+}
+
+.loading-skeleton h1, .loading-skeleton h2, .loading-skeleton h3,
+.loading-skeleton h4, .loading-skeleton h5, .loading-skeleton h6,
+.loading-skeleton p, .loading-skeleton li, .loading-skeleton span,
+.loading-skeleton .btn, .loading-skeleton label, .loading-skeleton .form-control {
+  color: transparent !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: #eee !important;
+  border-color: #eee !important;
+  pointer-events: none !important;
+  animation: loading-skeleton 1s infinite alternate !important;
+}
