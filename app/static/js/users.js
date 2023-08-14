@@ -1,4 +1,4 @@
-import {User, Conversation, Post} from "./models/index.js";
+import {Conversation, User} from "./models/index.js";
 
 const username = window.location.pathname.split("/").pop();
 const user = await User.getByUsername(username);
@@ -12,17 +12,23 @@ $(document).ready(async function () {
         window.location.pathname = 'messages';
     };
 
-    const profileImage = document.getElementById("pfp");
-    const fileInput = document.getElementById("profile-picture");
+    if (user.id === (await User.getCurrent()).id) {
+        document.getElementById("pfp-text").style.visibility = "visible";
+        const profileImage = document.getElementById("pfp");
+        const fileInput = document.getElementById("profile-picture");
+        fileInput.addEventListener("change", async function (event) {
+            const selectedFile = fileInput.files[0];
+            await uploadFile(selectedFile);
+        });
+    } else {
+        document.getElementById("message").style.visibility = "visible";
+        document.getElementById("profile-picture").remove();
+    }
+
 
     // profileImage.addEventListener("click", function() {
     //     fileInput.click();
     // });
-
-    fileInput.addEventListener("change", async function (event) {
-        const selectedFile = fileInput.files[0];
-        await uploadFile(selectedFile);
-    });
 
     await fetchUserPosts();
 });
@@ -71,7 +77,7 @@ function createPostCard(post) {
                             <div class="card-body p-0 d-flex">
                                 <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w45"
                                                                  src=${document.getElementById("pfp").src}></figure>
-                                <h4 class="fw-700 text-grey-900 font-xssss mt-1">${username}
+                                <h4 class="fw-700 text-grey-900 font-xssss mt-1">${user.username}
                                     <span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">${post.timestamp}</span>
                                 </h4>
                                 <div class="ms-auto pointer">

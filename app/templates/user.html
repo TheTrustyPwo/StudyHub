@@ -40,7 +40,7 @@
                             <label class="hoverable-label" for="profile-picture">
                                 <img alt="avatar" class="float-right p-1 bg-white rounded-circle w-100" id="pfp"
                                      src="/static/assets/default-pfp.jpg">
-                                <span class="hover-text">Change pfp</span>
+                                <span class="hover-text" id="pfp-text" style="visibility: hidden">Change pfp</span>
                             </label>
                             <input accept="image/*" id="profile-picture" style="display: none;" type="file">
                         </figure>
@@ -50,9 +50,7 @@
                         </h4>
                         <div class="d-flex align-items-center justify-content-center position-absolute-md right-15 top-0 me-2">
                             <a class="d-none d-lg-block bg-success p-3 z-index-1 rounded-3 text-white font-xsssss text-uppercase fw-700 ls-3"
-                               href="/messages" id="message">Message</a><a
-                                class="d-none d-lg-block bg-greylight btn-round-lg ms-2 rounded-3 text-grey-700"
-                                href="/"><i class="feather-mail font-md"></i></a>
+                               id="message" style="visibility: hidden">Message</a>
                         </div>
                     </div>
                 </div>
