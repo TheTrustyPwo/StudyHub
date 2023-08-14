@@ -4,6 +4,7 @@ from flask_login import current_user
 
 from app.ai import ai_api_blueprint
 from app.ai.qna import services
+from app.exceptions import Forbidden
 
 
 @ai_api_blueprint.route('/qna/answer', methods=['POST'])
