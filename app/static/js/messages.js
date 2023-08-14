@@ -12,7 +12,7 @@ $(document).ready(async function () {
 
     const chatList = document.getElementById('chat-list');
     // Get all conversations and display them
-    const conversations = Conversation.getAll();
+    const conversations = await Conversation.getAll();
     for (const conversation of conversations) {
         console.log(conversation);
         await conversation.loadHistory();
