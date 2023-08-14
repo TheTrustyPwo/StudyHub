@@ -27,7 +27,7 @@ def register():
             next_location = request.args.get("next")
 
             if next_location is None or not next_location.startswith("/"):
-                return render_template("base.html")
+                return redirect(url_for('feed.home'))
 
             return redirect(next_location)
 
@@ -56,7 +56,7 @@ def login():
             next_location = request.args.get("next")
 
             if next_location is None or not next_location.startswith("/"):
-                return render_template("base.html")
+                return redirect(url_for('feed.home'))
 
             return redirect(next_location)
 
