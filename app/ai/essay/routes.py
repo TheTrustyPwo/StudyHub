@@ -1,9 +1,11 @@
+import bleach
 from flask import render_template, redirect, url_for
 from flask_login import current_user, login_required
 
 from app.ai import ai_blueprint
 from app.ai.essay import services
 from app.ai.essay.forms import GradeEssayForm
+from app.exceptions import Forbidden
 from app.models import Essay
 
 
@@ -13,8 +15,13 @@ def grade_essay():
     form = GradeEssayForm()
 
     if form.validate_on_submit():
-        title = form.title.data
-        content = form.content.data
+        if current_user.credits <= 0:
+            return Forbidden(message='User does not have enough credits left')
+        current_user.credits -= 1
+        current_user.save()
+
+        title = bleach.clean(form.title.data)
+        content = bleach.clean(form.content.data)
 
         essay = services.grade_essay(title, content, current_user.id)
 

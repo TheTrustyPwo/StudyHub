@@ -1,10 +1,11 @@
-from flask import redirect, url_for, jsonify, request, Response
+import bleach
+from flask import jsonify, request, Response
 from flask_login import current_user, login_required
-from app import db
 
-from app.replies import reply_api_blueprint
+from app import db
 from app.exceptions import Unauthorized, NotFound, BadRequest
 from app.models import Reply, ReplyVote, Post
+from app.replies import reply_api_blueprint
 
 
 @reply_api_blueprint.route('/<int:reply_id>')
@@ -43,7 +44,7 @@ def create_reply() -> Response:
     if text is None or len(text) == 0:
         raise BadRequest(message='Reply must contain text')
 
-    reply = Reply(text, current_user.id, post_id)
+    reply = Reply(bleach.clean(text), current_user.id, post_id)
     reply.save()
 
     return jsonify(reply.serialized)

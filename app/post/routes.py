@@ -1,3 +1,4 @@
+import bleach
 from flask import render_template, url_for, redirect
 from flask_login import login_required, current_user
 
@@ -20,8 +21,8 @@ def create_post():
     form = CreatePostForm()
 
     if form.validate_on_submit():
-        title = form.title.data
-        body = form.body.data
+        title = bleach.clean(form.title.data)
+        body = bleach.clean(form.title.data)
         subject = form.subject.data
         attachment = form.attachment.data
 
