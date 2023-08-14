@@ -15,6 +15,7 @@ class Reply(db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+
     reply_votes = db.relationship("ReplyVote", backref="reply", lazy="dynamic", cascade="all, delete-orphan")
 
     def __repr__(self):
@@ -37,7 +38,7 @@ class Reply(db.Model):
     def serialized(self):
         return {
             'id': self.id,
-            'reply': self.reply,
+            'text': self.reply,
             'authorId': self.user_id,
             'postId': self.post_id,
             'timestamp': self.date_created.strftime('%Y-%m-%d %H:%M:%S'),

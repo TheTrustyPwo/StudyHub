@@ -4,25 +4,53 @@ import Post from "./post.js";
 class Reply {
     static #cache = new Map();
 
-    /**
-     * Create a new Reply object.
-     * @param {number} id - The unique ID of the reply.
-     * @param {User} author - The User object representing the author of the reply.
-     * @param {Post} post - The Post object representing the post to which this reply belongs.
-     * @param {string} reply - The content of the reply.
-     * @param {Array} votes - An array of Vote objects representing the votes on the reply.
-     * @param {Date} timestamp - The timestamp indicating when the reply was created.
-     */
-    constructor(id, author, post, reply, votes, timestamp) {
+    constructor(id) {
         if (Reply.#cache.has(id)) return Reply.#cache.get(id);
-
         this.id = id;
-        this.author = author;
-        this.post = post;
-        this.reply = reply;
-        this.votes = votes;
-        this.timestamp = timestamp;
         Reply.#cache.set(id, this);
+    }
+
+    get author() {
+        return this._author;
+    }
+
+    set author(author) {
+        this._author = author;
+    }
+
+    get post() {
+        return (async () => {
+            this._post = this._post || await Post.getById(this._postId);
+            return this._post;
+        })();
+    }
+
+    set postId(postId) {
+        this._postId = postId;
+    }
+
+    get reply() {
+        return this._reply;
+    }
+
+    set reply(value) {
+        this._reply = value;
+    }
+
+    get votes() {
+        return this._votes;
+    }
+
+    set votes(value) {
+        this._votes = value;
+    }
+
+    get timestamp() {
+        return this._timestamp;
+    }
+
+    set timestamp(value) {
+        this._timestamp = value;
     }
 
     /**
@@ -31,10 +59,16 @@ class Reply {
      * @returns {Reply} - The created Reply object.
      */
     static async fromJson(json) {
-        const { id, authorId, postId, reply, votes, timestamp } = json;
-        const author = await User.getById(authorId);
-        const post = await Post.getById(postId);
-        return new Reply(id, author, post, reply, votes, moment.utc(timestamp));
+        const { id, authorId, postId, text, votes, timestamp } = json;
+        const reply = new Reply(id);
+
+        reply.reply = text;
+        reply.votes = votes;
+        reply.timestamp = moment.utc(timestamp);
+        reply.postId = postId;
+        reply.author = await User.getById(authorId);
+
+        return reply;
     }
 
     /**
