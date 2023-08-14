@@ -40,9 +40,11 @@ class Post(db.Model):
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     attachment_name = db.Column(db.String(255), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    resolved_by_id = db.Column(db.Integer, db.ForeignKey('replies.id'), nullable=True)
 
-    replies = db.relationship("Reply", backref="post", lazy="dynamic", cascade="all, delete-orphan")
+    replies = db.relationship("Reply", backref="post", foreign_keys="Reply.post_id", lazy="dynamic", cascade="all, delete-orphan")
     post_votes = db.relationship("PostVote", backref="post", lazy="dynamic", cascade="all, delete-orphan")
+    resolved_by = db.relationship("Reply", back_populates="post", foreign_keys="Reply.post_id", overlaps="post,replies", uselist=False)
 
     def __repr__(self):
         return f"<Post (id='{self.id}', title='{self.title}', post='{self.post}', subject='{self.subject.name}', date_created='{self.date_created}')>"
@@ -85,7 +87,8 @@ class Post(db.Model):
             'timestamp': self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
             'votes': [vote.serialized for vote in self.post_votes],
             'replyCount': len(list(self.replies)),
-            'attachment': self.attachment
+            'attachment': self.attachment,
+            'resolvedById': self.resolved_by_id
         }
 
     @staticmethod
