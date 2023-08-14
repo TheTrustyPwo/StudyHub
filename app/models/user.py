@@ -23,6 +23,8 @@ class User(db.Model, UserMixin):
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    answered = db.Column(db.Integer, nullable=False, default=0)
+    credits = db.Column(db.Integer, nullable=False, default=10)
     pfp_file_name = db.Column(db.String(255), nullable=True)
 
     essays = db.relationship("Essay", backref="user", lazy="dynamic", cascade="all, delete-orphan")
@@ -65,6 +67,8 @@ class User(db.Model, UserMixin):
             "email": self.email,
             "username": self.username,
             "dateCreated": self.date_created.strftime('%Y-%m-%d %H:%M:%S'),
+            'answered': self.answered,
+            'credits': self.credits,
             'pfp': self.pfp
         }
 
