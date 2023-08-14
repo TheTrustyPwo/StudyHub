@@ -3,7 +3,7 @@
 
 <script type="module" src="{{ url_for('static', filename='js/posts.js') }}" async></script>
 
-<div class="container">
+<div id="post-container" class="container loading-skeleton">
     <div class="row">
         <div class="col-lg-9">
             <div class="card post-card w-100 shadow-xss rounded-xxl border-0 p-4 mt-5 mb-3">
@@ -16,7 +16,10 @@
                         <h4 id="post-author" class="fw-700 text-grey-900 font-xssss mt-1">Loading...</h4>
                         <span id="post-timestamp" class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">Loading...</span>
                     </div>
-                    <div class="ms-auto pointer"><i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i></div>
+                    <div class="ms-auto pointer d-flex align-items-center">
+                        <div id="post-solved" class="d-none rounded-pill bg-success text-white px-4 py-2 me-3 font-xssss">Solved</div>
+                        <i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i>
+                    </div>
                 </div>
 
                 <h4 id="post-title" class="fw-bold font-xs">Loading...</h4>
@@ -92,7 +95,5 @@
         </div>
     </div>
 </div>
-
-<div id="loading-screen"><div class="spinner"></div></div>
 
 {% endblock %}
