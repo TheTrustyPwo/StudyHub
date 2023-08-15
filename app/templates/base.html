@@ -103,11 +103,13 @@
                 Create Post
             </a>
 
-            <span class="p-2 pointer text-center ms-auto menu-icon " id="dropdownMenu3" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <span class="dot-count bg-warning"></span>
-                <i class="feather-bell font-xl text-current"></i>
-            </span>
+            <button class="btn p-2 pointer text-center ms-auto" type="button" id="AIDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="feather-code font-xl text-current"></i>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end rounded-lg shadow-lg" aria-labelledby="AIDropdownMenu">
+                <li><a class="dropdown-item" href="{{ url_for('ai.grade_essay') }}"><i class="feather-check-circle text-success me-2"></i> Essay Grader</a></li>
+                <li><a class="dropdown-item" href="{{ url_for('ai.view_qna') }}"><i class="feather-help-circle text-info me-2"></i> AI Q&A</a></li>
+            </ul>
 
             <a class="p-2 text-center ms-3 menu-icon chat-active-btn" href="/messages">
                 <i class="feather-message-square font-xl text-current"></i>
