@@ -1,7 +1,9 @@
 import {Conversation, User} from "./models/index.js";
 
 const username = window.location.pathname.split("/").pop();
+const current = await User.getCurrent();
 const user = await User.getByUsername(username);
+
 $(document).ready(async function () {
     document.getElementById('username').innerText = user.username;
     document.getElementById('email').innerText = user.email;
@@ -12,46 +14,21 @@ $(document).ready(async function () {
         window.location.pathname = 'messages';
     };
 
-    if (user.id === (await User.getCurrent()).id) {
-        document.getElementById("pfp-text").style.visibility = "visible";
-        const profileImage = document.getElementById("pfp");
-        const fileInput = document.getElementById("profile-picture");
-        fileInput.addEventListener("change", async function (event) {
+    if (user.id === current.id) {
+        document.getElementById('pfp-icon').classList.remove('d-none');
+        const fileInput = document.getElementById('profile-picture');
+        fileInput.addEventListener("change", async function () {
             const selectedFile = fileInput.files[0];
-            await uploadFile(selectedFile);
+            await user.updateProfilePicture(selectedFile);
+            location.reload();
         });
     } else {
         document.getElementById("message").style.visibility = "visible";
         document.getElementById("profile-picture").remove();
     }
 
-
-    // profileImage.addEventListener("click", function() {
-    //     fileInput.click();
-    // });
-
     await fetchUserPosts();
 });
-
-async function uploadFile(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-        const response = await fetch('/api/v1/users/pfp/upload', {
-            method: 'POST',
-            body: formData
-        });
-
-        if (response.ok) {
-            location.reload();
-        } else {
-            console.error('Error uploading file:', response);
-        }
-    } catch (error) {
-        console.error('Error uploading file:', error);
-    }
-}
 
 window.addEventListener('scroll', handleScroll);
 

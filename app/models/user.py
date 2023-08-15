@@ -2,6 +2,7 @@ import datetime
 
 from flask_login import UserMixin
 from passlib.hash import bcrypt
+from sqlalchemy import func
 
 from app import db, login_manager
 from app.models.post import Post
@@ -104,9 +105,9 @@ class User(db.Model, UserMixin):
         """
         Check a user by their username
         :param username:
-        :return: User of None
+        :return: User or None
         """
-        return User.query.filter_by(username=username).first()
+        return User.query.filter(func.lower(User.username) == func.lower(username)).first()
 
     def reset_password(self, new_password):
         """
