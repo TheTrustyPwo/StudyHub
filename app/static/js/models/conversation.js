@@ -70,15 +70,10 @@ class Conversation {
         }
     }
 
-    /**
-     * Get all conversations
-     * @returns {Array<Conversation>} - An array of Conversation objects
-     */
     static async getAll() {
         const response = await fetch(`/api/v1/conversations/all`);
         const data = await response.json();
-        const conversations = await Promise.all(data.map(async conversationData => await Conversation.fromJson(conversationData)));
-        return conversations.filter(convo => convo !== undefined);
+        return Promise.all(data.map(async conversationData => await Conversation.fromJson(conversationData)));
     }
 
     /**
@@ -129,6 +124,7 @@ class Conversation {
             const readUsers = await Promise.all(readUserIds.map(async userId => await User.getById(userId)));
             return new Message(id, sender, this, content, moment.utc(timestamp), new Set(readUsers));
         }));
+        this.history.sort((a, b) => b.timestamp - a.timestamp);
     }
 
     /**
@@ -152,7 +148,7 @@ class Conversation {
      * Get the last message in the conversation
      * @returns {Message|undefined} - The last Message object in the conversation or undefined if no messages
      */
-    getLastMessage() {
+     get latestMessage() {
         if (this.history.length === 0) return undefined;
         return this.history[this.history.length - 1];
     }

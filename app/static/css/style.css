@@ -713,6 +713,10 @@
   height: 55px !important;
 }
 
+.h65 {
+  height: 65px !important;
+}
+
 .h75 {
   height: 75px !important;
 }
@@ -5167,7 +5171,6 @@ select.sort {
   -moz-box-align: start;
   -ms-flex-align: start;
   align-items: flex-start;
-  padding-bottom: 70px !important;
 }
 .chat-body .messages-content .message-item.outgoing-message {
   margin-left: auto;
