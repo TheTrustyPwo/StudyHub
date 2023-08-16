@@ -49,23 +49,20 @@
                         </div>
                     </div>
 
-                    <div aria-hidden="true" aria-labelledby="group-create" class="modal fade" id="g-create"
-                         tabindex="-1">
+                    <div aria-hidden="true" aria-labelledby="group-create" class="modal fade" id="g-create" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="group-create">Add Users</h5>
-                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
-                                            type="button"></button>
+                                    <button id="close-group" aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
                                 </div>
                                 <div class="modal-body">
                                     <form action="#" class="float-left header-search ms-3">
                                         <div class="form-group mb-0 icon-input">
                                             <input class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xsss fw-600 rounded-xl w350 theme-dark-bg"
-                                                   id="search-input2" placeholder="Start typing to search.."
+                                                   id="search-group" placeholder="Start typing to search.."
                                                    type="text">
-                                            <div class="list-group top-100 position-absolute w-100 rounded-xl border-1"
-                                                 id="searchResults2">
+                                            <div class="list-group top-100 position-absolute w-100 rounded-xl border-1" id="searchResults2">
                                                 <!-- Search results will be displayed here -->
                                             </div>
                                         </div>
@@ -73,12 +70,12 @@
                                     <br>
                                     <br>
                                     <br>
-                                    <div id="result123">
+                                    <div id="pending">
 
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Ok</button>
+                                    <button id="submit-group" class="btn btn-secondary" data-bs-dismiss="modal" type="button">Ok</button>
                                 </div>
                             </div>
                         </div>
@@ -104,9 +101,6 @@
                         <div class="chat-form">
                             <button class="bg-grey float-left"><i class="ti-microphone text-grey-600"></i></button>
                             <div class="form-group text-grey-600 fw-600"><input id="message" class="text-grey-600 fw-600" type="text" placeholder="Start typing.."></div>
-                            <div class="form-group">
-                                <input id="message" type="text" placeholder="Start typing..">
-                            </div>
                             <button id="message-button" class="bg-current"><i class="ti-arrow-right text-white"></i></button>
                         </div>
                     </div>
