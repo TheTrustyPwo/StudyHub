@@ -34,7 +34,7 @@ def log_in_user(email, password):
     :rtype: bool
     """
     user = User.get_by_email(email.lower())
-    if user.password is None:
+    if not user or user.password is None:
         return False
     if user and bcrypt.verify(password, user.password):
         login_user(user)

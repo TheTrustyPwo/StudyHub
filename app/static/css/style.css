@@ -4787,7 +4787,7 @@ select.sort {
 .modal-popup-body,
 .chat-wrapper,
 .chat-left {
-  height: calc(100vh - 120px);
+  height: calc(90vh - 100px);
 }
 .modal-popup-body::-webkit-scrollbar-track,
 .chat-wrapper::-webkit-scrollbar-track,

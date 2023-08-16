@@ -5,7 +5,80 @@
             <div class="row h-100">
                 <div class="col-lg-4 col-md-5 col-12 sidebar pe-0 border-end">
                     <div class="sidebar-header text-white p-3 h65 border-bottom">
-                        <h4 class="mb-0">Contacts</h4>
+                        <button class="btn btn-primary" data-bs-target="#c-create" data-bs-toggle="modal"
+                                id="create-conversation">
+                            Create Conversation
+                        </button>
+                        <button class="btn btn-primary" data-bs-target="#g-create" data-bs-toggle="modal"
+                                id="group-conversation">
+                            Create Group
+                        </button>
+                    </div>
+
+                    <div aria-hidden="true" aria-labelledby="conversation-create" class="modal fade" id="c-create"
+                         tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="conversation-create">Add User</h5>
+                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
+                                            type="button"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form class="float-left header-search ms-3">
+                                        <div class="form-group mb-0 icon-input">
+                                            <input class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xsss fw-600 rounded-xl w350 theme-dark-bg"
+                                                   id="search-input1" placeholder="Start typing to search.."
+                                                   type="text">
+                                            <div class="list-group top-100 position-absolute w-100 rounded-xl border-1"
+                                                 id="searchResults1">
+                                                <!-- Search results will be displayed here -->
+                                    </div>
+
+                                        </div>
+                                    </form>
+                                    <br>
+                                    <br>
+                                    <br>
+
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Ok</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div aria-hidden="true" aria-labelledby="group-create" class="modal fade" id="g-create" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="group-create">Add Users</h5>
+                                    <button id="close-group" aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="#" class="float-left header-search ms-3">
+                                        <div class="form-group mb-0 icon-input">
+                                            <input class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xsss fw-600 rounded-xl w350 theme-dark-bg"
+                                                   id="search-group" placeholder="Start typing to search.."
+                                                   type="text">
+                                            <div class="list-group top-100 position-absolute w-100 rounded-xl border-1" id="searchResults2">
+                                                <!-- Search results will be displayed here -->
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <div id="pending">
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button id="submit-group" class="btn btn-secondary" data-bs-dismiss="modal" type="button">Ok</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div id="conversations" class="contacts-list p-3">
                         <input type="text" class="form-control mb-3" placeholder="Search contacts">

@@ -3,22 +3,7 @@ import Message from "./message.js";
 
 // Establish a socket connection
 const socket = io.connect(`/messages/socket`, {rememberTransport: false});
-
-// Listen for new message events
-socket.on('new_message', async message => {
-    // Extract message properties
-    const {id, senderId, conversationId, content, timestamp, readUserIds} = message;
-
-    // Get sender and conversation objects
-    const sender = await User.getById(senderId);
-    const conversation = await Conversation.getById(conversationId);
-
-    // Get read users
-    const readUsers = await Promise.all(readUserIds.map(async userId => await User.getById(userId)));
-
-    // Create a new Message object and add it to the conversation history
-    conversation.history.push(new Message(id, sender, conversation, content, new Date(timestamp), new Set(readUsers)));
-});
+const current = await User.getCurrent()
 
 class Conversation {
     // Static cache map for storing Conversation objects
@@ -151,6 +136,11 @@ class Conversation {
      get latestMessage() {
         if (this.history.length === 0) return undefined;
         return this.history[this.history.length - 1];
+    }
+
+    get image() {
+         if (this.isGroup) return `/static/assets/default-group.png`;
+         else return Array.from(this.users).find(user => user.id !== current.id).pfp;
     }
 }
 
