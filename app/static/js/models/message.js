@@ -56,7 +56,7 @@ class Message {
         const sender = await User.getById(senderId);
         const conversation = await Conversation.getById(conversationId);
         const readUsers = await Promise.all(readUserIds.map(async userId => await User.getById(userId)));
-        return new Message(id, sender, conversation, content, moment.utc(timestamp), new Set(readUsers));
+        return new Message(id, sender, conversation, content, moment(timestamp), new Set(readUsers));
     }
 
     /**
