@@ -95,6 +95,17 @@ class User {
             return [];
         }
     }
+
+    static async search(query) {
+        try {
+            const response = await fetch(`/api/v1/users/search/${encodeURIComponent(query)}`);
+            const postData = await response.json();
+            return await Promise.all(postData.map(async post => await User.fromJson(post)));
+        } catch (error) {
+            console.error(`Could not search for posts`);
+            return [];
+        }
+    }
 }
 
 export default User;

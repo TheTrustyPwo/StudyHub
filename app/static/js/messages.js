@@ -23,6 +23,95 @@ $(document).ready(async function () {
         displayConversation(conversation);
     }
 
+    const search1 = document.getElementById("search-input1");
+    const result1 = document.getElementById("searchResults1");
+
+    search1.addEventListener("input", async function () {
+        let limit = 0
+        let request = await User.search(search1.value);
+        let results = []
+        if (request === []) { return }
+        result1.innerHTML = '';
+
+        request.forEach((ele, i) => {
+            let out = document.createElement("div");
+            out.innerHTML += `<div class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <button aria-label="Close" class="close" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="card-body p-0 d-flex">
+                                    <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w25"
+                                                                     src=${request[i].pfp}></figure>
+                                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${request[i].username}</h3>
+                                </div>
+                            </div>
+                        </div>`;
+            out.addEventListener("click", async () => {
+                await Conversation.createPrivate(ele.id)
+            });
+            results.push(out);
+        });
+
+        results.forEach(ele => { result1.appendChild(ele); });
+    });
+
+    const search2 = document.getElementById("search-input2");
+    const result2 = document.getElementById("searchResults2");
+    let selectedUsers = []
+    search2.addEventListener("input", async function () {
+        let limit = 0
+        let request = await User.search(search2.value);
+        let results = []
+        if (request === []) { return }
+        result2.innerHTML = '';
+
+        request.forEach((ele, i) => {
+            let out = document.createElement("div");
+            out.innerHTML += `<div class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <button aria-label="Close" class="close" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="card-body p-0 d-flex">
+                                    <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w25"
+                                                                     src=${request[i].pfp}></figure>
+                                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${request[i].username}</h3>
+                                </div>
+                            </div>
+                        </div>`;
+            out.addEventListener("click", async () => {
+                putElementsInsideTextBoxForUserToSee()
+                selectedUsers.push(ele);
+            });
+            results.push(out);
+        });
+
+        results.forEach(ele => { result2.appendChild(ele); });
+    });
+
+    function putElementsInsideTextBoxForUserToSee() {
+        document.getElementById("result").forEach((ele1, i) => {
+            selectedUsers.forEach((ele2, i) => {
+                if (ele1 === ele2) {
+                    return
+                }
+            })
+        })
+        selectedUsers.forEach(ele => document.getElementById("result123").innerHTML += `<div class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <button aria-label="Close" class="close" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="card-body p-0 d-flex">
+                                    <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w25"
+                                                                     src=${ele.pfp}></figure>
+                                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${ele.username}</h3>
+                                </div>
+                            </div>
+                        </div>`);
+    }
+
     /**
      * Display a conversation in the chat list
      * @param {Conversation} conversation - The conversation to display
