@@ -122,7 +122,7 @@ deployment for notes on how to deploy the project.
 
 ### Prerequisites
 
-- [Python](https://www.python.org/) (3.9 Recommended)
+- [Python](https://www.python.org/) (3.11 Recommended)
 - AWS S3 Bucket on [Amazon Web Services](https://aws.amazon.com/)
 - [OpenAI API Key](https://platform.openai.com/account/api-keys)
 - [Pinecone API Key & Index Name](https://www.pinecone.io/)
