@@ -22,7 +22,7 @@ def create_post():
 
     if form.validate_on_submit():
         title = bleach.clean(form.title.data)
-        body = bleach.clean(form.title.data)
+        body = bleach.clean(form.body.data)
         subject = form.subject.data
         attachment = form.attachment.data
 

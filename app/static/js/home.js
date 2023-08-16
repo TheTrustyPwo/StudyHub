@@ -111,9 +111,8 @@ function createPostCard(post) {
             </div>
         </div>`);
 
-    postCard.onclick = (event) => {
-        if (event.target  === postCard)
-            location.href = `/post/${post.id}`;
+    postCard.onclick = () => {
+        location.href = `/post/${post.id}`;
     }
 
     postCard.querySelector('#share').onclick = (event) => event.stopPropagation();

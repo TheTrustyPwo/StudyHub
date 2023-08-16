@@ -13,85 +13,88 @@ $(document).ready(async function () {
     renderPost(post);
     renderReplies(post.replies);
 
-    $('#post-container').removeClass('loading-skeleton');
+    document.getElementById('post-container').classList.remove('loading-skeleton');
 
     const relatedPosts = await Post.getPosts(1, 10, null, new Set([post.subject]));
     renderRelatedPosts(relatedPosts.filter(relatedPost => relatedPost.id !== post.id));
 });
 
 function renderPost(post) {
-    const postUpvoteButton = $('#post-upvote');
-    const postDownvoteButton = $('#post-downvote');
+    const postUpvoteButton = document.getElementById('post-upvote');
+    const postDownvoteButton = document.getElementById('post-downvote');
     const userVote = post.votes.find(vote => vote.userId === currentUser.id)?.vote || 0;
 
-    postUpvoteButton.removeClass('active');
-    postDownvoteButton.removeClass('active');
+    postUpvoteButton.classList.remove('active');
+    postDownvoteButton.classList.remove('active');
 
-    if (userVote === 1) postUpvoteButton.addClass('active');
-    else if (userVote === -1) postDownvoteButton.addClass('active');
+    if (userVote === 1) postUpvoteButton.classList.add('active');
+    else if (userVote === -1) postDownvoteButton.classList.add('active');
 
-    $('#post-title').text(DOMPurify.sanitize(post.title));
-    $('#post-body').text(DOMPurify.sanitize(post.body));
-    $('#post-votes').text(post.getVoteCount().toLocaleString());
-    $('#post-reply-count').text(post.replyCount.toLocaleString());
-    $('#post-timestamp').text(post.timestamp.local().calendar());
+    document.getElementById('post-title').textContent = DOMPurify.sanitize(post.title);
+    document.getElementById('post-body').textContent = DOMPurify.sanitize(post.body);
+    document.getElementById('post-votes').textContent = post.getVoteCount().toLocaleString();
+    document.getElementById('post-reply-count').textContent = post.replyCount.toLocaleString();
+    document.getElementById('post-timestamp').textContent = post.timestamp.local().calendar();
 
-    $('#post-author').text(DOMPurify.sanitize(post.author.username));
-    $('#post-author-pfp').attr('src', post.author.pfp);
+    document.getElementById('post-author').textContent = DOMPurify.sanitize(post.author.username);
+    document.getElementById('post-author-pfp').src = post.author.pfp;
 
     if (post.resolvedBy) {
-        $('#post-solved').removeClass('d-none');
+        document.getElementById('post-solved').classList.remove('d-none');
     }
 
     if (post.attachment) {
-        $('#post-attachment-wrap').css('display', 'flex');
-        $('#post-attachment').attr('src', post.attachment);
+        document.getElementById('post-attachment-wrap').style.display = 'flex';
+        document.getElementById('post-attachment').src = post.attachment;
     }
 
-    postUpvoteButton.click(async () => {
+    postUpvoteButton.onclick = async () => {
+        console.log("UPVOTED")
         await post.upvote();
         await renderPost(post);
-    });
+    }
 
-    postDownvoteButton.click(async () => {
+    postDownvoteButton.onclick = async () => {
         await post.downvote();
         await renderPost(post);
-    });
+    }
 
-    $('#reply-button').click(async () => {
-        const replyText = $('#reply-text');
-        const text = replyText.val();
-        replyText.val('');
+    document.getElementById('reply-button').onclick = async () => {
+        const replyText = document.getElementById('reply-text');
+        const text = replyText.value;
+        replyText.value = '';
 
-        $('#reply-button').addClass('d-none');
-        $('#reply-button-loading').removeClass('d-none');
+        document.getElementById('reply-button').classList.add('d-none');
+        document.getElementById('reply-button-loading').classList.remove('d-none');
         const reply = await Reply.create(text, post);
-        $('#reply-button-loading').addClass('d-none');
-        $('#reply-button').removeClass('d-none');
+        document.getElementById('reply-button-loading').classList.add('d-none');
+        document.getElementById('reply-button').classList.remove('d-none');
 
         const replyDiv = renderReply(reply);
-        $('#post-replies').prepend(replyDiv);
+        document.getElementById('post-replies').prepend(replyDiv);
         replyDiv.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'center' });
-    });
+    }
 }
 
 function renderReplies(replies) {
-    const postReplies = $('#post-replies');
+    const postReplies = document.getElementById('post-replies');
     const sorting = {
         'recent': (a, b) => b.timestamp - a.timestamp,
         'popular': (a, b) => b.getVoteCount() - a.getVoteCount() || b.timestamp - a.timestamp
     }
 
     const markedReply = replies.find(reply => reply.id === post.resolvedBy?.id);
-    if (markedReply) postReplies.append(renderReply(markedReply));
-    replies.filter(reply => reply.id !== post.resolvedBy?.id).sort(sorting[sortBy]).forEach(reply => postReplies.append(renderReply(reply)));
+    if (markedReply) postReplies.appendChild(renderReply(markedReply));
+    replies.filter(reply => reply.id !== post.resolvedBy?.id).sort(sorting[sortBy]).forEach(reply => postReplies.appendChild(renderReply(reply)));
 }
 
 function renderReply(reply) {
     const userVote = reply.votes.find(vote => vote.userId === currentUser.id)?.vote || 0;
-    const replyDiv = $('<div>').attr('data-reply-id', reply.id).addClass('card post-card w-100 shadow-xss rounded-xxl border-0 p-4 mb-3');
+    const replyDiv = document.createElement('div');
+    replyDiv.setAttribute('data-reply-id', reply.id);
+    replyDiv.classList.add('card', 'post-card', 'w-100', 'shadow-xss', 'rounded-xxl', 'border-0', 'p-4', 'mb-3');
 
-    replyDiv.html(DOMPurify.sanitize(
+    replyDiv.innerHTML = DOMPurify.sanitize(
         `<div class="card-body p-0 d-flex">
             <figure class="avatar me-3"><img src=${reply.author.pfp} alt="avater" class="shadow-sm rounded-circle w45"></figure>
             <div><h4 class="fw-700 text-grey-900 font-xssss mt-1">${reply.author.username}<span class="d-block font-xssss fw-500 mt-1 lh-3 text-grey-500">${reply.timestamp.fromNow()}</span></h4></div>
@@ -113,19 +116,19 @@ function renderReply(reply) {
                 <span id="post-votes" class="mx-2">${reply.getVoteCount().toLocaleString()}</span>
                 <i class="downvote ${userVote === -1 ? 'active' : ''}"></i>
             </div>
-        </div>`));
+        </div>`);
 
-    replyDiv.find('.upvote').click(async () => {
+    replyDiv.querySelector('.upvote').addEventListener('click', async () => {
         await reply.upvote();
         replyDiv.replaceWith(renderReply(reply));
     });
 
-    replyDiv.find('.downvote').click(async () => {
+    replyDiv.querySelector('.downvote').addEventListener('click', async () => {
         await reply.downvote();
         replyDiv.replaceWith(renderReply(reply));
     });
 
-    replyDiv.find('.mark-answer').click(async () => {
+    replyDiv.querySelector('.mark-answer').addEventListener('click', async () => {
         await post.resolve(reply);
         replyDiv.replaceWith(renderReply(reply));
     });
@@ -134,19 +137,22 @@ function renderReply(reply) {
 }
 
 function renderRelatedPosts(posts) {
-    const relatedPosts = $('#related-posts');
+    const relatedPosts = document.getElementById('related-posts');
     posts.forEach(post => {
-        const postDiv = $(DOMPurify.sanitize(
-            `<a href="/post/${post.id}" class="list-group-item list-group-item-action card w-100 border-0 rounded-0 pt-1">
-                <div class="card-body p-0 d-flex">
-                    <figure class="avatar me-1"><img src="${post.author.pfp}" alt="avater" class="shadow-sm rounded-circle w25"></figure>
-                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${post.author.username}</h3>
-                    <span class="fw-900 font-x mx-1">&#183;</span>
-                    <span class="font-xsss fw-500 text-grey-500">${post.timestamp.fromNow()}</span>
-                </div>
-                <h4 class="fw-bold font-xsss mt--1">${post.title}</h4>
-            </a>
-            <hr class="p-0 my-2">`));
-        relatedPosts.append(postDiv);
+        const postDiv = document.createElement('a');
+        postDiv.href = `/post/${post.id}`;
+        postDiv.classList.add('list-group-item', 'list-group-item-action', 'card', 'w-100', 'border-0', 'rounded-0', 'pt-1');
+
+        postDiv.innerHTML = DOMPurify.sanitize(
+            `<div class="card-body p-0 d-flex">
+                <figure class="avatar me-1"><img src="${post.author.pfp}" alt="avater" class="shadow-sm rounded-circle w25"></figure>
+                <h3 class="fw-600 text-grey-900 font-xsss lh-28">${post.author.username}</h3>
+                <span class="fw-900 font-x mx-1">&#183;</span>
+                <span class="font-xsss fw-500 text-grey-500">${post.timestamp.fromNow()}</span>
+            </div>
+            <h4 class="fw-bold font-xsss mt--1">${post.title}</h4>`
+        );
+
+        relatedPosts.appendChild(postDiv);
     });
 }
