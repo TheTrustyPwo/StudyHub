@@ -24,3 +24,4 @@ cryptography==41.0.3
 mysqlclient==2.2.0
 pinecone-client==2.2.2
 bleach==6.0.0
+oauthlib==3.2.2
