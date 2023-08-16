@@ -41,7 +41,7 @@ $(document).ready(async function () {
                             <h4 class="fw-700 text-grey-900 font-xsss">${conversation.name}</h4>
                             <span class="d-block font-xssss fw-500 lh-3 text-grey-500">${latestMessage.content}</span>
                         </div>
-                        <span class="ms-auto font-xssss fw-600 text-grey-700">${latestMessage.timestamp.local().calendar(null, timestampFormat)}</span>
+                        <span class="ms-auto font-xssss fw-600 text-grey-700">${latestMessage.timestamp.calendar(null, timestampFormat)}</span>
                     </div>
                 </div>` :
                 `<div class="card w-100 border-0 py-2 px-3">
@@ -87,7 +87,7 @@ $(document).ready(async function () {
             `<div class="message-user">
                 <figure class="avatar"><img src="${message.sender.pfp}" alt="avatar"></figure>
                 <div><h5>${message.sender.username}</h5>
-                    <div class="time">${message.timestamp.local().calendar(null, timestampFormat)}</div>
+                    <div class="time">${message.timestamp.calendar(null, timestampFormat)}</div>
                 </div>
             </div>
             <div class="message-wrap">${message.content}</div>`
@@ -117,6 +117,7 @@ $(document).ready(async function () {
     socket.on('new_message', async function (data) {
         const message = await Message.fromJson(data);
         if (selectedChatItem && selectedChatItem.getAttribute('data-chat-id') === message.conversation.id) {
+            console.log(message)
             document.getElementById('messages').appendChild(renderMessage(message));
             document.getElementById('chat-wrap').scrollTop = document.getElementById('chat-wrap').scrollHeight;
             socket.emit('read_message', {'message_id': message.id});

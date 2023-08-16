@@ -10,6 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_talisman import Talisman
 
+from oauthlib.oauth2 import WebApplicationClient
+
 from app.config import BaseConfig, DevelopmentConfig
 
 db = SQLAlchemy()
@@ -22,6 +24,8 @@ talisman = Talisman()
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
 login_manager.login_message_category = "danger"
+
+oauth_client = None
 
 
 def create_app(config: Type[BaseConfig] = DevelopmentConfig):
@@ -37,9 +41,10 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     moment.init_app(app)
     cors.init_app(app)
     migrate.init_app(app, db)
-    talisman.init_app(app, content_security_policy=app.config['CONTENT_SECURITY_POLICY'])
+    talisman.init_app(app, content_security_policy=[])
     login_manager.init_app(app)
 
+    load_oauth_client(app)
     load_pinecone_index(app)
 
     from app.upload import upload_api_blueprint
@@ -77,6 +82,9 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
 
     return app
 
+def load_oauth_client(app):
+    global oauth_client
+    oauth_client = WebApplicationClient(app.config['GOOGLE_CLIENT_ID'])
 
 def load_pinecone_index(app):
     pinecone.init(api_key=app.config['PINECONE_API_KEY'], environment=app.config['PINECONE_ENV'])

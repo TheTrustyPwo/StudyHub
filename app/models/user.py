@@ -1,4 +1,5 @@
 import datetime
+from typing import Union
 
 from flask_login import UserMixin
 from passlib.hash import bcrypt
@@ -22,7 +23,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     username = db.Column(db.String(255), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=True)
     date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     answered = db.Column(db.Integer, nullable=False, default=0)
     credits = db.Column(db.Integer, nullable=False, default=10)
@@ -42,7 +43,7 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"
 
-    def __init__(self, email: str, username: str, password: str):
+    def __init__(self, email: str, username: str, password: Union[str, None]):
         self.email = email
         self.username = username
         self.password = password

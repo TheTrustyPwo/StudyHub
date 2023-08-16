@@ -1,3 +1,4 @@
+import requests
 from flask_login import login_user, logout_user
 from passlib.hash import bcrypt
 
@@ -33,6 +34,8 @@ def log_in_user(email, password):
     :rtype: bool
     """
     user = User.get_by_email(email.lower())
+    if user.password is None:
+        return False
     if user and bcrypt.verify(password, user.password):
         login_user(user)
         return True
@@ -44,3 +47,7 @@ def log_out_user():
     Logs the current user out.
     """
     logout_user()
+
+
+def get_google_provider_cfg():
+    return requests.get('https://accounts.google.com/.well-known/openid-configuration').json()
