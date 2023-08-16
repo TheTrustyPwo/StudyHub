@@ -1,119 +1,188 @@
 {% extends "base.html" %}
 {% block content %}
-    <div class="container d-flex align-items-center justify-content-center px-5 py-3" style="height: 90vh;">
+<<<<<<< Updated upstream
+    <style>
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        li:hover {
+            background-color: #f5f5f5;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: bold;
+        }
+
+        .last-message {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999;
+            padding-right: 50px
+        }
+    </style>
+    <script>
+        // JavaScript to handle chat item click and redirection
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatItems = document.querySelectorAll('.chat-item');
+
+            chatItems.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    const url = window.location.href + '/' + userId;
+                    window.location.href = url;
+                });
+            });
+        });
+    </script>
+    MESSAGES PAGE
+    {{ current_user }}
+    <br><br>
+    <ul>
+        {% for user in chats %}
+            <li class="chat-item" data-user-id="{{ user.id }}">
+                <div class="user-info">
+                    <div class="user-name">{{ user.username }}</div>
+                    <div class="last-message">{{ user.content }}</div>
+                </div>
+                <div class="timestamp">{{ user.timestamp }}</div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+=======
+    <div class="container d-flex align-items-center justify-content-center p-5" style="height: 90vh;">
         <div class="rounded-xxl shadow-md bg-body w-100 h-100">
             <div class="row h-100">
                 <div class="col-lg-4 col-md-5 col-12 sidebar pe-0 border-end">
                     <div class="sidebar-header text-white p-3 h65 border-bottom">
-                        <button class="btn btn-primary" data-bs-target="#c-create" data-bs-toggle="modal"
-                                id="create-conversation">
-                            Create Conversation
-                        </button>
-                        <button class="btn btn-primary" data-bs-target="#g-create" data-bs-toggle="modal"
-                                id="group-conversation">
-                            Create Group
-                        </button>
+                        <h4 class="mb-0">Contacts</h4>
                     </div>
-
-                    <div aria-hidden="true" aria-labelledby="conversation-create" class="modal fade" id="c-create"
-                         tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="conversation-create">Add User</h5>
-                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
-                                            type="button"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form class="float-left header-search ms-3">
-                                        <div class="form-group mb-0 icon-input">
-                                            <input class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xsss fw-600 rounded-xl w350 theme-dark-bg"
-                                                   id="search-input1" placeholder="Start typing to search.."
-                                                   type="text">
-                                            <div class="list-group top-100 position-absolute w-100 rounded-xl border-1"
-                                                 id="searchResults1">
-                                                <!-- Search results will be displayed here -->
-                                    </div>
-
-                                        </div>
-                                    </form>
-                                    <br>
-                                    <br>
-                                    <br>
-
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div aria-hidden="true" aria-labelledby="group-create" class="modal fade" id="g-create"
-                         tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="group-create">Add Users</h5>
-                                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal"
-                                            type="button"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="#" class="float-left header-search ms-3">
-                                        <div class="form-group mb-0 icon-input">
-                                            <input class="bg-grey border-0 lh-32 pt-2 pb-2 ps-5 pe-3 font-xsss fw-600 rounded-xl w350 theme-dark-bg"
-                                                   id="search-input2" placeholder="Start typing to search.."
-                                                   type="text">
-                                            <div class="list-group top-100 position-absolute w-100 rounded-xl border-1"
-                                                 id="searchResults2">
-                                                <!-- Search results will be displayed here -->
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <br>
-                                    <br>
-                                    <br>
-                                    <div id="result123">
-
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Ok</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="conversations" class="contacts-list p-3">
+                    <div class="contacts-list p-3">
                         <input type="text" class="form-control mb-3" placeholder="Search contacts">
+                        <div class="card w-100 border-0 py-2 px-3">
+                            <div class="card-body p-0 d-flex">
+                                <figure class="avatar me-3"><img src="/static/assets/default-pfp.jpg" alt="avater" class="shadow-sm rounded-circle w40"></figure>
+                                <div>
+                                    <h4 class="fw-700 text-grey-900 font-xsss">TheTrustyPwo</h4>
+                                    <span class="d-block font-xssss fw-500 lh-3 text-grey-500">Hey whatsup</span>
+                                </div>
+                                <span class="ms-auto font-xssss fw-600 text-grey-700">14:11</span>
+                            </div>
+                        </div>
+                        <div class="card w-100 border-0 py-2 px-3">
+                            <div class="card-body p-0 d-flex">
+                                <figure class="avatar me-3"><img src="/static/assets/default-pfp.jpg" alt="avater" class="shadow-sm rounded-circle w40"></figure>
+                                <div>
+                                    <h4 class="fw-700 text-grey-900 font-xsss">TheTrustyPwo</h4>
+                                    <span class="d-block font-xssss fw-500 lh-3 text-grey-500">Hey whatsup</span>
+                                </div>
+                                <span class="ms-auto font-xssss fw-600 text-grey-700">14:11</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="col-lg-8 col-md-7 col-12 position-relative ps-0">
-                    <div class="position-relative border-bottom h65 w-100 py-2 px-3">
-                        <figure class="avatar position-absolute me-3"><img id="chat-pfp" src="/static/assets/default-pfp.jpg" alt="avatar" class="shadow-sm rounded-circle w40"></figure>
-                        <span id="chat-username" class="fw-700 font-sm position-absolute mt-1" style="padding-left: 60px !important">Loading...</span>
+                    <div class="d-inline-flex justify-content-between align-content-center border-bottom h65 w-100 py-2 px-3">
+                        <div class="d-inline-flex">
+                            <figure class="avatar me-3"><img src="/static/assets/default-pfp.jpg" alt="avatar" class="shadow-sm rounded-circle w40"></figure>
+                            <h5>TheTrustyPwo</h5>
+                        </div>
+                        <div>
+
+                        </div>
                     </div>
-                    <div id="chat-wrap" class="chat-wrapper pt-0 w-100 position-relative scroll-bar bg-white theme-dark-bg border-bottom" style="height: 500px !important">
+                    <div class="h-100 overflow-auto">
                         <div class="chat-body">
-                            <div id="messages" class="messages-content p-3">
+                            <div class="messages-content p-3">
+                                <div class="message-item">
+                                    <div class="message-user">
+                                        <figure class="avatar"><img src="/static/assets/default-pfp.jpg" alt="avater"></figure>
+                                        <div><h5>Byrom Guittet</h5>
+                                            <div class="time">01:35 PM</div>
+                                        </div>
+                                    </div>
+                                    <div class="message-wrap">I'm fine, how are you.</div>
+                                </div>
+                                <div class="message-item outgoing-message">
+                                    <div class="message-user">
+                                        <figure class="avatar"><img src="/static/assets/default-pfp.jpg" alt="avater"></figure>
+                                        <div><h5>Byrom Guittet</h5>
+                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="message-wrap">I want those files for you. I want you to send 1 PDF and 1 image file.</div>
+                                </div>
+                                                            <div class="message-item">
+                                    <div class="message-user">
+                                        <figure class="avatar"><img src="/static/assets/default-pfp.jpg" alt="avater"></figure>
+                                        <div><h5>Byrom Guittet</h5>
+                                            <div class="time">01:35 PM</div>
+                                        </div>
+                                    </div>
+                                    <div class="message-wrap">I'm fine, how are you.</div>
+                                </div>
+                                <div class="message-item outgoing-message">
+                                    <div class="message-user">
+                                        <figure class="avatar"><img src="/static/assets/default-pfp.jpg" alt="avater"></figure>
+                                        <div><h5>Byrom Guittet</h5>
+                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="message-wrap">I want those files for you. I want you to send 1 PDF and 1 image file.</div>
+                                </div>
+                                                            <div class="message-item">
+                                    <div class="message-user">
+                                        <figure class="avatar"><img src="/static/assets/default-pfp.jpg" alt="avater"></figure>
+                                        <div><h5>Byrom Guittet</h5>
+                                            <div class="time">01:35 PM</div>
+                                        </div>
+                                    </div>
+                                    <div class="message-wrap">I'm fine, how are you.</div>
+                                </div>
+                                <div class="message-item outgoing-message">
+                                    <div class="message-user">
+                                        <figure class="avatar"><img src="/static/assets/default-pfp.jpg" alt="avater"></figure>
+                                        <div><h5>Byrom Guittet</h5>
+                                            <div class="time">01:35 PM<i class="ti-double-check text-info"></i></div>
+                                        </div>
+                                    </div>
+                                    <div class="message-wrap">I want those files for you. I want you to send 1 PDF and 1 image file.</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="dark-bg p-3 shadow-none theme-dark-bg position-absolute bottom-0" style="width: 98%;">
-                        <div class="chat-form">
+                        <form class="chat-form">
                             <button class="bg-grey float-left"><i class="ti-microphone text-grey-600"></i></button>
-                            <div class="form-group text-grey-600 fw-600"><input id="message" class="text-grey-600 fw-600" type="text" placeholder="Start typing.."></div>
-                            <div class="form-group">
-                                <input id="message" type="text" placeholder="Start typing..">
-                            </div>
-                            <button id="message-button" class="bg-current"><i class="ti-arrow-right text-white"></i></button>
-                        </div>
+                            <div class="form-group"><input type="text" placeholder="Start typing.."></div>
+                            <button class="bg-current"><i class="ti-arrow-right text-white"></i></button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-<script type="module" src="{{ url_for('static', filename='js/messages.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/messages.js') }}"></script>
 {% endblock %}
+>>>>>>> Stashed changes
