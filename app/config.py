@@ -20,6 +20,35 @@ class BaseConfig:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///test.sqlite')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    CONTENT_SECURITY_POLICY = {
+        'default-src': [
+            "'self'",
+            "https://code.jquery.com",
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com",
+            "https://thepwo.s3.amazonaws.com",
+            "https://fonts.googleapis.com"
+        ],
+        'img-src': [
+            '*',
+            'data:'
+        ],
+        'style-src': [
+            "'self'",
+            "https://code.jquery.com",
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com",
+            "https://fonts.googleapis.com"
+        ],
+        'script-src': [
+            "'self'",
+            "https://code.jquery.com",
+            "https://cdn.jsdelivr.net",
+            "https://cdnjs.cloudflare.com"
+        ],
+        'font-src': '*'
+    }
+
 
 class DevelopmentConfig(BaseConfig):
     """

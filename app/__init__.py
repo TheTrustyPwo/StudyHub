@@ -8,6 +8,7 @@ from flask_moment import Moment
 from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from flask_talisman import Talisman
 
 from app.config import BaseConfig, DevelopmentConfig
 
@@ -16,6 +17,7 @@ socketio = SocketIO()
 moment = Moment()
 cors = CORS()
 migrate = Migrate()
+talisman = Talisman()
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
@@ -35,6 +37,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     moment.init_app(app)
     cors.init_app(app)
     migrate.init_app(app, db)
+    talisman.init_app(app, content_security_policy=app.config['CONTENT_SECURITY_POLICY'])
     login_manager.init_app(app)
 
     load_pinecone_index(app)
