@@ -3,7 +3,22 @@ import Message from "./message.js";
 
 // Establish a socket connection
 const socket = io.connect(`/messages/socket`, {rememberTransport: false});
-const current = await User.getCurrent()
+
+// Listen for new message events
+socket.on('new_message', async message => {
+    // Extract message properties
+    const {id, senderId, conversationId, content, timestamp, readUserIds} = message;
+
+    // Get sender and conversation objects
+    const sender = await User.getById(senderId);
+    const conversation = await Conversation.getById(conversationId);
+
+    // Get read users
+    const readUsers = await Promise.all(readUserIds.map(async userId => await User.getById(userId)));
+
+    // Create a new Message object and add it to the conversation history
+    conversation.history.push(new Message(id, sender, conversation, content, new Date(timestamp), new Set(readUsers)));
+});
 
 class Conversation {
     // Static cache map for storing Conversation objects
@@ -55,10 +70,15 @@ class Conversation {
         }
     }
 
+    /**
+     * Get all conversations
+     * @returns {Array<Conversation>} - An array of Conversation objects
+     */
     static async getAll() {
         const response = await fetch(`/api/v1/conversations/all`);
         const data = await response.json();
-        return Promise.all(data.map(async conversationData => await Conversation.fromJson(conversationData)));
+        const conversations = await Promise.all(data.map(async conversationData => await Conversation.fromJson(conversationData)));
+        return conversations.filter(convo => convo !== undefined);
     }
 
     /**
@@ -109,7 +129,6 @@ class Conversation {
             const readUsers = await Promise.all(readUserIds.map(async userId => await User.getById(userId)));
             return new Message(id, sender, this, content, moment.utc(timestamp), new Set(readUsers));
         }));
-        this.history.sort((a, b) => b.timestamp - a.timestamp);
     }
 
     /**
@@ -133,14 +152,9 @@ class Conversation {
      * Get the last message in the conversation
      * @returns {Message|undefined} - The last Message object in the conversation or undefined if no messages
      */
-     get latestMessage() {
+    getLastMessage() {
         if (this.history.length === 0) return undefined;
         return this.history[this.history.length - 1];
-    }
-
-    get image() {
-         if (this.isGroup) return `/static/assets/default-group.png`;
-         else return Array.from(this.users).find(user => user.id !== current.id).pfp;
     }
 }
 
