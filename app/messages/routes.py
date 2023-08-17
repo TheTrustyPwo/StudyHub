@@ -1,4 +1,5 @@
 from typing import Type
+import bleach
 
 from flask import render_template
 from flask_login import current_user, login_required
@@ -82,7 +83,7 @@ def handle_message(payload):
     if not content:
         raise BadRequest(message='content is not specified in payload')
 
-    message = messages_service.create_message(current_user.id, conversation_id, content)
+    message = messages_service.create_message(current_user.id, conversation_id, bleach.clean(content))
     conversation = Conversation.get_by_id(conversation_id)
 
     for user in conversation.users:
@@ -175,7 +176,7 @@ def handle_create_group_conversation(payload):
     if None in users:
         raise BadRequest(message='One of more of the provided user IDs was invalid')
 
-    conversation = conversation_services.create_group_conversation(group_name, user_ids, current_user.id)
+    conversation = conversation_services.create_group_conversation(bleach.clean(group_name), user_ids, current_user.id)
 
     for user in users:
         emit('new_conversation', conversation.serialized, room=user.id, json=True)

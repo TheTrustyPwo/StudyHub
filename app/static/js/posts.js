@@ -104,7 +104,7 @@ function renderReply(reply) {
                     <i class="ti-more-alt text-grey-900 btn-round-md bg-greylight font-xss"></i>
                 </div>
                 <div class="dropdown-menu dropdown-menu-end p-2 rounded-xxl border-0 shadow-lg fw-700 font-xss text-grey-900" aria-labelledby="reply${reply.id}Dropdown">
-                    <div class="dropdown-item mark-answer"><i class="ti-flag-alt me-1"></i>Report</div>
+                    <div class="dropdown-item"><i class="ti-flag-alt me-1"></i>Report</div>
                     ${post.resolvedBy ? `` : `<div class="dropdown-item mark-answer"><i class="ti-check me-1"></i>Mark as Answer</div>`}
                 </div>
             </div>
