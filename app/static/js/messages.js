@@ -1,17 +1,21 @@
 import { User, Message, Conversation } from "./models/index.js";
 
+const timestampFormat = {
+    sameDay: '[Today] LT',           // Today, show only the time
+    lastDay: '[Yesterday] LT',       // Yesterday, show only the time
+    lastWeek: 'dddd LT',             // Within the last week, show the day and time
+    sameElse: 'DD/MM/YYYY LT'        // Older messages, show full date and time
+}
+
 const socket = io.connect(`/messages/socket`, { rememberTransport: false });
+const current = await User.getCurrent();
 
 $(document).ready(async function () {
-    // DOM element references
-    const chatUsername = document.getElementById('chat-username');
-    const chatMessages = document.getElementById('chat-messages');
     const messageInput = document.getElementById('message');
-    const sendButton = document.getElementById('send');
     let selectedChatItem = null;
 
     const chatList = document.getElementById('chat-list');
-    // Get all conversations and display them
+
     const conversations = await Conversation.getAll();
     for (const conversation of conversations) {
         console.log(conversation);
@@ -19,106 +23,210 @@ $(document).ready(async function () {
         displayConversation(conversation);
     }
 
+    const search1 = document.getElementById("search-input1");
+    const result1 = document.getElementById("searchResults1");
+
+    search1.addEventListener("input", async function () {
+        let limit = 0
+        let request = await User.search(search1.value);
+        let results = []
+        if (request === []) {
+            return
+        }
+        result1.innerHTML = '';
+
+        request.forEach((ele, i) => {
+            let out = document.createElement("div");
+            out.innerHTML += `<div class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <button aria-label="Close" class="close" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="card-body p-0 d-flex">
+                                    <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w25"
+                                                                     src=${request[i].pfp}></figure>
+                                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${request[i].username}</h3>
+                                </div>
+                            </div>
+                        </div>`;
+            out.addEventListener("click", async () => {
+                await Conversation.createPrivate(ele.id)
+            });
+            results.push(out);
+        });
+
+        results.forEach(ele => {
+            result1.appendChild(ele);
+        });
+    });
+
+    const searchGroup = document.getElementById("search-group");
+    const searchResultGroup = document.getElementById("searchResults2");
+    let selectedUsers = [current]
+
+    searchGroup.addEventListener("input", async function () {
+        let results = await User.search(searchGroup.value);
+        results = results.filter(user => selectedUsers.find(u => u.id === user.id) === undefined);
+        searchResultGroup.innerHTML = '';
+
+        results.forEach((ele, i) => {
+            let out = document.createElement("div");
+            out.innerHTML = `<div class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0" style="z-index: 10;">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <button aria-label="Close" class="close" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="card-body p-0 d-flex">
+                                    <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w25"
+                                                                     src=${results[i].pfp}></figure>
+                                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${results[i].username}</h3>
+                                </div>
+                            </div>
+                        </div>`;
+            searchResultGroup.appendChild(out);
+            out.addEventListener("click", async () => {
+                selectedUsers.push(ele);
+                out.remove();
+                console.log(selectedUsers);
+                document.getElementById("pending").innerHTML += `<div class="list-group-item list-group-item-action card w-100 shadow-xss border-0 rounded-0 px-4 py-0">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <button aria-label="Close" class="close" type="button">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <div class="card-body p-0 d-flex">
+                                    <figure class="avatar me-3"><img alt="avater" class="shadow-sm rounded-circle w25"
+                                                                     src=${ele.pfp}></figure>
+                                    <h3 class="fw-600 text-grey-900 font-xsss lh-28">${ele.username}</h3>
+                                </div>
+                            </div>
+                        </div>`
+            });
+        });
+    });
+
+    document.getElementById('close-group').onclick = async () => {
+        selectedUsers = [current];
+        console.log(selectedUsers)
+    }
+
+    document.getElementById('submit-group').onclick = async () => {
+        console.log(selectedUsers);
+        const groupName = document.getElementById('group-name').value;
+        Conversation.createGroup(groupName, selectedUsers.map(user => user.id));
+    }
+
     /**
      * Display a conversation in the chat list
      * @param {Conversation} conversation - The conversation to display
      */
     function displayConversation(conversation) {
-        const item = document.createElement('li');
-        item.classList.add('chat-item');
+        const item = document.createElement('div');
         item.setAttribute('data-chat-id', conversation.id);
 
-        const latestMessage = conversation.getLastMessage();
+        const latestMessage = conversation.latestMessage;
         item.innerHTML =
-            `<div class='chat-info'>
-                <div class='chat-name'>${conversation.name}</div>
-                <div class='chat-preview'>${latestMessage === undefined ? '' : latestMessage.content}</div>
-                <div class='timestamp'>${latestMessage === undefined ? '' : latestMessage.timestamp.local().calendar()}</div>
-            </div>`;
-        chatList.appendChild(item);
+            DOMPurify.sanitize(latestMessage ?
+                `<div class="card w-100 border-0 py-2 px-3">
+                    <div class="card-body p-0 d-flex">
+                        <figure class="avatar me-3"><img src="${conversation.image}" alt="avater" class="shadow-sm rounded-circle w40"></figure>
+                        <div>
+                            <h4 class="fw-700 text-grey-900 font-xsss">${conversation.name}</h4>
+                            <span class="d-block font-xssss fw-500 lh-3 text-grey-500">${latestMessage.content}</span>
+                        </div>
+                        <span class="ms-auto font-xssss fw-600 text-grey-700">${latestMessage.timestamp.calendar(null, timestampFormat)}</span>
+                    </div>
+                </div>` :
+                `<div class="card w-100 border-0 py-2 px-3">
+                    <div class="card-body p-0 d-flex">
+                        <figure class="avatar me-3"><img src="${conversation.image}" alt="avater" class="shadow-sm rounded-circle w40"></figure>
+                        <div>
+                            <h4 class="fw-700 text-grey-900 font-xsss">${conversation.name}</h4>
+                            <span class="d-block font-xssss fw-500 lh-3 text-grey-500">No messages yet.</span>
+                        </div>
+                        <span class="d-none ms-auto font-xssss fw-600 text-grey-700"></span>
+                    </div>
+                </div>`);
 
-        item.addEventListener('click', function () {
+        document.getElementById('conversations').appendChild(item);
+
+        item.addEventListener('click', async function () {
             if (selectedChatItem) selectedChatItem.classList.remove('selected');
-
             this.classList.add('selected');
             selectedChatItem = this;
-            chatUsername.innerText = this.querySelector('.chat-name').innerText;
-            chatMessages.innerHTML = '';
 
-            conversation.history.forEach(message => {
-                const li = document.createElement('li');
-                li.id = message.id.toLocaleString();
-                li.classList.add('message');
-                li.innerHTML = `
-                    <span class="sender">${message.sender.username}</span>
-                    <span class="content">${message.content}</span>
-                    <span class="timestamp">(${moment.utc(message.timestamp).local().calendar()})</span>
-                    <span class="bluetick">READ: ${message.readByAll()}</span>
-                `;
-                chatMessages.appendChild(li);
-            })
+            document.getElementById('chat-pfp').src = conversation.image;
+            document.getElementById('chat-username').innerText = conversation.name;
+
+            await conversation.loadHistory();
+            displayMessages(conversation);
+            document.getElementById('chat-wrap').scrollTop = document.getElementById('chat-wrap').scrollHeight;
 
             conversation.read();
         });
     }
 
-    // Send message button click event
-    sendButton.addEventListener('click', sendMessage);
-    // Message input keypress event
+    function displayMessages(conversation) {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.innerHTML = ``;
+        conversation.history.forEach(msg => messagesDiv.prepend(renderMessage(msg)))
+    }
+
+    function renderMessage(message) {
+        const div = document.createElement('div');
+        div.classList = `message-item ${message.sender.id === current.id ? `outgoing-message` : ``}`;
+        div.setAttribute('data-message-id', message.id);
+
+        div.innerHTML = DOMPurify.sanitize(
+            `<div class="message-user">
+                <figure class="avatar"><img src="${message.sender.pfp}" alt="avatar"></figure>
+                <div><h5>${message.sender.username}</h5>
+                    <div class="time">${message.timestamp.calendar(null, timestampFormat)}</div>
+                </div>
+            </div>
+            <div class="message-wrap">${message.content}</div>`
+        );
+
+        return div;
+    }
+
+    document.getElementById('message-button').addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', function (event) {
         if (event.key === 'Enter') sendMessage();
     });
 
-    /**
-     * Send a message
-     */
     function sendMessage() {
-        let messageToSend = messageInput.value;
+        const messageInput = document.getElementById('message');
         if (messageInput.value.trim() === '') return;
-        messageInput.value = "";
+
+        const messageToSend = messageInput.value;
+        messageInput.value = '';
+
         socket.emit('message', {
             'conversation_id': selectedChatItem.getAttribute('data-chat-id'),
             'content': messageToSend
         });
     }
 
-    /**
-     * Create a message element
-     * @param {Message} message - The message object
-     * @returns {HTMLElement} - The created message element
-     */
-    function createMessageElement(message) {
-        const li = document.createElement("li");
-        li.id = message.id.toLocaleString();
-        li.classList.add('message');
-        li.innerHTML = `
-            <span class="sender">${message.sender.username}</span>
-            <span class="content">${message.content}</span>
-            <span class="timestamp">(${moment.utc(message.timestamp).local().calendar()})</span>
-            <span class="bluetick">READ: ${message.readByAll()}</span>
-        `;
-        return li;
-    }
-
-    // Event listener for new messages
     socket.on('new_message', async function (data) {
         const message = await Message.fromJson(data);
-        console.log(message);
+        message.conversation.history.push(message);
         if (selectedChatItem && selectedChatItem.getAttribute('data-chat-id') === message.conversation.id) {
-            chatMessages.appendChild(createMessageElement(message));
+            console.log(message)
+            document.getElementById('messages').appendChild(renderMessage(message));
+            document.getElementById('chat-wrap').scrollTop = document.getElementById('chat-wrap').scrollHeight;
             socket.emit('read_message', {'message_id': message.id});
         }
     });
 
     // Event listener for bluetick (read confirmation)
-    socket.on('bluetick', data => {
-        console.log(data);
-        data.forEach(messageId => {
-            const element = document.getElementById(messageId.toLocaleString());
-            if (element === undefined) return;
-            element.querySelector('.bluetick').innerText = `READ: True`;
-        });
-    });
+    // socket.on('bluetick', data => {
+    //     console.log(data);
+    //     data.forEach(messageId => {
+    //         const element = document.getElementById(messageId.toLocaleString());
+    //         if (element === undefined) return;
+    //         element.querySelector('.bluetick').innerText = `READ: True`;
+    //     });
+    // });
 
     // Event listener for message edits
     socket.on('edit', data => {
@@ -139,28 +247,5 @@ $(document).ready(async function () {
     socket.on('error', data => console.log(data));
 
     socket.on('new_conversation', async data => displayConversation(await Conversation.fromJson(data)));
-
-    // Create conversation button click event
-    const createConversationButton = document.getElementById('create-conversation');
-    createConversationButton.addEventListener('click', function () {
-        const targetUserId = prompt('Enter the user ID to create a conversation with:');
-        if (!targetUserId) return;
-
-        Conversation.createPrivate(targetUserId);
-    });
-
-    // Create group conversation button click event
-    const createGroupConversationButton = document.getElementById('create-group-conversation');
-    createGroupConversationButton.addEventListener('click', function () {
-        const groupName = prompt('Enter the group name:');
-        if (!groupName) return;
-
-        const userIDsString = prompt('Enter the user IDs (comma-separated) for the group members:');
-        if (!userIDsString) return;
-
-        const userIDs = userIDsString.split(',').map(id => id.trim());
-
-        Conversation.createGroup(groupName, userIDs);
-    });
 
 });
