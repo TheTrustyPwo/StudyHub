@@ -111,7 +111,8 @@ $(document).ready(async function () {
 
     document.getElementById('submit-group').onclick = async () => {
         console.log(selectedUsers);
-        Conversation.createGroup("Me group", selectedUsers.map(user => user.id));
+        const groupName = document.getElementById('group-name').value;
+        Conversation.createGroup(groupName, selectedUsers.map(user => user.id));
     }
 
     /**
