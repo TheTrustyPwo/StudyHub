@@ -128,9 +128,10 @@ function renderReply(reply) {
         replyDiv.replaceWith(renderReply(reply));
     });
 
-    replyDiv.querySelector('.mark-answer').addEventListener('click', async () => {
+    replyDiv.querySelector('.mark-answer')?.addEventListener('click', async () => {
         await post.resolve(reply);
         replyDiv.replaceWith(renderReply(reply));
+        renderPost(post);
     });
 
     return replyDiv;
