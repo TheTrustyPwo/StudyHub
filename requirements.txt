@@ -25,3 +25,4 @@ mysqlclient==2.2.0
 pinecone-client==2.2.2
 bleach==6.0.0
 oauthlib==3.2.2
+werkzeug>=3.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
