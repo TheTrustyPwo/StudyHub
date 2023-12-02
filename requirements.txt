@@ -25,4 +25,5 @@ mysqlclient==2.2.0
 pinecone-client==2.2.2
 bleach==6.0.0
 oauthlib==3.2.2
+aiohttp>=3.9.0
 werkzeug>=3.0.1
