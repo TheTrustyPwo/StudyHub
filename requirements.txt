@@ -27,3 +27,4 @@ bleach==6.0.0
 oauthlib==3.2.2
 aiohttp>=3.9.0
 werkzeug>=3.0.1
+dnspython>=2.6.0rc1 # not directly required, pinned by Snyk to avoid a vulnerability
