@@ -11,8 +11,9 @@ class User {
      * @param {string} username - The username of the user
      * @param {Date} dateCreated - The date the user was created
      * @param {string} pfp - The profile picture URL of the user
+     * @param answered
      */
-    constructor(id, email, username, dateCreated, pfp) {
+    constructor(id, email, username, dateCreated, pfp, answered) {
         if (User.#cache.has(id)) return User.#cache.get(id);
 
         this.id = id;
@@ -20,6 +21,7 @@ class User {
         this.username = username;
         this.dateCreated = dateCreated;
         this.pfp = pfp;
+        this.answered = answered;
         User.#cache.set(id, this);
     }
 
@@ -42,8 +44,8 @@ class User {
      * @returns {User} - The created User object
      */
     static fromJson(json) {
-        const { id, email, username, dateCreated, pfp } = json;
-        return new User(id, email, username, moment.utc(dateCreated), pfp);
+        const { id, email, username, dateCreated, pfp, answered } = json;
+        return new User(id, email, username, moment.utc(dateCreated), pfp, answered);
     }
 
     /**

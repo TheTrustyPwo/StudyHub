@@ -1,7 +1,5 @@
-from flask import flash, redirect, render_template, request, url_for, current_app
-from flask_login import current_user, login_required, login_user
-import json
-import requests
+from flask import flash, redirect, render_template, request, url_for
+from flask_login import current_user, login_required
 
 from app import oauth_client, email
 from app.auth import auth_blueprint, auth_service
@@ -9,6 +7,8 @@ from app.auth.forms import RegisterForm, LoginForm
 from app.models import User
 from app.users.user_services import update_pfp
 from app.upload.files import File, ProfileFile
+from app.auth import auth_blueprint, auth_service
+from app.auth.forms import RegisterForm, LoginForm
 
 
 @auth_blueprint.route("/register", methods=["GET", "POST"])

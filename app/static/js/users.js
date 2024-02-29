@@ -26,7 +26,7 @@ $(document).ready(async function () {
         document.getElementById("message").style.visibility = "visible";
         document.getElementById("profile-picture").remove();
     }
-
+    document.getElementById("reputation").innerText = "Reputation: " + user.answered.toLocaleString();
     await fetchUserPosts();
 });
 
