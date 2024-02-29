@@ -25,4 +25,4 @@ cryptography==41.0.3
 pinecone-client==2.2.2
 bleach==6.0.0
 oauthlib==3.2.2
-Werkzeug==2.3.0
+Werkzeug==2.3.8
