@@ -9,7 +9,6 @@ flask_testing==0.8.1
 flask-socketio==5.3.5
 flask-moment==1.0.5
 flask-talisman==1.1.0
-mysql-connector-python
 pymysql==1.1.0
 pyjwt==2.8.0
 coverage==7.3.0
@@ -22,7 +21,7 @@ WTForms==3.0.1
 passlib==1.7.4
 bcrypt==4.0.1
 cryptography==41.0.3
-mysqlclient==2.1.1
+# mysqlclient==2.1.1
 pinecone-client==2.2.2
 bleach==6.0.0
 oauthlib==3.2.2
