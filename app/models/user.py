@@ -24,10 +24,11 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), unique=True, nullable=False)
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=True)
-    date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     answered = db.Column(db.Integer, nullable=False, default=0)
     credits = db.Column(db.Integer, nullable=False, default=10)
     pfp_file_name = db.Column(db.String(255), nullable=True)
+    date_created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    verified = db.Column(db.Boolean, nullable=False, default=False)
 
     essays = db.relationship("Essay", backref="user", lazy="dynamic", cascade="all, delete-orphan")
 
@@ -43,10 +44,11 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"<User (id='{self.id}', username='{self.username}' email='{self.email}')>"
 
-    def __init__(self, email: str, username: str, password: Union[str, None]):
+    def __init__(self, email: str, username: str, password: Union[str, None], verified: bool = False):
         self.email = email
         self.username = username
         self.password = password
+        self.verified = verified
 
     def save(self):
         """

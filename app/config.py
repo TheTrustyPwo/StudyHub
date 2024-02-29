@@ -1,4 +1,5 @@
 import os
+from redmail import gmail
 
 base_dir = os.path.abspath(os.path.dirname(__file__))
 
@@ -22,6 +23,11 @@ class BaseConfig:
 
     GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
+
+    EMAIL_HOST = gmail.host
+    EMAIL_PORT = gmail.port
+    EMAIL_USERNAME = 'thetrustypwo@gmail.com'
+    EMAIL_PASSWORD = 'oihsbwjvbrqdqctg'
 
     CONTENT_SECURITY_POLICY = {
         'default-src': [

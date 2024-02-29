@@ -16,6 +16,7 @@ https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==
 eventlet==0.33.3
 flask-wtf==1.1.1
 flask-login==0.6.2
+flask-redmail==0.3.0
 SQLAlchemy==2.0.19
 WTForms==3.0.1
 passlib==1.7.4
@@ -25,3 +26,4 @@ mysqlclient==2.2.0
 pinecone-client==2.2.2
 bleach==6.0.0
 oauthlib==3.2.2
+Pillow==10.0.0

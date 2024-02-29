@@ -3,10 +3,12 @@ from flask_login import current_user, login_required, login_user
 import json
 import requests
 
-from app import oauth_client
+from app import oauth_client, email
 from app.auth import auth_blueprint, auth_service
 from app.auth.forms import RegisterForm, LoginForm
 from app.models import User
+from app.users.user_services import update_pfp
+from app.upload.files import File, ProfileFile
 
 
 @auth_blueprint.route("/register", methods=["GET", "POST"])
@@ -18,7 +20,7 @@ def register():
     On a POST request, it handles user registration.
     """
     if current_user.is_authenticated:
-        return render_template("base.html")
+        return redirect(url_for('feed.home'))
 
     form = RegisterForm()
     if form.validate_on_submit():
@@ -50,13 +52,21 @@ def login():
     On a POST request, it handles user login.
     """
     if current_user.is_authenticated:
-        return render_template("base.html")
+        return redirect(url_for('feed.home'))
 
     form = LoginForm()
     if form.validate_on_submit():
         login_successful = auth_service.log_in_user(form.email.data, form.password.data)
         if login_successful:
             flash("Successfully logged in.", "primary")
+            email.send(
+                subject="Verify email",
+                receivers='shucecai@gmail.com',
+                html_template="email/verify.html",
+                body_params={
+                    "token": 'nice token'
+                }
+            )
             next_location = request.args.get("next")
 
             if next_location is None or not next_location.startswith("/"):
@@ -70,8 +80,16 @@ def login():
     return render_template("login.html", form=form)
 
 
+@auth_blueprint.route("/verify/email/<string:token>")
+def verify_email(token: str):
+    pass
+
+
 @auth_blueprint.route("/login/google")
 def login_google():
+    if current_user.is_authenticated:
+        return redirect(url_for('feed.home'))
+
     google_provider_cfg = auth_service.get_google_provider_cfg()
     authorization_endpoint = google_provider_cfg["authorization_endpoint"]
 
@@ -80,6 +98,7 @@ def login_google():
         redirect_uri=request.base_url + "/callback",
         scope=["openid", "email", "profile"],
     )
+
     return redirect(request_uri)
 
 
@@ -114,21 +133,22 @@ def login_google_callback():
         flash("Login Failed: Email not verified", "danger")
         return redirect(url_for("auth.login"))
 
-    email = userinfo_response.json()["email"]
-    picture = userinfo_response.json()["picture"]
-    username = userinfo_response.json()["given_name"]
+    email = userinfo_response.json()['email']
+    picture = userinfo_response.json()['picture']
+    username = userinfo_response.json()['name']
 
     user = User.get_by_email(email)
     if not user:
-        user = User(email=email, username=username, password=None)
+        user = User(email=email, username=username, password=None, verified=True)
         user.save()
+        update_pfp(user.id, File.download_from_url(picture))
 
     login_user(user)
 
     return redirect(url_for('feed.home'))
 
 
-@auth_blueprint.route("/logout", methods=["POST"])
+@auth_blueprint.route("/logout")
 @login_required
 def logout():
     """

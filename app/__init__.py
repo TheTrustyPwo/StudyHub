@@ -9,6 +9,7 @@ from flask_socketio import SocketIO
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_talisman import Talisman
+from flask_redmail import RedMail
 
 from oauthlib.oauth2 import WebApplicationClient
 
@@ -20,6 +21,7 @@ moment = Moment()
 cors = CORS()
 migrate = Migrate()
 talisman = Talisman()
+email = RedMail()
 
 login_manager = LoginManager()
 login_manager.login_view = "auth.login"
@@ -42,6 +44,7 @@ def create_app(config: Type[BaseConfig] = DevelopmentConfig):
     cors.init_app(app)
     migrate.init_app(app, db)
     talisman.init_app(app, content_security_policy=[])
+    email.init_app(app)
     login_manager.init_app(app)
 
     load_oauth_client(app)
