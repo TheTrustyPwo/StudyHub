@@ -9,7 +9,7 @@ flask_testing==0.8.1
 flask-socketio==5.3.5
 flask-moment==1.0.5
 flask-talisman==1.1.0
-pymysql==1.1.0
+pymysql==1.1.1
 pyjwt==2.8.0
 coverage==7.3.0
 https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0 # eventlet bug workaround
@@ -21,10 +21,12 @@ SQLAlchemy==2.0.19
 WTForms==3.0.1
 passlib==1.7.4
 bcrypt==4.0.1
-cryptography==41.0.3
+cryptography==42.0.8
 # mysqlclient==2.1.1
 pinecone-client==2.2.2
 bleach==6.0.0
 oauthlib==3.2.2
 Pillow==10.0.0
-Werkzeug==2.3.8
+Werkzeug==3.0.3
+aiohttp>=3.9.4 # not directly required, pinned by Snyk to avoid a vulnerability
+requests>=2.32.2 # not directly required, pinned by Snyk to avoid a vulnerability
